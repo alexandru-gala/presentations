@@ -187,9 +187,11 @@
     function frac(date) { return (date - T0) / (T1 - T0); }
 
     labels.push({ g: label(x(ROOT_DATE) - 8, rootY - 34, ["shared-config", "born 24 Nov 2025 · 131 agents · 131 skills"], { anchor: "end", size: 16 }), at: frac(ROOT_DATE) });
-    labels.push({ g: label(x(SG_DATE) + 14, sgY + 5, ["pago · Stargate", "backend · since 18 Nov 2025 · 22 agents · 45 skills"]), at: frac(SG_DATE) });
+    labels.push({ g: label(x(SG_DATE) + 14, sgY - 10, ["pago · Stargate", "backend · since 18 Nov 2025 · 22 agents · 45 skills"], { lh: 26 }), at: frac(SG_DATE) });
     labels.push({ g: label(x(PRD_DATE) - 8, prdY - 8, ["pago-prds", "172 commits"], { anchor: "end" }), at: frac(PRD_DATE) });
-    labels.push({ g: label(intakeX - 16, intakeY2 - 24, ["first intake", "first factory intake runs"], { color: "#B76F00", anchor: "end" }), at: frac(INTAKE_DATE) });
+    var intakeLabel = label(intakeX, H - M.b - 46, ["first intake", "first factory intake runs"], { color: "#B76F00", anchor: "middle" });
+    intakeLabel.insert("line", "text").attr("x1", 0).attr("x2", 0).attr("y1", -26).attr("y2", intakeY2 - (H - M.b - 46) + 14).attr("stroke", "#F5A623").attr("stroke-width", 1.5).attr("stroke-dasharray", "3 4").attr("stroke-opacity", 0.7);
+    labels.push({ g: intakeLabel, at: frac(INTAKE_DATE) });
     labels.push({ g: label(x(new Date(2026, 4, 10)), sgYAt(new Date(2026, 4, 10)) + 26, ["moving into shared-config"], { size: 12.5, color: "#2AA198", anchor: "middle" }), at: frac(new Date(2026, 4, 10)) });
 
     // lane labels at right edge — evenly spaced, no collisions by construction
