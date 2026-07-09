@@ -736,12 +736,16 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 /* Illustration/animation slot */
 .slot-note { border: 2px dashed var(--border); border-radius: var(--card-radius); padding: clamp(10px,1.4vh,16px) clamp(14px,1.6vw,22px); color: var(--text-muted); font-size: clamp(11px,1.1vw,14px); text-transform: uppercase; letter-spacing: 0.6px; align-self: flex-start; }
 
-/* --- S2: city skyline placeholder --- */
-.city { display: flex; align-items: flex-end; justify-content: center; gap: clamp(14px,2.4vw,40px); height: clamp(200px,36vh,360px); width: 100%; }
-.bld { position: relative; width: clamp(64px,7vw,120px); background: linear-gradient(180deg, #24417e, #1a2f5e); border-radius: 6px 6px 0 0; background-image: repeating-linear-gradient(0deg, transparent 0 14px, rgba(245,166,35,0.55) 14px 17px), repeating-linear-gradient(90deg, transparent 0 12px, rgba(20,30,60,0.9) 12px 15px); box-shadow: 0 0 34px rgba(245,166,35,0.12); }
-.bld-name { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px; font-size: clamp(10px,1vw,14px); font-weight: 700; color: var(--text); white-space: nowrap; }
-.bld-chip { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 8px; font-size: clamp(9px,0.9vw,12px); font-weight: 600; color: var(--pago-gold); white-space: nowrap; letter-spacing: 0.4px; }
-.city-floor { height: 3px; background: var(--text); width: 100%; margin-top: 0; border-radius: 2px; }
+/* --- S2: six factories skyline (claude-design hero, variant A switch-on sweep) --- */
+.city { display: flex; align-items: flex-end; justify-content: center; gap: clamp(20px,3vw,44px); height: clamp(220px,38vh,430px); width: 100%; }
+.bld { position: relative; width: clamp(84px,9.5vw,150px); background: var(--pago-blue); border-radius: 7px 7px 0 0; padding: 4px; display: grid; grid-template-columns: repeat(4,1fr); gap: 3px; box-shadow: 0 10px 30px rgba(43,89,195,0.10); transition: box-shadow .6s ease; }
+.bld.glow { box-shadow: 0 0 42px rgba(34,197,94,0.28), 0 10px 30px rgba(43,89,195,0.10); }
+.cell { background: #FCFDFF; border-radius: 1.5px; transition: background .5s ease, box-shadow .5s ease; }
+.cell.on { background: var(--green); box-shadow: 0 0 7px rgba(34,197,94,0.85); }
+.bld-name { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px; font-size: clamp(11px,1.1vw,14px); font-weight: 700; color: var(--text); white-space: nowrap; }
+.bld-chip { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px; font-size: clamp(10px,0.95vw,12px); font-weight: 700; color: var(--pact-green); white-space: nowrap; letter-spacing: 0.4px; display: flex; align-items: center; gap: 6px; }
+.bld-chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.9); }
+.city-floor { height: 3px; background: var(--text); width: 100%; margin-top: 2px; border-radius: 2px; }
 
 /* --- S3: pipeline --- */
 .pipe { display: flex; align-items: stretch; justify-content: center; flex-wrap: nowrap; gap: clamp(4px,0.4vw,8px); margin-top: clamp(18px,3vh,34px); width: 100%; }
@@ -965,18 +969,73 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     </div>
     <h2 class="fold-title reveal reveal-d1">January 2027. <strong style="color: var(--pago-blue);">Six factories.</strong> More planned.</h2>
     <div class="reveal reveal-d2" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
-      <div class="city">
-        <div class="bld" style="height: 82%;"><span class="bld-chip">running today</span><span class="bld-name">Improvements</span></div>
-        <div class="bld" style="height: 64%;"><span class="bld-name">Bugs</span></div>
-        <div class="bld" style="height: 74%;"><span class="bld-name">New Features</span></div>
-        <div class="bld" style="height: 56%;"><span class="bld-name">SDKs</span></div>
-        <div class="bld" style="height: 48%;"><span class="bld-name">Compliance</span></div>
-        <div class="bld" style="height: 60%;"><span class="bld-name">Security</span></div>
-      </div>
+      <div class="city" id="city"></div>
       <div class="city-floor"></div>
     </div>
-    <div class="slot-note reveal reveal-d3">Hero illustration slot — night city with factories (claude design / video frame)</div>
     <div class="bottom-line reveal reveal-d4">They don't appear overnight — <strong style="color: var(--pago-blue);">they get zoned, built, switched on</strong>.</div>
+    <script>
+    (function(){
+      var COLS = 4;
+      var buildings = [
+        { name: 'Improvements', h: 82, chip: 'running today' },
+        { name: 'Bugs', h: 64 },
+        { name: 'New Features', h: 74 },
+        { name: 'SDKs', h: 56 },
+        { name: 'Compliance', h: 48 },
+        { name: 'Security', h: 60 }
+      ];
+      var city = document.getElementById('city');
+      var timers = [];
+      function clearTimers(){ timers.forEach(function(t){ clearTimeout(t); clearInterval(t); }); timers = []; }
+      function buildCity(){
+        city.innerHTML = '';
+        var cityH = city.clientHeight || 360;
+        var perBld = [];
+        buildings.forEach(function(b){
+          var el = document.createElement('div');
+          el.className = 'bld';
+          var px = Math.round(b.h / 100 * cityH);
+          el.style.height = px + 'px';
+          var rows = Math.max(4, Math.round((px - 8) / 20));
+          el.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
+          var grid = [];
+          for (var r = 0; r < rows; r++){
+            grid.push([]);
+            for (var c = 0; c < COLS; c++){
+              var cell = document.createElement('div');
+              cell.className = 'cell';
+              el.appendChild(cell);
+              grid[r][c] = cell;
+            }
+          }
+          if (b.chip){ var chip = document.createElement('span'); chip.className = 'bld-chip'; chip.textContent = b.chip; el.appendChild(chip); }
+          var nm = document.createElement('span'); nm.className = 'bld-name'; nm.textContent = b.name; el.appendChild(nm);
+          city.appendChild(el);
+          var ordered = [];
+          for (var r2 = rows - 1; r2 >= 0; r2--) for (var c2 = 0; c2 < COLS; c2++) ordered.push(grid[r2][c2]);
+          perBld.push({ el: el, cells: ordered });
+        });
+        return perBld;
+      }
+      function reset(perBld){ perBld.forEach(function(b){ b.el.classList.remove('glow'); b.cells.forEach(function(c){ c.classList.remove('on'); }); }); }
+      function runA(perBld){
+        clearTimers(); reset(perBld);
+        var bi = 0;
+        function lightBuilding(){
+          if (bi >= perBld.length){ timers.push(setTimeout(function(){ reset(perBld); bi = 0; timers.push(setTimeout(lightBuilding, 550)); }, 1800)); return; }
+          var b = perBld[bi];
+          b.cells.forEach(function(cell, k){ timers.push(setTimeout(function(){ cell.classList.add('on'); }, k * 26)); });
+          timers.push(setTimeout(function(){ b.el.classList.add('glow'); }, b.cells.length * 26 + 120));
+          var dur = b.cells.length * 26 + 420;
+          bi++;
+          timers.push(setTimeout(lightBuilding, dur));
+        }
+        lightBuilding();
+      }
+      function boot(){ runA(buildCity()); }
+      if (document.readyState === 'complete') boot(); else window.addEventListener('load', boot);
+    })();
+    </script>
   </div>
 </section>
 
