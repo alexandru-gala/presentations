@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pago Factories — AI Sync, Episode 2</title>
+<title>Software Factories — AI Sync, Episode I</title>
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -728,7 +728,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 </svg>
 
 <div class="progress-bar" id="progressBar"></div>
-<div class="fold-counter on-dark" id="foldCounter">1 / 14</div>
+<div class="fold-counter on-dark" id="foldCounter">1 / 13</div>
 
 <style>
 /* ===== Pago Factories — deck-specific additions (ep2) ===== */
@@ -745,10 +745,11 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 
 /* --- S3: pipeline --- */
 .pipe { display: flex; align-items: stretch; justify-content: center; flex-wrap: nowrap; gap: clamp(4px,0.5vw,10px); margin-top: clamp(18px,3vh,34px); position: relative; left: 50%; transform: translateX(-50%); width: max-content; max-width: 96vw; }
-.pipe-step { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: clamp(6px,1vh,10px); border: 2px solid var(--pago-blue); color: var(--pago-blue-dark); border-radius: 14px; padding: clamp(8px,1.4vh,14px) clamp(8px,0.9vw,16px); font-weight: 700; font-size: clamp(10px,0.95vw,15px); background: var(--card-bg); white-space: nowrap; }
+.pipe-step { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: clamp(6px,1vh,10px); border: 2px solid var(--pago-blue); color: var(--pago-blue-dark); border-radius: 14px; padding: clamp(8px,1.4vh,14px) clamp(8px,0.9vw,16px); font-weight: 700; font-size: clamp(10px,0.95vw,15px); background: var(--card-bg); white-space: nowrap; }
 .pipe-emoji { font-size: clamp(18px,1.9vw,30px); line-height: 1; }
-.pipe-gate { border-color: var(--pago-gold); background: var(--pago-gold-light); color: #8a5a00; position: relative; }
-.pipe-gate::after { content: 'human gate'; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 6px; font-size: clamp(9px,0.85vw,11px); font-weight: 600; color: var(--pago-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.pipe-gate { border-color: var(--pago-gold); }
+.pipe-step[data-tag]::after { content: attr(data-tag); position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 6px; font-size: clamp(9px,0.85vw,11px); font-weight: 600; color: var(--pago-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.pipe-step[data-tag="agentic"]::after { color: var(--pago-blue); }
 .pipe-arrow { color: var(--text-muted); font-weight: 700; font-size: clamp(14px,1.6vw,22px); align-self: center; }
 
 /* --- S4: rewind timeline (click-driven, draws right → left) --- */
@@ -760,6 +761,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .rw-flag { position: absolute; bottom: 22px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0; }
 .rw-flag .f-name { font-size: clamp(13px,1.3vw,19px); font-weight: 700; color: var(--pago-blue-dark); background: #fff; border: 2px solid var(--pago-blue); border-radius: 8px; padding: 5px 11px; white-space: nowrap; }
 .rw-flag .f-pole { width: 2px; height: clamp(18px,3vh,34px); background: var(--pago-blue); }
+.rw-flag--hi .f-pole { height: clamp(52px,9vh,90px); }
 .rw-flag--now .f-name { border-color: var(--pact-green); color: var(--pact-green); }
 .rw-flag--now .f-pole { background: var(--pact-green); }
 .rw-flag--now { transform: translateX(-16%); align-items: flex-start; z-index: 2; }
@@ -773,8 +775,8 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .rw.play .rw-zoom { animation: rw-cam 11.5s cubic-bezier(0.45, 0, 0.25, 1) forwards; will-change: transform; }
 @keyframes rw-cam {
   0% { transform: translateX(0) scale(1); }
-  10% { transform: translateX(0) scale(1.9); }
-  78% { transform: translateX(110%) scale(1.9); }
+  10% { transform: translateX(0) scale(1.4); }
+  78% { transform: translateX(60%) scale(1.4); }
   92% { transform: translateX(0) scale(1); }
   100% { transform: translateX(0) scale(1); }
 }
@@ -869,7 +871,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   <div class="pattern-dots"></div>
   <div class="fold-inner" style="justify-content: center; align-items: flex-start; gap: clamp(14px, 2.4vh, 28px);">
     <svg viewBox="0 0 82 38" class="reveal" style="height: clamp(30px, 3.4vw, 46px); color: #fff;"><use href="#pago-logo"/></svg>
-    <h1 class="cover-title reveal reveal-d1">Pago Factories 🏭</h1>
+    <h1 class="cover-title reveal reveal-d1">Software Factories 🏭</h1>
     <div class="reveal reveal-d2"><span class="cover-chip">Episode I</span></div>
     <p class="cover-subtitle reveal reveal-d3">We started building software factories. · AI Sync, July 2026</p>
   </div>
@@ -920,13 +922,13 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
           <div class="rw-tick" style="left: 53%; --d: 5.1s;"></div><div class="rw-tlabel" style="left: 53%; --d: 5.1s;">Oct</div>
           <div class="rw-tick" style="left: 68%; --d: 3.8s;"></div><div class="rw-tlabel" style="left: 68%; --d: 3.8s;">Nov</div>
           <div class="rw-tick" style="left: 83%; --d: 2.5s;"></div><div class="rw-tlabel" style="left: 83%; --d: 2.5s;">Dec</div>
-          <div class="rw-tick" style="left: 98%; --d: 1.2s;"></div><div class="rw-tlabel" style="left: 98%; --d: 1.2s;">Jan '27</div>
+          <div class="rw-tick" style="left: 98%; --d: 1.2s;"></div><div class="rw-tlabel" style="left: 98%; --d: 1.2s; transform: translateX(-80%);">Jan '27</div>
           <div class="rw-flag rw-flag--now" style="left: 8%; --d: 9s;"><span class="f-name">Improvements</span><span class="f-pole"></span></div>
-          <div class="rw-flag" data-m="aug" style="left: 23%; --d: 7.7s;"><span class="f-name">Bugs</span><span class="f-pole"></span></div>
+          <div class="rw-flag rw-flag--hi" data-m="aug" style="left: 23%; --d: 7.7s;"><span class="f-name">Bugs</span><span class="f-pole"></span></div>
           <div class="rw-flag" data-m="sep" style="left: 38%; --d: 6.4s;"><span class="f-name">SDKs</span><span class="f-pole"></span></div>
-          <div class="rw-flag" data-m="oct" style="left: 53%; --d: 5.1s;"><span class="f-name">Compliance</span><span class="f-pole"></span></div>
+          <div class="rw-flag rw-flag--hi" data-m="oct" style="left: 53%; --d: 5.1s;"><span class="f-name">Compliance</span><span class="f-pole"></span></div>
           <div class="rw-flag" data-m="nov" style="left: 68%; --d: 3.8s;"><span class="f-name">Security</span><span class="f-pole"></span></div>
-          <div class="rw-flag" data-m="dec" style="left: 83%; --d: 2.5s;"><span class="f-name">🎅 Santa for Robots</span><span class="f-pole"></span></div>
+          <div class="rw-flag rw-flag--hi" data-m="dec" style="left: 83%; --d: 2.5s;"><span class="f-name">🎅 Santa for Robots</span><span class="f-pole"></span></div>
           <div class="rw-flag" data-m="ian" style="left: 98%; --d: 1.2s;"><span class="f-name">Six factories</span><span class="f-pole"></span></div>
           <div class="rw-head"></div>
         </div>
@@ -959,19 +961,19 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     <h2 class="fold-title reveal reveal-d1">Skills and agents, in sequence. <strong style="color: var(--pago-blue);">With human gates.</strong></h2>
     <div class="reveal reveal-d2" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
       <div class="pipe" style="padding-bottom: clamp(22px,3.4vh,34px);">
-        <span class="pipe-step"><span class="pipe-emoji">💡</span>Idea</span>
+        <span class="pipe-step" data-tag="human led"><span class="pipe-emoji">💡</span>Idea</span>
         <span class="pipe-arrow">›</span>
-        <span class="pipe-step"><span class="pipe-emoji">🎨</span>PRD + Figma / Claude Design</span>
+        <span class="pipe-step" data-tag="human led"><span class="pipe-emoji">🎨</span>PRD + Design</span>
         <span class="pipe-arrow">›</span>
-        <span class="pipe-step"><span class="pipe-emoji">📥</span>Intake</span>
+        <span class="pipe-step" data-tag="agentic"><span class="pipe-emoji">📥</span>Intake</span>
         <span class="pipe-arrow">›</span>
-        <span class="pipe-step"><span class="pipe-emoji">🚪</span>Gate</span>
+        <span class="pipe-step pipe-gate" data-tag="human gate"><span class="pipe-emoji">🚪</span>Gate</span>
         <span class="pipe-arrow">›</span>
-        <span class="pipe-step"><span class="pipe-emoji">🏭</span>Factory</span>
+        <span class="pipe-step" data-tag="agentic"><span class="pipe-emoji">🏭</span>Factory</span>
         <span class="pipe-arrow">›</span>
-        <span class="pipe-step pipe-gate"><span class="pipe-emoji">✨</span>Polishing</span>
+        <span class="pipe-step pipe-gate" data-tag="human gate"><span class="pipe-emoji">✨</span>Polishing</span>
         <span class="pipe-arrow">›</span>
-        <span class="pipe-step pipe-gate"><span class="pipe-emoji">🚦</span>Prelive</span>
+        <span class="pipe-step pipe-gate" data-tag="human gate"><span class="pipe-emoji">🚦</span>Prelive</span>
         <span class="pipe-arrow">›</span>
         <span class="pipe-step"><span class="pipe-emoji">🟢</span>Live</span>
       </div>
@@ -1037,7 +1039,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
           <div class="g-seg g-plan" style="left: 55%; width: 7%;"></div>
         </div>
 
-        <div class="g-name"><span class="g-emoji g-emoji--end">&#63743;</span></div>
+        <div class="g-name"><span class="g-emoji g-emoji--end">&#63743; 🧰</span></div>
         <div class="g-track">
           <div class="g-seg g-done" style="left: 0; width: 32%;"></div>
           <div class="g-seg g-wip" style="left: 32%; width: 11%;"></div>
@@ -1051,7 +1053,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
           <div class="g-seg g-plan" style="left: 38%; width: 7%;"></div>
         </div>
 
-        <div class="g-name">PADs <span class="g-emoji g-emoji--end">&#63743;</span></div>
+        <div class="g-name">PADs <span class="g-emoji g-emoji--end">&#63743; 🧰</span></div>
         <div class="g-track">
           <div class="g-seg g-done" style="left: 0; width: 28%;"></div>
           <div class="g-seg g-wip" style="left: 28%; width: 5.4%;"></div>
@@ -1082,32 +1084,15 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
         </div>
       </div>
     </div>
-    <div class="bottom-line    <div class="bottom-line reveal reveal-d3">Nothing live yet — <strong style="color: var(--pago-blue);">we've tested a lot of runs</strong> and the gates are doing their job.</div>
+    <div class="bottom-line reveal reveal-d3">Nothing live yet — <strong style="color: var(--pago-blue);">we've tested a lot of runs</strong> to improve the system and the gates.</div>
   </div>
 </section>
 
-<!-- ============ FOLD 7 · 06 Dovada (stats) ============ -->
-<section class="fold">
-  <div class="fold-inner">
-    <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">06</span> · The proof</div>
-      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
-    </div>
-    <h2 class="fold-title reveal reveal-d1">The numbers behind <strong style="color: var(--pago-blue);">the first runs</strong>.</h2>
-    <div class="quadrant-grid reveal reveal-d2" style="flex: 1; align-content: center;">
-      <div class="quadrant"><div class="card-label">Volume</div><div class="body-text"><strong style="color: var(--pago-blue);">14 runs · 7 beads · 3 chains</strong> through intake, gate and factory, in one month.</div></div>
-      <div class="quadrant"><div class="card-label">Biggest run</div><div class="body-text"><strong style="color: var(--pago-blue);">67 tasks · 11 waves · 5 platforms</strong> — Loto auto-payments, planned and executed by agents.</div></div>
-      <div class="quadrant"><div class="card-label">The gate works</div><div class="body-text">A pack scoring 85 still got stopped: <strong style="color: var(--pago-blue);">R-HALT</strong> from the safety detectors.</div></div>
-      <div class="quadrant"><div class="card-label">We learn from every run</div><div class="body-text"><strong style="color: var(--pago-blue);">76 documented pains → 30 improvements</strong> prioritized for the factory.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FOLD 8 · quote Lecții ============ -->
+<!-- ============ FOLD 7 · quote Lecții ============ -->
 <section class="fold">
   <div class="fold-inner quote-slide">
     <div class="pago-header" style="align-self: stretch;">
-      <div class="section-label reveal"><span class="section-num">07</span> · Honestly, again</div>
+      <div class="section-label reveal"><span class="section-num">06</span> · Honestly, again</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
     <div class="reveal reveal-d1" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: clamp(18px, 2.4vh, 32px);">
@@ -1117,7 +1102,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   </div>
 </section>
 
-<!-- ============ FOLD 9 · animație: poarta care nu se deschide ============ -->
+<!-- ============ FOLD 8 · animație: poarta care nu se deschide ============ -->
 <section class="fold">
   <div class="fold-inner">
     <div class="pago-header">
@@ -1142,12 +1127,12 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   </div>
 </section>
 
-<!-- ============ FOLD 10 · 08 Lecția 1 ============ -->
+<!-- ============ FOLD 9 · 07 Lecția 1 ============ -->
 <section class="fold">
   <div class="blue-blob" style="width: 420px; height: 420px; top: -160px; left: -150px;"></div>
   <div class="fold-inner">
     <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">08</span> · Lesson 1 — determinism</div>
+      <div class="section-label reveal"><span class="section-num">07</span> · Lesson 1 — determinism</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
     <h2 class="fold-title reveal reveal-d1">Left alone, AI <strong style="color: var(--warn);">tightens the gates too hard</strong>.</h2>
@@ -1169,12 +1154,12 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   </div>
 </section>
 
-<!-- ============ FOLD 11 · 09 Lecția 2 ============ -->
+<!-- ============ FOLD 10 · 08 Lecția 2 ============ -->
 <section class="fold">
   <div class="blue-blob" style="width: 420px; height: 420px; bottom: -160px; right: -150px;"></div>
   <div class="fold-inner">
     <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">09</span> · Lesson 2 — boundaries</div>
+      <div class="section-label reveal"><span class="section-num">08</span> · Lesson 2 — boundaries</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
     <h2 class="fold-title reveal reveal-d1">Without clear boundaries, agents help each other… <strong style="color: var(--warn);">too much</strong>.</h2>
@@ -1189,11 +1174,11 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   </div>
 </section>
 
-<!-- ============ FOLD 12 · 10 O singură regulă ============ -->
+<!-- ============ FOLD 11 · 09 O singură regulă ============ -->
 <section class="fold">
   <div class="fold-inner">
     <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">10</span> · One rule</div>
+      <div class="section-label reveal"><span class="section-num">09</span> · One rule</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
     <h2 class="fold-title reveal reveal-d1">Choose your path <strong style="color: var(--pago-blue);">instead of letting the AI choose it for you!</strong></h2>
@@ -1223,11 +1208,11 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   </div>
 </section>
 
-<!-- ============ FOLD 13 · 11 Înrolare (poster WW2) ============ -->
+<!-- ============ FOLD 12 · 10 Înrolare (poster WW2) ============ -->
 <section class="fold">
   <div class="fold-inner">
     <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">11</span> · Enlist</div>
+      <div class="section-label reveal"><span class="section-num">10</span> · Enlist</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
     <div class="enlist reveal reveal-d1" style="flex: 1;">
@@ -1259,7 +1244,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   </div>
 </section>
 
-<!-- ============ FOLD 14 · closing ============ -->
+<!-- ============ FOLD 13 · closing ============ -->
 <section class="fold fold--blue" data-dark>
   <div class="gold-circle" style="width: 500px; height: 500px; top: -150px; left: -150px; opacity: 0.06;"></div>
   <div class="pattern-dots"></div>
