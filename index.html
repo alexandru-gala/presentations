@@ -815,12 +815,12 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 /* --- door animation fold --- */
 .gate-scene { position: relative; width: 100%; height: clamp(260px,42vh,420px); display: flex; align-items: flex-end; justify-content: center; }
 .gate-floor { position: absolute; bottom: 0; left: 8%; right: 8%; height: 3px; background: var(--text); border-radius: 2px; }
-.gate-door { position: relative; width: clamp(110px,12vw,170px); height: clamp(190px,32vh,300px); background: linear-gradient(180deg, #1E3F8F, #16307a); border-radius: 14px 14px 0 0; box-shadow: -8px 0 24px rgba(30,63,143,0.25); animation: door-shudder 2.6s ease-in-out infinite; }
+.gate-door { position: relative; z-index: 1; width: clamp(110px,12vw,170px); height: clamp(190px,32vh,300px); background: linear-gradient(180deg, #1E3F8F, #16307a); border-radius: 14px 14px 0 0; box-shadow: -8px 0 24px rgba(30,63,143,0.25); animation: door-shudder 2.6s ease-in-out infinite; }
 .gate-door::before { content: ''; position: absolute; inset: 12px; border: 2px solid rgba(255,255,255,0.25); border-radius: 10px 10px 0 0; }
 .gate-door::after { content: 'GATE'; position: absolute; top: -34px; left: 50%; transform: translateX(-50%); font-weight: 800; letter-spacing: 2px; font-size: clamp(12px,1.2vw,16px); color: var(--pago-blue-dark); }
 .gate-knob { position: absolute; right: 16px; top: 48%; width: 12px; height: 12px; border-radius: 50%; background: var(--pago-gold); }
 @keyframes door-shudder { 0%, 70%, 100% { transform: translateX(0); } 74% { transform: translateX(-2.5px); } 78% { transform: translateX(2px); } 82% { transform: translateX(-1.5px); } 86% { transform: translateX(0); } }
-.bead { position: absolute; bottom: 6px; width: clamp(14px,1.5vw,20px); height: clamp(14px,1.5vw,20px); border-radius: 50%; background: var(--pago-gold); box-shadow: 0 3px 8px rgba(245,166,35,0.5); left: 12%; }
+.bead { position: absolute; bottom: 4px; left: 12%; z-index: 2; width: clamp(26px,2.8vw,40px); height: clamp(26px,2.8vw,40px); line-height: clamp(26px,2.8vw,40px); text-align: center; font-size: clamp(22px,2.4vw,34px); transform-origin: center; filter: drop-shadow(0 3px 6px rgba(30,41,59,0.25)); }
 .bead--1 { animation: bead-charge 2.6s cubic-bezier(0.5,0,0.8,1) infinite; }
 .bead--2 { animation: bead-charge 2.6s cubic-bezier(0.5,0,0.8,1) 0.5s infinite; opacity: 0.9; }
 .bead--3 { animation: bead-jump 2.6s ease-in-out 1.1s infinite; opacity: 0.8; }
@@ -1144,13 +1144,14 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     <div class="reveal reveal-d1" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(16px,2.6vh,30px);">
       <div class="gate-scene">
         <div class="gate-stamp">Needs revision</div>
-        <div class="bead bead--1"></div>
-        <div class="bead bead--2"></div>
-        <div class="bead bead--3"></div>
+        <div class="bead bead--1">📄</div>
+        <div class="bead bead--2">📋</div>
+        <div class="bead bead--3">📐</div>
+        <div class="bead bead--1" style="animation-delay: 1.7s;">❓</div>
         <div class="gate-door"><div class="gate-knob"></div></div>
         <div class="gate-floor"></div>
       </div>
-      <div class="bottom-line" style="text-align: center;">The gate won't open, <strong style="color: var(--pago-blue);">no matter how hard you jump</strong>.</div>
+      <div class="bottom-line" style="text-align: center;">The gate won't open, <strong style="color: var(--pago-blue);">no matter how hard you push</strong>. <span style="color: var(--text-muted); font-weight: 500;">🫡 — OanaO &amp; AndreiA</span></div>
     </div>
   </div>
 </section>
@@ -1182,11 +1183,29 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       <div class="section-label reveal"><span class="section-num">10</span> · One rule</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
-    <h2 class="fold-title reveal reveal-d1">Choose deliberately <strong style="color: var(--pago-blue);">where determinism lives</strong>.</h2>
-    <div class="reveal reveal-d2" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(4px,0.8vh,10px);">
-      <div class="thesis-block"><div class="body-text"><strong style="color: var(--pago-blue);">Strict</strong> where repeatability matters: gates, verdicts, handoff schemas.</div></div>
-      <div class="thesis-block"><div class="body-text"><strong style="color: var(--pago-blue);">Loose</strong> where AI has to judge: research, design, code.</div></div>
-      <div class="thesis-block"><div class="body-text"><strong style="color: var(--pago-blue);">Humans</strong> keep review over the designs agents propose — and we stop at every unexpected behavior, otherwise the process stays broken for the next person.</div></div>
+    <h2 class="fold-title reveal reveal-d1">Choose your path <strong style="color: var(--pago-blue);">instead of letting the AI choose it for you!</strong></h2>
+    <div class="stage-row reveal reveal-d2" style="margin-top: clamp(20px, 3.5vh, 40px);">
+      <div class="stage">
+        <div class="rule-anim slot-note" style="align-self: stretch; min-height: clamp(90px,16vh,150px); display: flex; align-items: center; justify-content: center;">animation slot</div>
+        <div class="stage-label">Deterministic</div>
+        <div class="stage-name">Strict</div>
+        <div class="stage-desc">Gates, verdicts, handoff schemas — <strong style="color: var(--pago-blue); font-weight: 700;">where repeatability matters</strong>.</div>
+      </div>
+      <div class="stage-arrow">›</div>
+      <div class="stage">
+        <div class="rule-anim slot-note" style="align-self: stretch; min-height: clamp(90px,16vh,150px); display: flex; align-items: center; justify-content: center;">animation slot</div>
+        <div class="stage-label">Non-deterministic</div>
+        <div class="stage-name">Loose</div>
+        <div class="stage-desc">Research, design, code — <strong style="color: var(--pago-blue); font-weight: 700;">where AI has to judge</strong>.</div>
+      </div>
+      <div class="stage-arrow">›</div>
+      <div class="stage current">
+        <div class="stage-pin">Always yours</div>
+        <div class="rule-anim slot-note" style="align-self: stretch; min-height: clamp(90px,16vh,150px); display: flex; align-items: center; justify-content: center;">animation slot</div>
+        <div class="stage-label">Human</div>
+        <div class="stage-name">Your call</div>
+        <div class="stage-desc">Review everything agents propose. <strong style="color: var(--pago-blue); font-weight: 700;">Stop at every unexpected behavior</strong> — or the process stays broken for the next person.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -1208,17 +1227,17 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       </div>
       <div>
         <div class="enlist-card">
-          <div class="e-tag">Call 1 · Improvements</div>
+          <div class="e-tag">Call 1 · Improvements (pre-alpha stage)</div>
           <div class="e-title">Refine the running lane</div>
-          <div class="e-desc">Idea → PRD + Figma/Claude Design → intake → gate → factory → polishing → prelive/live. Step into a station: bring an initiative, review at a gate.</div>
+          <div class="e-desc">Idea → factory → polishing → live. Bring an initiative, review at a gate, polish it up — and soon the users can play with it.</div>
         </div>
         <div class="enlist-card">
-          <div class="e-tag">Call 2 · Bugs</div>
+          <div class="e-tag">Call 2 · Bugs (draft stage)</div>
           <div class="e-title">Help needed on the first runs</div>
-          <div class="e-desc">It will take a lot of patience — the robots need tinkering. We reuse the existing stations, we don't build from scratch.</div>
+          <div class="e-desc">It will take a lot of patience — the robots need tinkering. We reuse existing stations; we don't build from scratch.</div>
         </div>
         <div class="enlist-card">
-          <div class="e-tag">Call 3 · SDKs</div>
+          <div class="e-tag">Call 3 · SDKs (planning stage)</div>
           <div class="e-title">Start the SDKs lane</div>
           <div class="e-desc">The plot is zoned. Looking for the first engineers to lay its conveyor.</div>
         </div>
