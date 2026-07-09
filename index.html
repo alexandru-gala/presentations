@@ -807,7 +807,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .g-wip { background-color: #F7E29B; background-image: repeating-linear-gradient(45deg, rgba(30,41,59,0.55) 0 3px, transparent 3px 10px); border: 2px solid #334155; }
 .g-plan { background: rgba(43,89,195,0.14); border: 2px dotted var(--pago-blue-dark); }
 .g-note { position: absolute; top: 50%; transform: translateY(-50%); font-size: clamp(10px,0.95vw,13px); font-weight: 600; color: var(--text-muted); white-space: nowrap; }
-.g-legend { grid-column: 1 / 8; display: flex; justify-content: center; align-items: center; gap: clamp(16px,2.2vw,34px); margin-top: clamp(12px,2.2vh,22px); font-size: clamp(11px,1.05vw,14px); font-weight: 600; color: var(--text); flex-wrap: wrap; }
+.g-legend { grid-column: 2 / 8; display: flex; justify-content: flex-start; align-items: center; gap: clamp(16px,2.2vw,34px); margin-top: clamp(12px,2.2vh,22px); font-size: clamp(11px,1.05vw,14px); font-weight: 600; color: var(--text); flex-wrap: wrap; }
 .g-legend .li { display: inline-flex; align-items: center; gap: 7px; }
 .g-legend .sw { width: 36px; height: 16px; border-radius: 5px; box-sizing: border-box; }
 .g-legend .le { font-size: clamp(14px,1.5vw,20px); }
@@ -1025,50 +1025,46 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     <h2 class="fold-title reveal reveal-d1">Five initiatives in the factory. <strong style="color: var(--pago-blue);">All started.</strong></h2>
     <div class="reveal reveal-d2" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
       <div class="gantt">
-        <div></div>
+        <div class="g-h" style="text-align: right; padding-right: 12px;">Platform</div>
         <div class="g-h">Intake</div><div class="g-h">Gate</div><div class="g-h">Factory</div><div class="g-h g-h--gate">Polishing</div><div class="g-h g-h--gate">Prelive</div><div class="g-h">Live</div>
 
         <div class="g-name">Loto · auto tickets <span class="g-emoji g-emoji--end">🤖 🧰</span></div>
         <div class="g-track">
           <div class="g-seg g-done" style="left: 0; width: 42%;"></div>
           <div class="g-seg g-wip" style="left: 42%; width: 13%;"></div>
-          <div class="g-seg g-plan" style="left: 55%; width: 12%;"></div>
-          <div class="g-note" style="left: 69%;">BE branch built</div>
+          <div class="g-seg g-plan" style="left: 55%; width: 7%;"></div>
         </div>
 
         <div class="g-name"><span class="g-emoji g-emoji--end">&#63743;</span></div>
         <div class="g-track">
-          <div class="g-seg g-done" style="left: 0; width: 42%;"></div>
-          <div class="g-seg g-wip" style="left: 42%; width: 11%;"></div>
-          <div class="g-seg g-plan" style="left: 53%; width: 11%;"></div>
-          <div class="g-note" style="left: 66%;">iOS branch built</div>
+          <div class="g-seg g-done" style="left: 0; width: 32%;"></div>
+          <div class="g-seg g-wip" style="left: 32%; width: 11%;"></div>
+          <div class="g-seg g-plan" style="left: 43%; width: 7%;"></div>
         </div>
 
         <div class="g-name">Share location <span class="g-emoji g-emoji--end">&#63743; 🧰</span></div>
         <div class="g-track">
           <div class="g-seg g-done" style="left: 0; width: 34%;"></div>
           <div class="g-seg g-wip" style="left: 34%; width: 12%;"></div>
-          <div class="g-seg g-plan" style="left: 46%; width: 11%;"></div>
-          <div class="g-note" style="left: 59%;">55 tasks</div>
+          <div class="g-seg g-plan" style="left: 46%; width: 7%;"></div>
         </div>
 
-        <div class="g-name">PJ · eFactura <span class="g-emoji">🤖 🧰</span></div>
+        <div class="g-name">PJ · eFactura <span class="g-emoji g-emoji--end">🤖 🧰</span></div>
         <div class="g-track">
           <div class="g-seg g-done" style="left: 0; width: 33.4%;"></div>
-          <div class="g-seg g-plan" style="left: 33.4%; width: 10%;"></div>
-          <div class="g-note" style="left: 45.5%;">at the gate</div>
+          <div class="g-seg g-plan" style="left: 33.4%; width: 6%;"></div>
         </div>
 
-        <div class="g-name">PADs iOS</div>
+        <div class="g-name">PADs <span class="g-emoji g-emoji--end">&#63743;</span></div>
         <div class="g-track">
           <div class="g-seg g-done" style="left: 0; width: 10%;"></div>
-          <div class="g-seg g-plan" style="left: 10%; width: 9%;"></div>
+          <div class="g-seg g-plan" style="left: 10%; width: 6%;"></div>
         </div>
 
-        <div class="g-name">Prepay IT</div>
+        <div class="g-name">Prepay IT <span class="g-emoji g-emoji--end">🤖 🧰</span></div>
         <div class="g-track">
           <div class="g-seg g-done" style="left: 0; width: 9%;"></div>
-          <div class="g-seg g-plan" style="left: 9%; width: 8%;"></div>
+          <div class="g-seg g-plan" style="left: 9%; width: 5%;"></div>
         </div>
 
         <div class="g-legend">
