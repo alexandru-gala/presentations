@@ -186,7 +186,7 @@
     var labels = [];   // {g, at: fraction of sweep when it appears}
     function frac(date) { return (date - T0) / (T1 - T0); }
 
-    labels.push({ g: label(x(ROOT_DATE) - 8, rootY - 34, ["shared-config", "born 24 Nov 2025 · 131 agents · 131 skills"], { anchor: "end", size: 16 }), at: frac(ROOT_DATE) });
+    labels.push({ g: label(x(ROOT_DATE) - 9, rootY - 52, ["shared-config", "born 24 Nov 2025 · 131 agents · 131 skills"], { size: 16 }), at: frac(ROOT_DATE) });
     labels.push({ g: label(x(SG_DATE) + 14, sgY - 10, ["pago · Stargate", "backend · since 18 Nov 2025 · 22 agents · 45 skills"], { lh: 26 }), at: frac(SG_DATE) });
     labels.push({ g: label(x(PRD_DATE) - 8, prdY - 8, ["pago-prds", "172 commits"], { anchor: "end" }), at: frac(PRD_DATE) });
     var intakeLabel = label(intakeX, H - M.b - 46, ["first intake", "first factory intake runs"], { color: "#B76F00", anchor: "middle" });

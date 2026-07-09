@@ -757,9 +757,9 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .rw-line { position: relative; height: 3px; }
 .rw-line::before { content: ''; position: absolute; inset: 0; background: var(--text); border-radius: 2px; opacity: 0.08; }
 .rw-tick { position: absolute; top: -5px; width: 2px; height: 13px; background: var(--text); opacity: 0; }
-.rw-tlabel { position: absolute; top: 16px; transform: translateX(-50%); font-size: clamp(11px,1.1vw,16px); color: var(--text-muted); font-weight: 600; white-space: nowrap; opacity: 0; }
+.rw-tlabel { position: absolute; top: 16px; transform: translateX(-50%); font-size: clamp(12.5px,1.3vw,18px); color: var(--text-muted); font-weight: 600; white-space: nowrap; opacity: 0; }
 .rw-flag { position: absolute; bottom: 22px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0; }
-.rw-flag .f-name { font-size: clamp(13px,1.3vw,19px); font-weight: 700; color: var(--pago-blue-dark); background: #fff; border: 2px solid var(--pago-blue); border-radius: 8px; padding: 5px 11px; white-space: nowrap; }
+.rw-flag .f-name { font-size: clamp(15px,1.5vw,22px); font-weight: 700; color: var(--pago-blue-dark); background: #fff; border: 2px solid var(--pago-blue); border-radius: 8px; padding: 6px 13px; white-space: nowrap; }
 .rw-flag .f-pole { width: 2px; height: clamp(18px,3vh,34px); background: var(--pago-blue); }
 .rw-flag--hi .f-pole { height: clamp(52px,9vh,90px); }
 .rw-flag--now .f-name { border-color: var(--pact-green); color: var(--pact-green); }
@@ -769,13 +769,14 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .rw-flag[data-m="ian"] { transform: translateX(-84%); align-items: flex-end; }
 .rw-flag[data-m="ian"] .f-pole { margin-right: calc(16% - 1px); }
 .rw-head { position: absolute; top: -9px; left: 100%; width: 21px; height: 21px; border-radius: 50%; background: var(--pago-gold); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--pago-gold), 0 4px 12px rgba(245,166,35,0.5); opacity: 0; }
-.rw-hint { position: absolute; left: 50%; transform: translateX(-50%); top: clamp(-110px,-9vh,-70px); color: var(--text-muted); font-size: clamp(12px,1.2vw,16px); font-weight: 600; transition: opacity 0.4s ease; }
+.rw-hint { position: absolute; left: 50%; transform: translateX(-50%); top: clamp(-150px,-13vh,-96px); width: clamp(64px,6vw,84px); height: clamp(64px,6vw,84px); border-radius: 50%; border: 3px solid var(--pago-blue); background: #fff; color: var(--pago-blue); display: flex; align-items: center; justify-content: center; font-size: clamp(26px,2.6vw,36px); font-weight: 600; padding-left: 6px; box-shadow: 0 8px 24px rgba(43,89,195,0.18); transition: opacity 0.4s ease; }
 .rw.play .rw-hint { opacity: 0; }
 .rw-zoom { transform-origin: 100% 50%; }
 .rw.play .rw-zoom { animation: rw-cam 11.5s cubic-bezier(0.45, 0, 0.25, 1) forwards; will-change: transform; }
 @keyframes rw-cam {
   0% { transform: translateX(0) scale(1); }
-  10% { transform: translateX(0) scale(1.4); }
+  3% { transform: translateX(0) scale(1); }
+  10% { transform: translateX(-6%) scale(1.4); }
   78% { transform: translateX(60%) scale(1.4); }
   92% { transform: translateX(0) scale(1); }
   100% { transform: translateX(0) scale(1); }
@@ -845,6 +846,39 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .gate-stamp { position: absolute; top: 12%; right: 10%; transform: rotate(-11deg); border: 3px solid var(--warn); color: var(--warn); font-weight: 800; letter-spacing: 1.5px; padding: 8px 16px; border-radius: 8px; font-size: clamp(13px,1.5vw,20px); text-transform: uppercase; animation: stamp-pulse 2.6s ease-in-out infinite; }
 @keyframes stamp-pulse { 0%, 60%, 100% { opacity: 0.15; } 72%, 88% { opacity: 1; } }
 
+/* --- lesson 2: QA bot starting other people's servers (door-style scene) --- */
+.qa-scene { position: relative; width: 100%; height: clamp(190px,28vh,280px); display: flex; align-items: flex-end; justify-content: center; gap: clamp(16px,2.2vw,32px); }
+.qa-floor { position: absolute; bottom: 0; left: 8%; right: 8%; height: 3px; background: var(--text); border-radius: 2px; }
+.srv { position: relative; width: clamp(56px,5.6vw,82px); height: clamp(96px,15vh,150px); background: linear-gradient(180deg, #1E3F8F, #16307a); border-radius: 10px 10px 0 0; box-shadow: -6px 0 18px rgba(30,63,143,0.2); }
+.srv::before { content: ''; position: absolute; inset: 9px; border: 2px solid rgba(255,255,255,0.22); border-radius: 7px 7px 0 0; }
+.srv .dot { position: absolute; right: 9px; top: 12px; width: 11px; height: 11px; border-radius: 50%; background: #D64545; }
+.srv .dot-1 { animation: srv-on-1 6s linear infinite; }
+.srv .dot-2 { animation: srv-on-2 6s linear infinite; }
+.srv .dot-3 { animation: srv-on-3 6s linear infinite; }
+@keyframes srv-on-1 { 0%, 24% { background: #D64545; box-shadow: none; } 27%, 92% { background: var(--pact-green); box-shadow: 0 0 10px rgba(22,163,74,0.85); } 96%, 100% { background: #D64545; box-shadow: none; } }
+@keyframes srv-on-2 { 0%, 50% { background: #D64545; box-shadow: none; } 53%, 92% { background: var(--pact-green); box-shadow: 0 0 10px rgba(22,163,74,0.85); } 96%, 100% { background: #D64545; box-shadow: none; } }
+@keyframes srv-on-3 { 0%, 76% { background: #D64545; box-shadow: none; } 79%, 92% { background: var(--pact-green); box-shadow: 0 0 10px rgba(22,163,74,0.85); } 96%, 100% { background: #D64545; box-shadow: none; } }
+.qa-rack-label { position: absolute; top: clamp(-2px,1vh,10px); left: 50%; transform: translateX(-50%); font-weight: 800; letter-spacing: 2px; font-size: clamp(11px,1.1vw,14px); color: var(--pago-blue-dark); text-transform: uppercase; }
+.qa-bot { position: absolute; bottom: 4px; left: 6%; z-index: 2; font-size: clamp(30px,3.2vw,46px); line-height: 1; transform-origin: center bottom; filter: drop-shadow(0 3px 6px rgba(30,41,59,0.25)); animation: qa-bot-run 6s ease-in-out infinite; }
+@keyframes qa-bot-run {
+  0% { transform: translateX(0); }
+  16% { transform: translateX(min(23vw,340px)); }
+  21% { transform: translateX(min(23vw,340px)) scale(0.9,1.1); }
+  25% { transform: translateX(min(23vw,340px)); }
+  42% { transform: translateX(min(30.5vw,450px)); }
+  47% { transform: translateX(min(30.5vw,450px)) scale(0.9,1.1); }
+  51% { transform: translateX(min(30.5vw,450px)); }
+  68% { transform: translateX(min(38vw,560px)); }
+  73% { transform: translateX(min(38vw,560px)) scale(0.9,1.1); }
+  77% { transform: translateX(min(38vw,560px)); }
+  100% { transform: translateX(0); }
+}
+.qa-owner { position: absolute; bottom: 4px; right: 9%; font-size: clamp(30px,3.2vw,46px); line-height: 1; }
+.qa-mark { position: absolute; top: -34px; left: 50%; transform: translateX(-50%); font-size: 0.75em; opacity: 0; animation: qa-mark-pop 6s ease-in-out infinite; }
+@keyframes qa-mark-pop { 0%, 78% { opacity: 0; transform: translateX(-50%) scale(0.6); } 84%, 94% { opacity: 1; transform: translateX(-50%) scale(1.1); } 100% { opacity: 0; transform: translateX(-50%) scale(0.6); } }
+.qa-stamp { position: absolute; top: 8%; right: 8%; transform: rotate(-11deg); border: 3px solid var(--warn); color: var(--warn); font-weight: 800; letter-spacing: 1.5px; padding: 8px 16px; border-radius: 8px; font-size: clamp(13px,1.5vw,20px); text-transform: uppercase; opacity: 0.15; animation: qa-stamp-pulse 6s ease-in-out infinite; }
+@keyframes qa-stamp-pulse { 0%, 78%, 100% { opacity: 0.15; } 84%, 96% { opacity: 1; } }
+
 /* --- lessons pull-quote --- */
 .gate-quote { border-left: 4px solid var(--warn); background: rgba(224,122,31,0.06); border-radius: 0 10px 10px 0; padding: clamp(10px,1.6vh,18px) clamp(14px,1.8vw,26px); font-size: clamp(13px,1.35vw,18px); color: var(--text); font-style: italic; }
 
@@ -913,7 +947,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     <h2 class="fold-title reveal reveal-d1">From January 2027, <strong style="color: var(--pago-blue);">back to today</strong>.</h2>
     <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
       <div class="rw reveal">
-        <div class="rw-hint">▶ click to rewind from January 2027</div>
+        <div class="rw-hint">▶</div>
         <div class="rw-zoom">
         <div class="rw-line">
           <div class="rw-tick" style="left: 8%; --d: 9s;"></div><div class="rw-tlabel" style="left: 8%; --d: 9s;">Jul '26 · TODAY</div>
@@ -935,7 +969,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
         </div>
       </div>
     </div>
-    <div class="bottom-line reveal reveal-d2">Each factory has its month. <strong style="color: var(--pago-blue);">The first one runs today.</strong> <span style="color: var(--text-muted); font-weight: 400;">(click the axis to play)</span></div>
+    <div class="bottom-line reveal reveal-d2">Each factory has its month. <strong style="color: var(--pago-blue);">The first one runs today.</strong></div>
     <script>
     (function(){
       var rw = document.currentScript.closest('.fold').querySelector('.rw');
@@ -1144,7 +1178,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
         <div class="gate-quote" style="display: flex; flex-direction: column; gap: 8px;">
           <div>“POST /accept uses an action verb in the URL ([HARD] rule 3).”</div>
           <div>“7 of 8 reviewers returned NO-GO (only kimi/Android = GO).”</div>
-          <div>“The gate is correctly forcing a human because intake honestly disclosed a stale snapshot and a degraded judge.”</div>
+          <div>“HALT short-circuits the judges; 9 null dims synthesized. No reviewer spend.”</div>
           <span style="font-size: 0.85em; color: var(--text-muted); font-style: normal;">— real bouncer verdicts, mined from the gate runs</span>
         </div>
       </div>
@@ -1175,7 +1209,16 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       </div>
       <p class="body-text">Helpful in the moment — but on the next run, <strong style="color: var(--pago-blue);">who owns the environment</strong>?</p>
     </div>
-    <div class="slot-note reveal reveal-d3">Illustration slot — QA bot starting other people's servers (claude design)</div>
+    <div class="qa-scene reveal reveal-d3">
+      <div class="qa-rack-label">Backend services</div>
+      <div class="qa-stamp">Mixed ownership</div>
+      <div class="srv"><span class="dot dot-1"></span></div>
+      <div class="srv"><span class="dot dot-2"></span></div>
+      <div class="srv"><span class="dot dot-3"></span></div>
+      <div class="qa-bot">🕵️</div>
+      <div class="qa-owner">🧑‍🔧<span class="qa-mark">⁉️</span></div>
+      <div class="qa-floor"></div>
+    </div>
   </div>
 </section>
 
