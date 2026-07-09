@@ -728,7 +728,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 </svg>
 
 <div class="progress-bar" id="progressBar"></div>
-<div class="fold-counter on-dark" id="foldCounter">1 / 13</div>
+<div class="fold-counter on-dark" id="foldCounter">1 / 12</div>
 
 <style>
 /* ===== Pago Factories — deck-specific additions (ep2) ===== */
@@ -878,6 +878,48 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 @keyframes qa-mark-pop { 0%, 78% { opacity: 0; transform: translateX(-50%) scale(0.6); } 84%, 94% { opacity: 1; transform: translateX(-50%) scale(1.1); } 100% { opacity: 0; transform: translateX(-50%) scale(0.6); } }
 .qa-stamp { position: absolute; top: 8%; right: 8%; transform: rotate(-11deg); border: 3px solid var(--warn); color: var(--warn); font-weight: 800; letter-spacing: 1.5px; padding: 8px 16px; border-radius: 8px; font-size: clamp(13px,1.5vw,20px); text-transform: uppercase; opacity: 0.15; animation: qa-stamp-pulse 6s ease-in-out infinite; }
 @keyframes qa-stamp-pulse { 0%, 78%, 100% { opacity: 0.15; } 84%, 96% { opacity: 1; } }
+
+/* --- one-rule fold: claude-design animations (Strict A conveyor · Loose A branch · Your call B eye) --- */
+.rule-anim { align-self: stretch; min-height: clamp(90px,16vh,150px); }
+.rule-anim svg { width: 100%; height: 100%; display: block; }
+.c1a-token { transform-box: fill-box; }
+.c1a-t1 { animation: c1a-move 4.2s linear infinite; }
+.c1a-t2 { animation: c1a-move 4.2s linear infinite; animation-delay: -1.4s; }
+.c1a-t3 { animation: c1a-move 4.2s linear infinite; animation-delay: -2.8s; }
+@keyframes c1a-move { from { transform: translateX(-70px); } to { transform: translateX(510px); } }
+.c1a-plain { animation: c1a-plain 4.2s linear infinite; }
+.c1a-stamp { animation: c1a-stamp 4.2s linear infinite; }
+.c1a-t2 .c1a-plain, .c1a-t2 .c1a-stamp { animation-delay: -1.4s; }
+.c1a-t3 .c1a-plain, .c1a-t3 .c1a-stamp { animation-delay: -2.8s; }
+@keyframes c1a-plain { 0%, 46% { opacity: 1; } 52%, 100% { opacity: 0; } }
+@keyframes c1a-stamp { 0%, 46% { opacity: 0; } 52%, 100% { opacity: 1; } }
+.c1a-gate { animation: c1a-glow 4.2s linear infinite; }
+@keyframes c1a-glow { 0%, 44% { stroke: var(--pago-blue); } 50% { stroke: var(--pago-gold); } 56%, 100% { stroke: var(--pago-blue); } }
+.c2a-branch { stroke: #CBD5E1; stroke-width: 2; fill: none; }
+.c2a-end { fill: #fff; stroke: #CBD5E1; stroke-width: 2; transform-box: fill-box; transform-origin: center; }
+.c2a-b0, .c2a-e0 { animation: c2a-pick 6s ease-in-out infinite; }
+.c2a-b1, .c2a-e1 { animation: c2a-pick 6s ease-in-out infinite; animation-delay: 1.2s; }
+.c2a-b2, .c2a-e2 { animation: c2a-pick 6s ease-in-out infinite; animation-delay: 2.4s; }
+.c2a-b3, .c2a-e3 { animation: c2a-pick 6s ease-in-out infinite; animation-delay: 3.6s; }
+.c2a-b4, .c2a-e4 { animation: c2a-pick 6s ease-in-out infinite; animation-delay: 4.8s; }
+@keyframes c2a-pick { 0% { stroke: #CBD5E1; fill: #fff; } 3% { stroke: var(--pago-gold); } 16% { stroke: var(--pago-gold); fill: var(--pago-gold); } 20% { stroke: #CBD5E1; fill: #fff; } 100% { stroke: #CBD5E1; fill: #fff; } }
+.c2a-root { transform-box: fill-box; transform-origin: center; animation: c2a-root 2.4s ease-in-out infinite; }
+@keyframes c2a-root { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+.c3b-lid { transform-box: fill-box; transform-origin: center; animation: c3b-blink 5s ease-in-out infinite; }
+@keyframes c3b-blink { 0%, 40% { transform: scaleY(1); } 44% { transform: scaleY(0.08); } 48%, 100% { transform: scaleY(1); } }
+.c3b-iris { transform-box: fill-box; animation: c3b-scan 5s ease-in-out infinite; }
+@keyframes c3b-scan { 0% { transform: translateX(-8px); } 24% { transform: translateX(0); } 48% { transform: translateX(8px); } 60%, 100% { transform: translateX(3px); } }
+.c3b-tick { transform-box: fill-box; transform-origin: center; }
+.c3b-t1 { animation: c3b-pop 5s ease-in-out infinite; }
+.c3b-t2 { animation: c3b-pop 5s ease-in-out infinite; animation-delay: 0.5s; }
+.c3b-t3 { animation: c3b-pop 5s ease-in-out infinite; animation-delay: 1s; }
+@keyframes c3b-pop { 0%, 10% { opacity: 0; transform: scale(0); } 18% { opacity: 1; transform: scale(1.25); } 24%, 92% { opacity: 1; transform: scale(1); } 98%, 100% { opacity: 0; transform: scale(0.6); } }
+.c3b-flagcell { animation: c3b-flagcell 5s ease-in-out infinite; }
+@keyframes c3b-flagcell { 0%, 44% { stroke: #CAD3E3; fill: #fff; } 52%, 92% { stroke: var(--pago-gold); fill: rgba(245,166,35,0.14); } 100% { stroke: #CAD3E3; fill: #fff; } }
+.c3b-flag { transform-box: fill-box; transform-origin: center; animation: c3b-flag 5s ease-in-out infinite; }
+@keyframes c3b-flag { 0%, 44% { opacity: 0; transform: scale(0); } 52% { opacity: 1; transform: scale(1.3); } 58%, 90% { opacity: 1; transform: scale(1); } 97%, 100% { opacity: 0; transform: scale(0.6); } }
+.c3b-ring { transform-box: fill-box; transform-origin: center; animation: c3b-ring 5s ease-in-out infinite; }
+@keyframes c3b-ring { 0%, 46% { opacity: 0; transform: scale(0.5); } 56% { opacity: 0.9; transform: scale(1.15); } 64%, 88% { opacity: 0.7; transform: scale(1); } 97%, 100% { opacity: 0; } }
 
 /* --- lessons pull-quote --- */
 .gate-quote { border-left: 4px solid var(--warn); background: rgba(224,122,31,0.06); border-radius: 0 10px 10px 0; padding: clamp(10px,1.6vh,18px) clamp(14px,1.8vw,26px); font-size: clamp(13px,1.35vw,18px); color: var(--text); font-style: italic; }
@@ -1232,14 +1274,45 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     <h2 class="fold-title reveal reveal-d1">Choose your path <strong style="color: var(--pago-blue);">instead of letting the AI choose it for you!</strong></h2>
     <div class="stage-row reveal reveal-d2" style="margin-top: clamp(20px, 3.5vh, 40px);">
       <div class="stage">
-        <div class="rule-anim slot-note" style="align-self: stretch; min-height: clamp(90px,16vh,150px); display: flex; align-items: center; justify-content: center;">animation slot</div>
+        <div class="rule-anim"><svg viewBox="0 0 440 250" aria-hidden="true">
+          <line x1="0" y1="150" x2="440" y2="150" stroke="#E2E8F0" stroke-width="2" stroke-dasharray="4 7"/>
+          <g class="c1a-gate" fill="none" stroke="#2B59C3" stroke-linecap="round">
+            <path d="M205 108 v84" stroke-width="4"/>
+            <path d="M235 108 v84" stroke-width="4"/>
+            <path d="M198 108 h14 M198 192 h14 M228 108 h14 M228 192 h14" stroke-width="4"/>
+          </g>
+          <g class="c1a-token c1a-t1"><g transform="translate(0,150)">
+            <g class="c1a-plain"><rect x="-14" y="-14" width="28" height="28" rx="6" fill="none" stroke="#94a3b8" stroke-width="2.5"/></g>
+            <g class="c1a-stamp"><rect x="-14" y="-14" width="28" height="28" rx="6" fill="rgba(43,89,195,0.12)" stroke="#2B59C3" stroke-width="2.5"/><path d="M-6 0 l4 5 l8 -10" fill="none" stroke="#2B59C3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+          </g></g>
+          <g class="c1a-token c1a-t2"><g transform="translate(0,150)">
+            <g class="c1a-plain"><rect x="-14" y="-14" width="28" height="28" rx="6" fill="none" stroke="#94a3b8" stroke-width="2.5"/></g>
+            <g class="c1a-stamp"><rect x="-14" y="-14" width="28" height="28" rx="6" fill="rgba(43,89,195,0.12)" stroke="#2B59C3" stroke-width="2.5"/><path d="M-6 0 l4 5 l8 -10" fill="none" stroke="#2B59C3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+          </g></g>
+          <g class="c1a-token c1a-t3"><g transform="translate(0,150)">
+            <g class="c1a-plain"><rect x="-14" y="-14" width="28" height="28" rx="6" fill="none" stroke="#94a3b8" stroke-width="2.5"/></g>
+            <g class="c1a-stamp"><rect x="-14" y="-14" width="28" height="28" rx="6" fill="rgba(43,89,195,0.12)" stroke="#2B59C3" stroke-width="2.5"/><path d="M-6 0 l4 5 l8 -10" fill="none" stroke="#2B59C3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+          </g></g>
+        </svg></div>
         <div class="stage-label">Deterministic</div>
         <div class="stage-name">Strict</div>
         <div class="stage-desc">Gates, verdicts, handoff schemas — <strong style="color: var(--pago-blue); font-weight: 700;">where repeatability matters</strong>.</div>
       </div>
       <div class="stage-arrow">›</div>
       <div class="stage">
-        <div class="rule-anim slot-note" style="align-self: stretch; min-height: clamp(90px,16vh,150px); display: flex; align-items: center; justify-content: center;">animation slot</div>
+        <div class="rule-anim"><svg viewBox="0 0 440 250" aria-hidden="true">
+          <path class="c2a-branch c2a-b0" d="M56 125 C 180 125, 240 34, 384 34"/>
+          <path class="c2a-branch c2a-b1" d="M56 125 C 180 125, 240 80, 384 80"/>
+          <path class="c2a-branch c2a-b2" d="M56 125 C 200 125, 240 125, 384 125"/>
+          <path class="c2a-branch c2a-b3" d="M56 125 C 180 125, 240 170, 384 170"/>
+          <path class="c2a-branch c2a-b4" d="M56 125 C 180 125, 240 216, 384 216"/>
+          <circle class="c2a-end c2a-e0" cx="384" cy="34" r="9"/>
+          <circle class="c2a-end c2a-e1" cx="384" cy="80" r="9"/>
+          <circle class="c2a-end c2a-e2" cx="384" cy="125" r="9"/>
+          <circle class="c2a-end c2a-e3" cx="384" cy="170" r="9"/>
+          <circle class="c2a-end c2a-e4" cx="384" cy="216" r="9"/>
+          <circle class="c2a-root" cx="56" cy="125" r="13" fill="#2B59C3"/>
+        </svg></div>
         <div class="stage-label">Non-deterministic</div>
         <div class="stage-name">Loose</div>
         <div class="stage-desc">Research, design, code — <strong style="color: var(--pago-blue); font-weight: 700;">where AI has to judge</strong>.</div>
@@ -1247,7 +1320,23 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       <div class="stage-arrow">›</div>
       <div class="stage current">
         <div class="stage-pin">Always yours</div>
-        <div class="rule-anim slot-note" style="align-self: stretch; min-height: clamp(90px,16vh,150px); display: flex; align-items: center; justify-content: center;">animation slot</div>
+        <div class="rule-anim"><svg viewBox="0 0 440 250" aria-hidden="true">
+          <g transform="translate(220,74)">
+            <path class="c3b-lid" d="M-46 0 Q 0 -34, 46 0 Q 0 34, -46 0 Z" fill="rgba(43,89,195,0.06)" stroke="#2B59C3" stroke-width="2.5"/>
+            <g class="c3b-iris"><circle cx="0" cy="0" r="13" fill="none" stroke="#2B59C3" stroke-width="2.5"/><circle cx="0" cy="0" r="5.5" fill="#2B59C3"/></g>
+          </g>
+          <g>
+            <rect x="52" y="168" width="64" height="52" rx="10" fill="#fff" stroke="#E2E8F0" stroke-width="1.6"/>
+            <g class="c3b-tick c3b-t1"><circle cx="84" cy="194" r="13" fill="rgba(43,89,195,0.12)" stroke="#2B59C3" stroke-width="2"/><path d="M78 194 l4 5 l8 -10" fill="none" stroke="#2B59C3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <rect x="128" y="168" width="64" height="52" rx="10" fill="#fff" stroke="#E2E8F0" stroke-width="1.6"/>
+            <g class="c3b-tick c3b-t2"><circle cx="160" cy="194" r="13" fill="rgba(43,89,195,0.12)" stroke="#2B59C3" stroke-width="2"/><path d="M154 194 l4 5 l8 -10" fill="none" stroke="#2B59C3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <rect x="204" y="168" width="64" height="52" rx="10" fill="#fff" stroke="#E2E8F0" stroke-width="1.6"/>
+            <g class="c3b-tick c3b-t3"><circle cx="236" cy="194" r="13" fill="rgba(43,89,195,0.12)" stroke="#2B59C3" stroke-width="2"/><path d="M230 194 l4 5 l8 -10" fill="none" stroke="#2B59C3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <rect class="c3b-flagcell" x="280" y="168" width="64" height="52" rx="10" fill="#fff" stroke="#E2E8F0" stroke-width="1.6"/>
+            <circle class="c3b-ring" cx="312" cy="194" r="26" fill="none" stroke="#F5A623" stroke-width="2.2" stroke-dasharray="5 5"/>
+            <g class="c3b-flag"><path d="M312 182 l12 21 h-24 z" fill="rgba(245,166,35,0.16)" stroke="#F5A623" stroke-width="2.2" stroke-linejoin="round"/><path d="M312 190 v6" stroke="#E08A00" stroke-width="2.4" stroke-linecap="round"/><circle cx="312" cy="200" r="1.5" fill="#E08A00"/></g>
+          </g>
+        </svg></div>
         <div class="stage-label">Human</div>
         <div class="stage-name">Your call</div>
         <div class="stage-desc">Review everything agents propose. <strong style="color: var(--pago-blue); font-weight: 700;">Stop at every unexpected behavior</strong> — or the process stays broken for the next person.</div>
@@ -1292,16 +1381,6 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   </div>
 </section>
 
-<!-- ============ FOLD 13 · closing ============ -->
-<section class="fold fold--blue" data-dark>
-  <div class="gold-circle" style="width: 500px; height: 500px; top: -150px; left: -150px; opacity: 0.06;"></div>
-  <div class="pattern-dots"></div>
-  <div class="fold-inner" style="justify-content: center; align-items: flex-start; gap: clamp(14px, 2.4vh, 28px);">
-    <h1 class="cover-title reveal reveal-d1" style="font-size: clamp(32px, 4.6vw, 58px);">See you in <br>Pago Factories.</h1>
-    <div class="reveal reveal-d2"><span class="cover-chip">Episode I is only at intake.</span></div>
-    <p class="cover-subtitle reveal reveal-d3">The live factory map: PagoLandscape → Improvements → any station. <em style="font-style: normal; opacity: 0.8;">(alt-tab after the talk)</em></p>
-  </div>
-</section>
 <script>
 (function() {
   var folds = document.querySelectorAll('.fold');
