@@ -815,6 +815,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 /* --- door animation fold --- */
 .gate-scene { position: relative; width: 100%; height: clamp(260px,42vh,420px); display: flex; align-items: flex-end; justify-content: center; }
 .gate-floor { position: absolute; bottom: 0; left: 8%; right: 8%; height: 3px; background: var(--text); border-radius: 2px; }
+.gate-zone { position: absolute; bottom: -40px; left: 8%; width: 34%; text-align: center; padding-top: 10px; border-top: 3px solid var(--pago-blue); color: var(--pago-blue-dark); font-weight: 700; font-size: clamp(11px,1.1vw,14px); text-transform: uppercase; letter-spacing: 2px; }
 .gate-door { position: relative; z-index: 1; width: clamp(110px,12vw,170px); height: clamp(190px,32vh,300px); background: linear-gradient(180deg, #1E3F8F, #16307a); border-radius: 14px 14px 0 0; box-shadow: -8px 0 24px rgba(30,63,143,0.25); animation: door-shudder 2.6s ease-in-out infinite; }
 .gate-door::before { content: ''; position: absolute; inset: 12px; border: 2px solid rgba(255,255,255,0.25); border-radius: 10px 10px 0 0; }
 .gate-door::after { content: 'GATE'; position: absolute; top: -34px; left: 50%; transform: translateX(-50%); font-weight: 800; letter-spacing: 2px; font-size: clamp(12px,1.2vw,16px); color: var(--pago-blue-dark); }
@@ -1052,15 +1053,16 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 
         <div class="g-name">PADs <span class="g-emoji g-emoji--end">&#63743;</span></div>
         <div class="g-track">
-          <div class="g-seg g-done" style="left: 0; width: 33.4%;"></div>
+          <div class="g-seg g-done" style="left: 0; width: 28%;"></div>
+          <div class="g-seg g-wip" style="left: 28%; width: 5.4%;"></div>
           <div class="g-seg g-plan" style="left: 33.4%; width: 6.5%;"></div>
         </div>
 
         <div class="g-name">Prepay IT <span class="g-emoji g-emoji--end">🤖 🧰</span></div>
         <div class="g-track">
-          <div class="g-seg g-done" style="left: 0; width: 14%;"></div>
-          <div class="g-seg g-wip" style="left: 14%; width: 19.4%;"></div>
-          <div class="g-seg g-plan" style="left: 33.4%; width: 7%;"></div>
+          <div class="g-seg g-done" style="left: 0; width: 16.7%;"></div>
+          <div class="g-seg g-wip" style="left: 16.7%; width: 8.3%;"></div>
+          <div class="g-seg g-plan" style="left: 25%; width: 8.4%;"></div>
         </div>
 
         <div class="g-name">PJ · eFactura <span class="g-emoji g-emoji--end">🤖 🧰</span></div>
@@ -1115,26 +1117,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   </div>
 </section>
 
-<!-- ============ FOLD 9 · 08 Lecția 1 ============ -->
-<section class="fold">
-  <div class="blue-blob" style="width: 420px; height: 420px; top: -160px; left: -150px;"></div>
-  <div class="fold-inner">
-    <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">08</span> · Lesson 1 — determinism</div>
-      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
-    </div>
-    <h2 class="fold-title reveal reveal-d1">Left alone, AI <strong style="color: var(--warn);">tightens the screws too hard</strong>.</h2>
-    <div class="reveal reveal-d2" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px,2.2vh,24px);">
-      <p class="body-text">Let AI design its own deterministic steps and they come out <strong style="color: var(--pago-blue);">too strict</strong>: rules that block people in the middle of a working session.</p>
-      <div class="thesis-block" style="border-left-color: var(--warn);">
-        <div class="body-text"><strong>Real example, from intake:</strong> the multi-adversarial review took <strong style="color: var(--pago-blue);">2-3 open questions</strong> from the PRD and turned them into <strong style="color: var(--warn);">15-20 questions and risks</strong> sent to the gate.</div>
-      </div>
-      <div class="gate-quote">“The bouncer's verdict: NEEDS_REVISION — the pack showed up at the gate carrying someone else's questions.”<br><span style="font-size: 0.85em; color: var(--text-muted); font-style: normal;">[TBD: real quotes from gate verdicts — to mine from the runs]</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FOLD 10 · animație: poarta care nu se deschide ============ -->
+<!-- ============ FOLD 9 · animație: poarta care nu se deschide ============ -->
 <section class="fold">
   <div class="fold-inner">
     <div class="pago-header">
@@ -1148,10 +1131,40 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
         <div class="bead bead--2">📋</div>
         <div class="bead bead--3">📐</div>
         <div class="bead bead--1" style="animation-delay: 1.7s;">❓</div>
+        <div class="bead bead--2" style="animation-delay: 2.2s;">📦</div>
+        <div class="bead bead--3" style="animation-delay: 3.1s;">📦</div>
         <div class="gate-door"><div class="gate-knob"></div></div>
         <div class="gate-floor"></div>
+        <div class="gate-zone">Intake</div>
       </div>
       <div class="bottom-line" style="text-align: center;">The gate won't open, <strong style="color: var(--pago-blue);">no matter how hard you push</strong>. <span style="color: var(--text-muted); font-weight: 500;">🫡 — OanaO &amp; AndreiA</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOLD 10 · 08 Lecția 1 ============ -->
+<section class="fold">
+  <div class="blue-blob" style="width: 420px; height: 420px; top: -160px; left: -150px;"></div>
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">08</span> · Lesson 1 — determinism</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">Left alone, AI <strong style="color: var(--warn);">tightens the gates too hard</strong>.</h2>
+    <div class="reveal reveal-d2" style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(18px,2.4vw,40px); align-content: center;">
+      <div style="display: flex; flex-direction: column; gap: clamp(14px,2.2vh,24px); justify-content: center;">
+        <p class="body-text">Let AI design its own deterministic steps and they come out <strong style="color: var(--pago-blue);">too strict</strong>: rules that block people in the middle of a working session.</p>
+        <div class="thesis-block" style="border-left-color: var(--warn);">
+          <div class="body-text"><strong>Real example, from intake:</strong> the multi-adversarial review took <strong style="color: var(--pago-blue);">2-3 open questions</strong> from the PRD and turned them into <strong style="color: var(--warn);">15-20 questions and risks</strong> sent to the gate.</div>
+        </div>
+        <div class="gate-quote">“The bouncer's verdict: NEEDS_REVISION — the pack showed up at the gate carrying someone else's questions.”<br><span style="font-size: 0.85em; color: var(--text-muted); font-style: normal;">[TBD: real quotes from gate verdicts — to mine from the runs]</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: clamp(10px,1.6vh,18px); justify-content: center;">
+        <div class="card-label" style="color: var(--pact-green);">How to get through</div>
+        <div class="thesis-block"><div class="body-text"><strong style="color: var(--pago-blue);">Answer the questions and risks</strong> as they show up — don't let them pile up in the pack.</div></div>
+        <div class="thesis-block"><div class="body-text"><strong style="color: var(--pago-blue);">Manage ambiguity before intake</strong> — as much as you possibly can.</div></div>
+        <div class="thesis-block"><div class="body-text">And <strong style="color: var(--pago-blue);">definitely close them before the gate</strong> — the bouncer counts every open question.</div></div>
+      </div>
     </div>
   </div>
 </section>
