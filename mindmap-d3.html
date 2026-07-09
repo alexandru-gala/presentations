@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pago Commit Mindmap (D3)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #fff; font-family: "DM Sans", sans-serif; color: #1E293B; }
+    #mindmap-root { position: relative; width: 100vw; height: 100vh; background: radial-gradient(circle at 80% 12%, rgba(245,166,35,0.07), transparent 26%), linear-gradient(180deg, #ffffff 0%, #fbfcff 100%); }
+    #mindmap-root svg { display: block; width: 100%; height: 100%; }
+    .fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; padding: 40px; text-align: center; font-size: 18px; font-weight: 600; background: #fff; }
+    text { font-family: "DM Sans", sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="mindmap-root">
+    <div class="fallback">This map needs JavaScript + SVG to render.</div>
+  </div>
+
+  <script src="vendor/d3.v7.min.js"></script>
+  <script>if (!window.d3) { var s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js'; document.write(s.outerHTML); }</script>
+  <script src="mindmap-data.js"></script>
+  <script>
+  (function () {
+    if (!window.d3) { document.querySelector('.fallback').style.display = 'flex'; return; }
+
+    // ---------- config ----------
+    var W = 1560, H = 600;
+    var M = { l: 60, r: 130, t: 58, b: 44 };
+    var T0 = new Date(2025, 10, 14), T1 = new Date(2026, 6, 12);
+    var ROOT_DATE = new Date(2025, 10, 24);        // shared-config born
+    var SG_DATE = new Date(2025, 10, 18);          // stargate first .claude commit
+    var PRD_DATE = new Date(2026, 4, 26);          // pago-prds first commit
+    var INTAKE_DATE = new Date(2026, 5, 14);       // first factory intake runs
+    var SG_MERGE_START = new Date(2026, 3, 20);    // stargate starts curving up
+    var END_DATE = new Date(2026, 6, 9);
+
+    var LANES = [
+      { key: "android", color: "#2E9E5B" },
+      { key: "ios",     color: "#4C6FDB" },
+      { key: "backend", color: "#2AA198" },
+      { key: "web",     color: "#8B6FE8" },
+      { key: "shared",  color: "#3D5CC4" },
+      { key: "factory", color: "#F5A623" },
+      { key: "design",  color: "#E24E8C" },
+      { key: "qa-sec",  color: "#D64545" },
+      { key: "infra",   color: "#64769B" }
+    ];
+
+    var x = d3.scaleTime().domain([T0, T1]).range([M.l, W - M.r]);
+    var laneY = d3.scalePoint().domain(LANES.map(function (l) { return l.key; })).range([120, H - M.b - 84]).padding(0.4);
+    var rootY = (laneY("shared") + laneY("factory")) / 2;   // fan origin, mid map
+    var sgY = H - M.b - 26;                                  // stargate bottom lane
+    var prdY = M.t + 30;                                     // prds top start
+
+    var parse = d3.timeParse("%Y-%m-%d");
+
+    // weekly bins per lane (legibility: fewer, bigger, clearer nodes)
+    function weekly(rows) {
+      var m = d3.rollup(rows, function (v) { return d3.sum(v, function (d) { return d[1]; }); },
+        function (d) { return d3.timeMonday(parse(d[0])).getTime(); });
+      return Array.from(m, function (e) { return { date: new Date(e[0]), count: e[1] }; })
+        .sort(function (a, b) { return a.date - b.date; });
+    }
+
+    var r = d3.scaleSqrt().domain([1, 450]).range([2.5, 15]);
+
+    // lane path: root -> ease to lane y by mid-Jan -> horizontal to end
+    var FAN_END = new Date(2026, 0, 20);
+    function laneYAt(key, date) {
+      if (date <= ROOT_DATE) return rootY;
+      if (date >= FAN_END) return laneY(key);
+      var t = (date - ROOT_DATE) / (FAN_END - ROOT_DATE);
+      return rootY + (laneY(key) - rootY) * d3.easeCubicInOut(t);
+    }
+    // stargate path: bottom -> curves up to backend lane end
+    function sgYAt(date) {
+      if (date <= SG_MERGE_START) return sgY;
+      var t = Math.min(1, (date - SG_MERGE_START) / (END_DATE - SG_MERGE_START));
+      return sgY + (laneY("backend") - sgY) * d3.easeCubicInOut(t);
+    }
+    // prds path: top -> descends to factory lane at intake date
+    function prdYAt(date) {
+      var t = Math.min(1, Math.max(0, (date - PRD_DATE) / (INTAKE_DATE - PRD_DATE)));
+      return prdY + (laneY("factory") - prdY) * d3.easeCubicInOut(t);
+    }
+
+    function pathFor(yAt, from, to) {
+      var days = d3.timeDay.range(from, to, 4);
+      days.push(to);
+      return d3.line()
+        .x(function (d) { return x(d); })
+        .y(function (d) { return yAt(d); })
+        .curve(d3.curveMonotoneX)(days);
+    }
+
+    // ---------- svg scaffold ----------
+    var root = document.getElementById("mindmap-root");
+    var svg = d3.select(root).append("svg").attr("viewBox", "0 0 " + W + " " + H).attr("preserveAspectRatio", "xMidYMid meet");
+
+    var defs = svg.append("defs");
+    defs.append("clipPath").attr("id", "sweep").append("rect")
+      .attr("x", 0).attr("y", 0).attr("width", 0).attr("height", H);
+    var sweepRect = defs.select("#sweep rect");
+
+    var gClipped = svg.append("g").attr("clip-path", "url(#sweep)");
+    var gUI = svg.append("g");
+
+    // month ticks: every 2 months from Nov'25
+    var TICKS = [new Date(2025,10,1), new Date(2026,0,1), new Date(2026,2,1), new Date(2026,4,1), new Date(2026,6,1)];
+    var fmt = d3.timeFormat("%b'%y");
+    var axis = gUI.append("g");
+    TICKS.forEach(function (d) {
+      if (x(d) < M.l - 4) return;
+      axis.append("line").attr("x1", x(d)).attr("x2", x(d)).attr("y1", H - M.b).attr("y2", H - M.b + 8).attr("stroke", "#94A3B8").attr("stroke-width", 1);
+      axis.append("text").attr("x", x(d)).attr("y", H - M.b + 24).attr("text-anchor", "middle")
+        .attr("font-size", 13).attr("font-weight", 600).attr("fill", "#64769B").text(fmt(d));
+    });
+    axis.attr("opacity", 0);
+
+    // meta
+    var meta = gUI.append("text")
+      .attr("x", W - M.r + 116).attr("y", M.t - 26).attr("text-anchor", "end")
+      .attr("font-size", 14).attr("font-weight", 600).attr("fill", "#64769B")
+      .text("18 Nov 2025 → 9 Jul 2026 · 153 agents · 176 skills · 3 repos")
+      .attr("opacity", 0);
+
+    // ---------- clipped content: paths + nodes ----------
+    LANES.forEach(function (lane) {
+      gClipped.append("path")
+        .attr("d", pathFor(function (d) { return laneYAt(lane.key, d); }, ROOT_DATE, END_DATE))
+        .attr("fill", "none").attr("stroke", lane.color).attr("stroke-width", 2).attr("stroke-opacity", 0.55);
+    });
+    gClipped.append("path")
+      .attr("d", pathFor(sgYAt, SG_DATE, END_DATE))
+      .attr("fill", "none").attr("stroke", "#2AA198").attr("stroke-width", 2).attr("stroke-opacity", 0.55).attr("stroke-dasharray", "1 0");
+    gClipped.append("path")
+      .attr("d", pathFor(prdYAt, PRD_DATE, INTAKE_DATE))
+      .attr("fill", "none").attr("stroke", "#3D5CC4").attr("stroke-width", 2).attr("stroke-opacity", 0.6);
+
+    function drawNodes(rows, yAt, color) {
+      weekly(rows).forEach(function (d) {
+        if (d.date < T0 || d.date > T1) return;
+        gClipped.append("circle")
+          .attr("cx", x(d.date)).attr("cy", yAt(d.date))
+          .attr("r", r(d.count))
+          .attr("fill", color).attr("fill-opacity", 0.82)
+          .attr("stroke", "#fff").attr("stroke-width", 1);
+      });
+    }
+    LANES.forEach(function (lane) {
+      drawNodes(SHARED_CONFIG_DATA[lane.key], function (d) { return laneYAt(lane.key, d); }, lane.color);
+    });
+    drawNodes(STARGATE_DATA, sgYAt, "#2AA198");
+    drawNodes(PAGO_PRDS_DATA, prdYAt, "#3D5CC4");
+
+    // roots
+    gClipped.append("circle").attr("cx", x(ROOT_DATE)).attr("cy", rootY).attr("r", 9).attr("fill", "#2B59C3");
+    gClipped.append("circle").attr("cx", x(SG_DATE)).attr("cy", sgY).attr("r", 7).attr("fill", "#2AA198");
+    gClipped.append("circle").attr("cx", x(PRD_DATE)).attr("cy", prdY).attr("r", 7).attr("fill", "#3D5CC4");
+
+    // gold intake node (pulse ring + core)
+    var intakeX = x(INTAKE_DATE), intakeY2 = laneY("factory");
+    var pulseRing = gClipped.append("circle").attr("cx", intakeX).attr("cy", intakeY2)
+      .attr("r", 12).attr("fill", "none").attr("stroke", "#F5A623").attr("stroke-width", 2).attr("opacity", 0.8);
+    gClipped.append("circle").attr("cx", intakeX).attr("cy", intakeY2).attr("r", 9).attr("fill", "#F5A623").attr("stroke", "#fff").attr("stroke-width", 2);
+
+    // ---------- labels (screen-space, revealed by sweep front) ----------
+    function label(xp, yp, lines, opts) {
+      opts = opts || {};
+      var g = gUI.append("g").attr("transform", "translate(" + xp + "," + yp + ")").attr("opacity", 0);
+      lines.forEach(function (ln, i) {
+        g.append("text").attr("y", i * (opts.lh || 15))
+          .attr("text-anchor", opts.anchor || "start")
+          .attr("font-size", i === 0 ? (opts.size || 15) : 11.5)
+          .attr("font-weight", i === 0 ? (opts.weight || 700) : 500)
+          .attr("fill", i === 0 ? (opts.color || "#1E293B") : "#64769B")
+          .text(ln);
+      });
+      return g;
+    }
+
+    var labels = [];   // {g, at: fraction of sweep when it appears}
+    function frac(date) { return (date - T0) / (T1 - T0); }
+
+    labels.push({ g: label(x(ROOT_DATE) - 8, rootY - 34, ["shared-config", "born 24 Nov 2025 · 131 agents · 131 skills"], { anchor: "end", size: 16 }), at: frac(ROOT_DATE) });
+    labels.push({ g: label(x(SG_DATE) + 14, sgY + 5, ["pago · Stargate", "backend · since 18 Nov 2025 · 22 agents · 45 skills"]), at: frac(SG_DATE) });
+    labels.push({ g: label(x(PRD_DATE) - 8, prdY - 8, ["pago-prds", "172 commits"], { anchor: "end" }), at: frac(PRD_DATE) });
+    labels.push({ g: label(intakeX - 16, intakeY2 - 24, ["first intake", "first factory intake runs"], { color: "#B76F00", anchor: "end" }), at: frac(INTAKE_DATE) });
+    labels.push({ g: label(x(new Date(2026, 4, 10)), sgYAt(new Date(2026, 4, 10)) + 26, ["moving into shared-config"], { size: 12.5, color: "#2AA198", anchor: "middle" }), at: frac(new Date(2026, 4, 10)) });
+
+    // lane labels at right edge — evenly spaced, no collisions by construction
+    LANES.forEach(function (lane) {
+      labels.push({ g: label(W - M.r + 16, laneY(lane.key) + 5, [lane.key], { color: lane.color, size: 14 }), at: 0.97 });
+      gUI.append("line").attr("x1", x(END_DATE) + 6).attr("x2", W - M.r + 10)
+        .attr("y1", laneY(lane.key)).attr("y2", laneY(lane.key))
+        .attr("stroke", lane.color).attr("stroke-width", 1).attr("stroke-opacity", 0.35)
+        .attr("class", "lane-leader").attr("opacity", 0);
+    });
+
+    // ---------- animation engine ----------
+    var duration = 12000, playing = false, playStart = 0, stateProgress = 0;
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function renderFrame(now) {
+      var p = stateProgress;
+      var sweepT = d3.easeCubicInOut(clamp(p / 0.92, 0, 1));   // sweep completes at 92%
+      var front = M.l + (W - M.r + 40 - M.l) * sweepT;
+      sweepRect.attr("width", front);
+
+      axis.attr("opacity", clamp(p / 0.1, 0, 1));
+      meta.attr("opacity", 0.25 + 0.65 * clamp(p / 0.15, 0, 1));
+
+      var frontFrac = sweepT;
+      labels.forEach(function (l) {
+        var o = l.at >= 0.97
+          ? clamp((p - 0.9) / 0.08, 0, 1)
+          : clamp((frontFrac - l.at) / 0.04, 0, 1);
+        l.g.attr("opacity", o);
+      });
+      gUI.selectAll(".lane-leader").attr("opacity", clamp((p - 0.9) / 0.08, 0, 1));
+
+      var pulseOn = frontFrac > frac(INTAKE_DATE);
+      pulseRing.attr("r", pulseOn ? 12 + Math.sin(now / 280) * 4 : 12)
+        .attr("opacity", pulseOn ? 0.55 + Math.sin(now / 280) * 0.3 : 0);
+    }
+
+    function tick() {
+      var now = performance.now();
+      if (playing) {
+        stateProgress = clamp((now - playStart) / duration, 0, 1);
+        if (stateProgress >= 1) playing = false;
+      }
+      renderFrame(now);
+      requestAnimationFrame(tick);
+    }
+
+    function play() { playStart = performance.now() - stateProgress * duration; playing = true; }
+    function reset() { playing = false; stateProgress = 0; }
+    function setProgress(t) { stateProgress = clamp(t, 0, 1); }
+
+    window.PagoMindmap = { play: play, reset: reset, progress: setProgress };
+    window.addEventListener("message", function (ev) {
+      var cmd = ev && ev.data && ev.data.cmd;
+      if (cmd === "play") { reset(); play(); }
+      if (cmd === "reset") reset();
+    });
+
+    requestAnimationFrame(tick);
+    if (window.parent === window) setTimeout(play, 260);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pago Commit Mindmap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      font-family: "DM Sans", sans-serif;
+      color: #1E293B;
+    }
+
+    #mindmap-root {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 78% 18%, rgba(245, 166, 35, 0.08), transparent 24%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+
+    #mindmap-root canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .mindmap-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .leader-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      opacity: 0;
+      transition: opacity 180ms linear;
+    }
+
+    .label {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      color: #1E293B;
+      font-size: 14px;
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: 0;
+      opacity: 0;
+      transition: opacity 160ms linear;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.9), 0 8px 22px rgba(43,89,195,0.12);
+    }
+
+    .label small {
+      display: block;
+      margin-top: 4px;
+      color: #64769B;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .lane-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2B59C3;
+      text-align: left;
+      transform: translate(0, -50%);
+    }
+
+    .root-label {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .stargate-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0E9F9A;
+    }
+
+    .prd-label {
+      color: #1E293B;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .gold-label {
+      color: #B76F00;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .merge-label {
+      color: #0E9F9A;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.86);
+      box-shadow: 0 6px 18px rgba(14,159,154,0.12);
+    }
+
+    .timeline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 38px;
+      height: 40px;
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+
+    .tick {
+      position: absolute;
+      top: 0;
+      width: 1px;
+      height: 10px;
+      background: rgba(100, 118, 155, 0.28);
+    }
+
+    .tick span {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #64769B;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .meta {
+      position: absolute;
+      top: 34px;
+      right: 44px;
+      color: #64769B;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0;
+      opacity: 0.86;
+    }
+
+    .fallback {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+      color: #1E293B;
+      font-size: 18px;
+      font-weight: 600;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div id="mindmap-root">
+    <div class="fallback">WebGL is not available in this browser — the commit map needs it to render.</div>
+  </div>
+
+  <script src="vendor/three.min.js"></script>
+  <script>if (!window.THREE) { var s = document.createElement('script'); s.src = 'https://unpkg.com/three@0.160.0/build/three.min.js'; document.write(s.outerHTML); }</script>
+  <script>
+    (() => {
+      const SHARED_CONFIG_DATA = {
+        android:[["2026-01-21",1],["2026-01-30",31],["2026-02-02",3],["2026-02-03",4],["2026-02-04",4],["2026-02-05",4],["2026-02-09",6],["2026-02-19",32],["2026-02-20",1],["2026-02-23",2],["2026-02-24",3],["2026-02-26",11],["2026-02-27",4],["2026-03-10",31],["2026-03-11",5],["2026-03-12",1],["2026-03-16",36],["2026-03-17",8],["2026-03-18",11],["2026-03-19",3],["2026-03-20",6],["2026-03-25",4],["2026-04-01",6],["2026-04-02",1],["2026-04-03",10],["2026-04-07",83],["2026-04-08",10],["2026-04-09",1],["2026-04-22",9],["2026-04-24",3],["2026-04-28",1],["2026-04-30",19],["2026-05-05",10],["2026-05-06",10],["2026-05-07",4],["2026-05-08",9],["2026-05-12",6],["2026-05-18",9],["2026-05-19",1],["2026-05-25",1],["2026-05-26",3],["2026-05-27",2],["2026-05-28",1],["2026-05-29",3],["2026-06-05",7],["2026-06-08",1],["2026-06-09",11],["2026-06-11",3],["2026-06-12",6],["2026-06-15",15],["2026-06-16",9],["2026-06-17",69],["2026-06-18",16],["2026-06-22",2],["2026-06-29",6],["2026-06-30",5],["2026-07-01",1],["2026-07-02",1],["2026-07-03",6],["2026-07-07",4],["2026-07-08",5]],
+        ios:[["2025-11-25",8],["2025-12-05",2],["2026-01-19",3],["2026-01-20",1],["2026-01-21",1],["2026-01-28",1],["2026-01-30",3],["2026-03-12",1],["2026-03-16",67],["2026-03-26",1],["2026-03-27",1],["2026-04-01",1],["2026-04-03",13],["2026-04-07",74],["2026-04-08",17],["2026-04-09",9],["2026-04-15",8],["2026-04-16",7],["2026-04-20",2],["2026-04-21",1],["2026-04-24",12],["2026-04-28",18],["2026-04-29",2],["2026-05-06",1],["2026-05-14",11],["2026-05-18",1],["2026-05-19",1],["2026-05-25",8],["2026-05-28",13],["2026-06-08",1],["2026-06-09",11],["2026-06-10",3],["2026-06-11",3],["2026-06-12",18],["2026-06-15",5],["2026-06-16",11],["2026-06-17",60],["2026-06-18",2],["2026-06-23",1],["2026-06-26",3],["2026-07-01",9],["2026-07-02",2],["2026-07-03",1],["2026-07-06",4],["2026-07-07",10],["2026-07-08",2]],
+        backend:[["2026-06-09",5],["2026-06-10",7],["2026-06-11",3],["2026-06-12",5],["2026-06-16",3],["2026-06-17",3],["2026-06-18",3],["2026-07-03",1],["2026-07-06",226],["2026-07-07",3]],
+        web:[["2026-06-16",1],["2026-06-17",4],["2026-06-24",1],["2026-07-03",1]],
+        shared:[["2025-11-24",11],["2025-11-25",7],["2025-12-05",2],["2026-02-19",1],["2026-02-26",2],["2026-02-27",1],["2026-03-12",1],["2026-03-16",1],["2026-03-17",1],["2026-03-19",1],["2026-03-24",3],["2026-03-25",2],["2026-04-01",1],["2026-04-07",2],["2026-04-29",5],["2026-05-04",1],["2026-05-05",1],["2026-05-18",11],["2026-05-19",5],["2026-05-25",3],["2026-05-27",2],["2026-06-01",48],["2026-06-02",8],["2026-06-03",18],["2026-06-04",2],["2026-06-05",11],["2026-06-07",6],["2026-06-08",2],["2026-06-09",9],["2026-06-10",2],["2026-06-11",25],["2026-06-12",52],["2026-06-14",8],["2026-06-15",4],["2026-06-16",46],["2026-06-17",19],["2026-06-18",1],["2026-06-24",2],["2026-06-25",9],["2026-06-26",2],["2026-06-27",5],["2026-06-29",1],["2026-06-30",6],["2026-07-01",6],["2026-07-02",4],["2026-07-03",7],["2026-07-05",19],["2026-07-06",11],["2026-07-07",15],["2026-07-08",1]],
+        factory:[["2026-04-09",4],["2026-04-24",2],["2026-04-28",3],["2026-04-29",2],["2026-05-04",26],["2026-05-26",6],["2026-05-27",4],["2026-06-03",3],["2026-06-04",9],["2026-06-08",3],["2026-06-09",18],["2026-06-10",17],["2026-06-11",44],["2026-06-12",22],["2026-06-13",1],["2026-06-14",243],["2026-06-15",67],["2026-06-16",236],["2026-06-17",127],["2026-06-18",174],["2026-06-22",10],["2026-06-23",8],["2026-06-25",14],["2026-06-26",14],["2026-06-29",4],["2026-06-30",13],["2026-07-01",119],["2026-07-02",445],["2026-07-03",65],["2026-07-04",25],["2026-07-05",5],["2026-07-06",21],["2026-07-07",75],["2026-07-08",11]],
+        design:[["2025-12-05",11],["2026-02-20",11],["2026-04-24",16],["2026-04-29",5],["2026-04-30",3],["2026-06-09",18],["2026-06-15",4],["2026-06-16",4],["2026-06-17",5],["2026-06-29",80],["2026-06-30",10],["2026-07-01",39],["2026-07-02",23],["2026-07-03",14],["2026-07-06",26],["2026-07-07",29],["2026-07-08",4]],
+        "qa-sec":[["2026-05-06",3],["2026-05-07",2],["2026-05-18",3],["2026-05-19",116],["2026-05-23",5],["2026-05-26",2],["2026-06-09",2],["2026-06-15",14],["2026-06-16",1],["2026-06-17",18],["2026-06-18",9],["2026-07-02",1],["2026-07-03",1],["2026-07-07",1],["2026-07-08",4]],
+        infra:[["2025-11-24",1],["2025-11-25",2],["2025-12-05",8],["2026-01-21",1],["2026-02-19",1],["2026-02-20",1],["2026-03-12",1],["2026-03-16",2],["2026-03-27",1],["2026-03-30",1],["2026-03-31",1],["2026-04-06",1],["2026-04-07",1],["2026-04-20",1],["2026-04-24",1],["2026-05-04",4],["2026-05-18",1],["2026-05-27",1],["2026-06-01",2],["2026-06-09",26],["2026-06-12",1],["2026-06-14",6],["2026-06-15",2],["2026-06-16",2],["2026-06-17",6],["2026-06-23",1],["2026-06-25",1],["2026-06-26",8],["2026-06-29",1],["2026-06-30",1],["2026-07-01",2],["2026-07-02",4],["2026-07-06",27],["2026-07-07",13],["2026-07-08",3]]
+      };
+
+      const PAGO_PRDS_DATA = [
+        ["2026-05-26",1],["2026-05-27",1],["2026-05-29",1],["2026-06-02",1],["2026-06-03",2],
+        ["2026-06-05",1],["2026-06-09",2],["2026-06-10",3],["2026-06-11",4],["2026-06-12",5],
+        ["2026-06-14",4],["2026-06-15",5],["2026-06-16",9],["2026-06-17",23],["2026-06-18",25],
+        ["2026-06-19",2],["2026-06-22",4],["2026-06-23",6],["2026-06-24",10],["2026-06-25",10],
+        ["2026-06-26",10],["2026-06-27",4],["2026-06-29",9],["2026-06-30",9],["2026-07-01",7],
+        ["2026-07-02",7],["2026-07-03",3],["2026-07-06",2],["2026-07-07",1],["2026-07-08",1]
+      ];
+
+      const STARGATE_DATA = [
+        ["2025-11-18",14],["2025-11-21",1],["2025-11-25",3],["2025-11-27",3],["2025-11-28",2],
+        ["2025-12-11",1],["2025-12-17",1],["2025-12-19",1],["2026-01-05",1],["2026-01-08",1],
+        ["2026-01-09",9],["2026-01-10",2],["2026-01-13",3],["2026-01-14",1],["2026-01-15",1],
+        ["2026-01-16",4],["2026-01-19",4],["2026-01-20",1],["2026-01-21",1],["2026-01-23",1],
+        ["2026-01-26",7],["2026-01-27",1],["2026-01-28",1],["2026-01-29",2],["2026-01-30",4],
+        ["2026-02-02",1],["2026-02-04",2],["2026-02-09",1],["2026-02-10",1],["2026-02-12",4],
+        ["2026-02-16",2],["2026-02-17",4],["2026-02-18",1],["2026-02-19",1],["2026-02-23",3],
+        ["2026-02-24",7],["2026-02-25",1],["2026-02-26",1],["2026-02-27",1],["2026-03-02",1],
+        ["2026-03-09",2],["2026-03-10",2],["2026-03-11",4],["2026-03-12",1],["2026-03-13",7],
+        ["2026-03-17",5],["2026-03-20",2],["2026-03-23",4],["2026-03-24",7],["2026-03-26",1],
+        ["2026-03-31",2],["2026-04-01",5],["2026-04-02",16],["2026-04-03",7],["2026-04-06",4],
+        ["2026-04-07",8],["2026-04-08",8],["2026-04-09",2],["2026-04-14",11],["2026-04-15",12],
+        ["2026-04-16",14],["2026-04-17",8],["2026-04-20",18],["2026-04-21",4],["2026-04-22",6],
+        ["2026-04-23",1],["2026-04-24",7],["2026-04-26",1],["2026-04-27",13],["2026-04-28",11],
+        ["2026-04-29",12],["2026-04-30",10],["2026-05-03",1],["2026-05-04",11],["2026-05-05",12],
+        ["2026-05-06",20],["2026-05-07",14],["2026-05-08",9],["2026-05-11",7],["2026-05-12",12],
+        ["2026-05-13",15],["2026-05-14",8],["2026-05-15",9],["2026-05-18",17],["2026-05-19",7],
+        ["2026-05-20",13],["2026-05-21",2],["2026-05-22",7],["2026-05-25",7],["2026-05-26",11],
+        ["2026-05-27",12],["2026-05-28",15],["2026-05-29",11],["2026-06-02",14],["2026-06-03",14],
+        ["2026-06-04",18],["2026-06-05",14],["2026-06-08",14],["2026-06-09",19],["2026-06-10",16],
+        ["2026-06-11",21],["2026-06-12",10],["2026-06-15",8],["2026-06-16",27],["2026-06-17",15],
+        ["2026-06-18",22],["2026-06-19",18],["2026-06-22",23],["2026-06-23",7],["2026-06-24",8],
+        ["2026-06-25",7],["2026-06-29",13],["2026-06-30",14],["2026-07-01",18],["2026-07-02",13],
+        ["2026-07-03",8],["2026-07-05",1],["2026-07-06",11],["2026-07-07",12],["2026-07-08",9]
+      ];
+
+      const root = document.getElementById("mindmap-root");
+      const fallback = root.querySelector(".fallback");
+
+      function hasWebGL() {
+        try {
+          const canvas = document.createElement("canvas");
+          return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+        } catch (_) {
+          return false;
+        }
+      }
+
+      if (!window.THREE || !hasWebGL()) {
+        fallback.style.display = "flex";
+        return;
+      }
+
+      const COLORS = {
+        navy: 0x2B59C3,
+        navySoft: 0x7EA0F2,
+        gold: 0xF5A623,
+        text: "#1E293B",
+        muted: "#64769B",
+        shared: 0x2B59C3,
+        android: 0x26A269,
+        ios: 0x4666D6,
+        backend: 0x0E9F9A,
+        web: 0x8B5CF6,
+        factory: 0xF5A623,
+        design: 0xEC4899,
+        qa: 0xEF4444,
+        infra: 0x64769B
+      };
+
+      const lanes = [
+        { key: "android", label: "android", y: 2.92, z: -0.18, arc: 0.18, color: COLORS.android, labelSlot: 0.15 },
+        { key: "ios", label: "ios", y: 2.20, z: 0.18, arc: 0.12, color: COLORS.ios, labelSlot: 0.25 },
+        { key: "backend", label: "backend", y: 1.48, z: -0.35, arc: 0.09, color: COLORS.backend, labelSlot: 0.35 },
+        { key: "web", label: "web", y: 0.78, z: 0.34, arc: 0.05, color: COLORS.web, labelSlot: 0.45 },
+        { key: "shared", label: "shared", y: 0.08, z: 0.02, arc: 0.0, color: COLORS.shared, labelSlot: 0.55 },
+        { key: "factory", label: "factory", y: -0.66, z: 0.38, arc: -0.06, color: COLORS.factory, labelSlot: 0.64 },
+        { key: "design", label: "design", y: -1.76, z: -0.22, arc: -0.10, color: COLORS.design, labelSlot: 0.81 },
+        { key: "qa-sec", label: "qa-sec", y: -2.50, z: 0.22, arc: -0.13, color: COLORS.qa, labelSlot: 0.88 },
+        { key: "infra", label: "infra", y: -3.18, z: -0.36, arc: -0.18, color: COLORS.infra, labelSlot: 0.95 }
+      ];
+
+      const START_DATE = new Date("2025-11-18T00:00:00");
+      const END_DATE = new Date("2026-07-09T00:00:00");
+      const MS_DAY = 86400000;
+      const startX = -8.45;
+      const endX = 8.75;
+      const sharedRootT = dateT("2025-11-24");
+      const stargateStartT = dateT("2025-11-18");
+      const stargateMergeT = dateT("2026-06-30");
+      const rootPoint = new THREE.Vector3(lerp(startX, endX, sharedRootT) - 0.24, 0, 0.18);
+      const stargateRootPoint = new THREE.Vector3(startX - 0.28, -2.18, -0.25);
+      const prdStartDate = "2026-05-26";
+      const intakeDate = "2026-06-14";
+      const prdStartT = dateT(prdStartDate);
+      const intakeT = dateT(intakeDate);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+      renderer.setClearColor(0xffffff, 0);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      root.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
+      camera.position.set(0, -0.18, 13.2);
+      camera.lookAt(0, 0, 0);
+
+      scene.add(new THREE.AmbientLight(0xffffff, 1.6));
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.45);
+      keyLight.position.set(-2.5, -4, 8);
+      scene.add(keyLight);
+
+      const overlay = document.createElement("div");
+      overlay.className = "mindmap-overlay";
+      root.appendChild(overlay);
+
+      const leaderLayer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      leaderLayer.setAttribute("class", "leader-layer");
+      overlay.appendChild(leaderLayer);
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = "18 Nov 2025 → 9 Jul 2026 · 153 agents · 176 skills · 3 repos";
+      overlay.appendChild(meta);
+
+      const timeline = document.createElement("div");
+      timeline.className = "timeline";
+      overlay.appendChild(timeline);
+
+      const labelRoot = makeLabel("shared-config", "131 agents · 131 skills", "root-label");
+      const labelStargate = makeLabel("pago · Stargate", ["backend agents & skills · since 18 Nov 2025", "22 agents · 45 skills"], "stargate-label");
+      const labelPrd = makeLabel("pago-prds", "172 commits", "prd-label");
+      const labelIntake = makeLabel("first intake", "first factory intake runs", "gold-label");
+      const labelMerge = makeLabel("moving into shared-config", "", "merge-label");
+      const laneLabels = new Map();
+      const laneLeaders = new Map();
+
+      lanes.forEach(lane => {
+        const label = makeLabel(lane.label, "", "lane-label");
+        label.style.color = hexCss(lane.color);
+        laneLabels.set(lane.key, label);
+
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("stroke", hexCss(lane.color));
+        line.setAttribute("stroke-width", "1.3");
+        line.setAttribute("stroke-linecap", "round");
+        line.setAttribute("opacity", "0.34");
+        leaderLayer.appendChild(line);
+        laneLeaders.set(lane.key, line);
+      });
+
+      const monthLabels = [
+        ["2025-11-18", "Nov'25"],
+        ["2026-01-01", "Jan'26"],
+        ["2026-03-01", "Mar'26"],
+        ["2026-05-01", "May'26"],
+        ["2026-07-01", "Jul'26"]
+      ].map(([d, text]) => {
+        const el = document.createElement("div");
+        el.className = "tick";
+        const span = document.createElement("span");
+        span.textContent = text;
+        el.appendChild(span);
+        timeline.appendChild(el);
+        return { date: d, t: dateT(d), el };
+      });
+
+      const rootMesh = makeSphere(0.16, COLORS.navy, 0.96);
+      rootMesh.position.copy(rootPoint);
+      scene.add(rootMesh);
+
+      const rootGlow = makeGlow(0.72, COLORS.navy, 0.24);
+      rootGlow.position.copy(rootPoint);
+      scene.add(rootGlow);
+
+      const stargateRootMesh = makeSphere(0.12, COLORS.backend, 0.95);
+      stargateRootMesh.position.copy(stargateRootPoint);
+      stargateRootMesh.scale.setScalar(0.001);
+      scene.add(stargateRootMesh);
+
+      const stargateRootGlow = makeGlow(0.58, COLORS.backend, 0.2);
+      stargateRootGlow.position.copy(stargateRootPoint);
+      stargateRootGlow.material.opacity = 0;
+      scene.add(stargateRootGlow);
+
+      const laneMeshes = new Map();
+      lanes.forEach(lane => {
+        const mesh = new THREE.Mesh(
+          new THREE.BufferGeometry(),
+          new THREE.MeshBasicMaterial({ color: lane.color, transparent: true, opacity: 0.42, depthWrite: false })
+        );
+        mesh.renderOrder = 1;
+        scene.add(mesh);
+        laneMeshes.set(lane.key, mesh);
+      });
+
+      const prdLine = new THREE.Mesh(
+        new THREE.BufferGeometry(),
+        new THREE.MeshBasicMaterial({ color: COLORS.navy, transparent: true, opacity: 0.52, depthWrite: false })
+      );
+      prdLine.renderOrder = 2;
+      scene.add(prdLine);
+
+      const stargateLine = new THREE.Mesh(
+        new THREE.BufferGeometry(),
+        new THREE.MeshBasicMaterial({ color: COLORS.backend, transparent: true, opacity: 0.42, depthWrite: false })
+      );
+      stargateLine.renderOrder = 1;
+      scene.add(stargateLine);
+
+      const activityNodes = [];
+      const nodeGeometry = new THREE.SphereGeometry(1, 18, 12);
+
+      lanes.forEach(lane => {
+        SHARED_CONFIG_DATA[lane.key].forEach(([date, count]) => {
+          const t = dateT(date);
+          const position = lanePoint(lane, t);
+          const radius = 0.035 + Math.sqrt(count) * 0.015;
+          const material = new THREE.MeshStandardMaterial({
+            color: lane.color,
+            roughness: 0.44,
+            metalness: 0.02,
+            transparent: true,
+            opacity: 0
+          });
+          const mesh = new THREE.Mesh(nodeGeometry, material);
+          mesh.position.copy(position);
+          mesh.scale.setScalar(0.001);
+          mesh.renderOrder = 5;
+          scene.add(mesh);
+
+          let glow = null;
+          if (count >= 10) {
+            glow = makeGlow(radius * 3.7, lane.color, Math.min(0.34, 0.12 + Math.sqrt(count) * 0.014));
+            glow.position.copy(position);
+            glow.material.opacity = 0;
+            scene.add(glow);
+          }
+
+          activityNodes.push({ mesh, glow, t, radius, count, lane: lane.key });
+        });
+      });
+
+      const stargateNodes = [];
+      STARGATE_DATA.forEach(([date, count]) => {
+        const t = dateT(date);
+        const position = stargatePoint(t);
+        const radius = 0.028 + Math.sqrt(count) * 0.012;
+        const material = new THREE.MeshStandardMaterial({
+          color: COLORS.backend,
+          roughness: 0.42,
+          metalness: 0.03,
+          transparent: true,
+          opacity: 0
+        });
+        const mesh = new THREE.Mesh(nodeGeometry, material);
+        mesh.position.copy(position);
+        mesh.scale.setScalar(0.001);
+        mesh.renderOrder = 4;
+        scene.add(mesh);
+
+        let glow = null;
+        if (count >= 10) {
+          glow = makeGlow(radius * 3.6, COLORS.backend, Math.min(0.3, 0.1 + Math.sqrt(count) * 0.012));
+          glow.position.copy(position);
+          glow.material.opacity = 0;
+          scene.add(glow);
+        }
+
+        stargateNodes.push({ mesh, glow, t, radius, count });
+      });
+
+      const prdNodes = [];
+      PAGO_PRDS_DATA.forEach(([date, count]) => {
+        const t = dateT(date);
+        const position = prdPoint(t);
+        const radius = 0.04 + Math.sqrt(count) * 0.021;
+        const material = new THREE.MeshStandardMaterial({
+          color: count >= 20 ? COLORS.gold : COLORS.navy,
+          roughness: 0.36,
+          metalness: 0.04,
+          transparent: true,
+          opacity: 0
+        });
+        const mesh = new THREE.Mesh(nodeGeometry, material);
+        mesh.position.copy(position);
+        mesh.scale.setScalar(0.001);
+        mesh.renderOrder = 7;
+        scene.add(mesh);
+
+        const glow = makeGlow(radius * 4.2, count >= 20 ? COLORS.gold : COLORS.navy, count >= 20 ? 0.34 : 0.18);
+        glow.position.copy(position);
+        glow.material.opacity = 0;
+        scene.add(glow);
+
+        prdNodes.push({ mesh, glow, t, radius, count });
+      });
+
+      const prdRoot = makeSphere(0.13, COLORS.navy, 0.95);
+      prdRoot.position.copy(prdPoint(prdStartT));
+      prdRoot.scale.setScalar(0.001);
+      scene.add(prdRoot);
+
+      const intakePoint = lanePoint(lanes.find(l => l.key === "factory"), intakeT);
+      const intakeMesh = makeSphere(0.24, COLORS.gold, 1);
+      intakeMesh.position.copy(intakePoint);
+      intakeMesh.scale.setScalar(0.001);
+      intakeMesh.renderOrder = 12;
+      scene.add(intakeMesh);
+
+      const intakeGlow = makeGlow(1.05, COLORS.gold, 0.42);
+      intakeGlow.position.copy(intakePoint);
+      intakeGlow.material.opacity = 0;
+      intakeGlow.renderOrder = 11;
+      scene.add(intakeGlow);
+
+      let width = 1;
+      let height = 1;
+      let stateProgress = 0;
+      let playStart = 0;
+      let playing = false;
+      const duration = 12000;
+
+      const resizeObserver = new ResizeObserver(resize);
+      resizeObserver.observe(root);
+      resize();
+
+      function play() {
+        playStart = performance.now() - stateProgress * duration;
+        playing = true;
+      }
+
+      function reset() {
+        playing = false;
+        setProgress(0);
+      }
+
+      function setProgress(t) {
+        stateProgress = clamp(t, 0, 1);
+      }
+
+      window.PagoMindmap = {
+        play,
+        reset,
+        progress: setProgress
+      };
+
+      window.addEventListener("message", function (ev) {
+        var cmd = ev && ev.data && ev.data.cmd;
+        if (cmd === "play") { reset(); play(); }
+        if (cmd === "reset") reset();
+      });
+
+      function animate() {
+        var now = performance.now();
+        if (playing) {
+          setProgress((now - playStart) / duration);
+          if (stateProgress >= 1) playing = false;
+        }
+
+        render(now * 0.001);
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+      if (window.parent === window) setTimeout(play, 260);
+
+      function render(time) {
+        const p = stateProgress;
+        const rootReveal = ease(clamp(p / 0.08, 0, 1));
+        const stargateReveal = ease(clamp((p - 0.015) / 0.09, 0, 1));
+        const dateReveal = clamp((p - 0.055) / 0.785, 0, 1);
+        const finale = ease(clamp((p - 0.78) / 0.22, 0, 1));
+
+        updateCamera(time, p);
+
+        rootMesh.scale.setScalar(0.001 + rootReveal);
+        rootMesh.material.opacity = 0.96 * rootReveal;
+        rootGlow.scale.setScalar(0.72 + Math.sin(time * 1.4) * 0.025);
+        rootGlow.material.opacity = 0.22 * rootReveal;
+
+        stargateRootMesh.scale.setScalar(Math.max(0.001, stargateReveal));
+        stargateRootMesh.material.opacity = 0.95 * stargateReveal;
+        stargateRootGlow.scale.setScalar(0.92 + Math.sin(time * 1.25 + 0.4) * 0.025);
+        stargateRootGlow.material.opacity = 0.18 * stargateReveal;
+
+        lanes.forEach(lane => {
+          const mesh = laneMeshes.get(lane.key);
+          const laneDraw = clamp(dateReveal + 0.018, 0, 1);
+          updateRibbon(mesh.geometry, laneCurvePoints(lane, laneDraw), 0.028);
+          mesh.material.opacity = 0.18 + 0.33 * rootReveal;
+        });
+
+        const stargateDraw = clamp(dateReveal + 0.014, 0, 1);
+        stargateLine.visible = stargateDraw > 0;
+        updateRibbon(stargateLine.geometry, stargateCurvePoints(stargateDraw), 0.022);
+        stargateLine.material.opacity = 0.08 + 0.38 * stargateReveal;
+
+        activityNodes.forEach(node => {
+          const local = clamp((dateReveal - node.t) / 0.026, 0, 1);
+          const s = ease(local);
+          node.mesh.visible = local > 0;
+          node.mesh.scale.setScalar(Math.max(0.001, node.radius * s));
+          node.mesh.material.opacity = 0.88 * s;
+          if (node.glow) {
+            node.glow.visible = local > 0;
+            node.glow.scale.setScalar(1 + Math.sin(time * 1.1 + node.count) * 0.025);
+            node.glow.material.opacity = node.glow.userData.baseOpacity * s;
+          }
+        });
+
+        stargateNodes.forEach(node => {
+          const local = clamp((dateReveal - node.t) / 0.03, 0, 1);
+          const s = ease(local) * stargateReveal;
+          node.mesh.visible = local > 0;
+          node.mesh.scale.setScalar(Math.max(0.001, node.radius * s));
+          node.mesh.material.opacity = 0.86 * s;
+          if (node.glow) {
+            node.glow.visible = local > 0;
+            node.glow.scale.setScalar(1 + Math.sin(time * 1.05 + node.count) * 0.026);
+            node.glow.material.opacity = node.glow.userData.baseOpacity * s;
+          }
+        });
+
+        const prdLocal = clamp((dateReveal - prdStartT) / (1 - prdStartT), 0, 1);
+        const prdDrawT = prdStartT + prdLocal * (1 - prdStartT);
+        prdLine.visible = prdLocal > 0;
+        updateRibbon(prdLine.geometry, prdCurvePoints(prdDrawT), 0.025);
+        prdLine.material.opacity = 0.18 + 0.38 * ease(prdLocal);
+
+        const prdRootScale = ease(clamp((dateReveal - prdStartT) / 0.04, 0, 1));
+        prdRoot.scale.setScalar(Math.max(0.001, prdRootScale));
+        prdRoot.material.opacity = 0.96 * prdRootScale;
+
+        prdNodes.forEach(node => {
+          const local = clamp((dateReveal - node.t) / 0.026, 0, 1);
+          const s = ease(local);
+          node.mesh.visible = local > 0;
+          node.mesh.scale.setScalar(Math.max(0.001, node.radius * s));
+          node.mesh.material.opacity = 0.9 * s;
+          node.glow.visible = local > 0;
+          node.glow.material.opacity = node.glow.userData.baseOpacity * s;
+        });
+
+        const intakeReveal = ease(clamp((dateReveal - intakeT) / 0.05, 0, 1)) * finale;
+        const pulse = 1 + Math.sin(time * 3.4) * 0.085 * finale;
+        intakeMesh.scale.setScalar(Math.max(0.001, intakeReveal * pulse));
+        intakeMesh.material.opacity = intakeReveal;
+        intakeGlow.scale.setScalar(1.0 + Math.sin(time * 2.8) * 0.09);
+        intakeGlow.material.opacity = 0.48 * intakeReveal;
+
+        updateLabels(dateReveal, rootReveal, stargateReveal, prdRootScale, intakeReveal);
+        renderer.render(scene, camera);
+      }
+
+      function updateCamera(time, progress) {
+        const pan = ease(clamp((progress - 0.08) / 0.84, 0, 1));
+        const rootFrameX = rootPoint.x + visibleHalfWidth() * 0.86;
+        const finaleFrameX = endX - visibleHalfWidth() * 0.58;
+        const x = lerp(rootFrameX, finaleFrameX, pan);
+        const y = lerp(-0.08, -0.18, pan) + Math.sin(time * 0.17 + 0.9) * 0.035;
+
+        camera.position.x = x + Math.sin(time * 0.22) * 0.045;
+        camera.position.y = y;
+        camera.lookAt(x + 0.18, y + 0.02, 0);
+      }
+
+      function updateLabels(dateReveal, rootReveal, stargateReveal, prdRootScale, intakeReveal) {
+        const originLabelFade = 1 - smooth(clamp((stateProgress - 0.22) / 0.24, 0, 1));
+        placeLabel(labelRoot, rootPoint.clone().add(new THREE.Vector3(0.7, 0.46, 0)), rootReveal * originLabelFade);
+        placeLabel(labelStargate, stargateRootPoint.clone().add(new THREE.Vector3(1.26, -0.5, 0)), stargateReveal * originLabelFade);
+
+        const lateReveal = ease(clamp((stateProgress - 0.8) / 0.14, 0, 1));
+        const x = width - Math.max(86, Math.min(126, width * 0.075));
+        const slots = lanes.map(lane => ({ lane, end: project(lanePoint(lane, 1)) }));
+        slots.sort((a, b) => a.end.y - b.end.y);
+        const gap = Math.max(24, Math.min(30, height * 0.055));
+        let prevY = -Infinity;
+        slots.forEach(s => {
+          let y = Math.max(s.end.y, prevY + gap);
+          s.y = y;
+          prevY = y;
+        });
+        const overflow = prevY - (height - 16);
+        if (overflow > 0) slots.forEach(s => { s.y -= overflow; });
+        slots.forEach(s => {
+          placeLabelAtScreen(laneLabels.get(s.lane.key), x, s.y, lateReveal);
+          updateLeaderLine(laneLeaders.get(s.lane.key), lanePoint(s.lane, 1), x - 10, s.y, lateReveal);
+        });
+
+        placeLabel(labelPrd, prdPoint(prdStartT).add(new THREE.Vector3(0, 0.38, 0)), prdRootScale);
+        placeLabel(labelIntake, intakePoint.clone().add(new THREE.Vector3(-1.7, -0.5, 0.1)), intakeReveal);
+        placeLabel(labelMerge, stargatePoint(stargateMergeT).add(new THREE.Vector3(-0.6, 0.85, 0.1)), clamp((dateReveal - stargateMergeT + 0.03) / 0.08, 0, 1));
+
+        timeline.style.opacity = String(clamp((stateProgress - 0.06) / 0.2, 0, 1));
+        meta.style.opacity = String(0.24 + 0.62 * clamp(stateProgress / 0.18, 0, 1));
+        leaderLayer.style.opacity = String(lateReveal);
+
+        monthLabels.forEach(tick => {
+          const world = new THREE.Vector3(lerp(startX, endX, tick.t), -3.32, 0);
+          const screen = project(world);
+          tick.el.style.left = screen.x + "px";
+        });
+      }
+
+      function resize() {
+        const rect = root.getBoundingClientRect();
+        width = Math.max(1, rect.width);
+        height = Math.max(1, rect.height);
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.position.z = camera.aspect < 1.1 ? 16.8 : (camera.aspect > 3.25 ? 8.1 : 8.9);
+        camera.updateProjectionMatrix();
+      }
+
+      function makeLabel(title, subtitle, className) {
+        const el = document.createElement("div");
+        el.className = "label " + className;
+        if (Array.isArray(subtitle)) {
+          el.innerHTML = title + subtitle.map(line => `<small>${line}</small>`).join("");
+        } else {
+          el.innerHTML = subtitle ? `${title}<small>${subtitle}</small>` : title;
+        }
+        overlay.appendChild(el);
+        return el;
+      }
+
+      function placeLabel(el, world, opacity) {
+        const p = project(world);
+        el.style.transform = `translate(-50%, -50%) translate(${p.x}px, ${p.y}px)`;
+        el.style.opacity = String(clamp(opacity, 0, 1));
+      }
+
+      function placeLabelAtScreen(el, x, y, opacity) {
+        el.style.transform = `translate(0, -50%) translate(${x}px, ${y}px)`;
+        el.style.opacity = String(clamp(opacity, 0, 1));
+      }
+
+      function updateLeaderLine(line, worldStart, x2, y2, opacity) {
+        const p = project(worldStart);
+        const elbowX = Math.min(x2 - 28, p.x + 58);
+        line.setAttribute("x1", p.x.toFixed(1));
+        line.setAttribute("y1", p.y.toFixed(1));
+        line.setAttribute("x2", elbowX.toFixed(1));
+        line.setAttribute("y2", (p.y + (y2 - p.y) * 0.72).toFixed(1));
+        line.style.opacity = String(clamp(opacity, 0, 1));
+      }
+
+      function project(world) {
+        const vector = world.clone().project(camera);
+        return {
+          x: (vector.x * 0.5 + 0.5) * width,
+          y: (-vector.y * 0.5 + 0.5) * height
+        };
+      }
+
+      function visibleHalfWidth() {
+        const halfHeight = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5)) * camera.position.z;
+        return halfHeight * camera.aspect;
+      }
+
+      function makeSphere(radius, color, opacity) {
+        const mesh = new THREE.Mesh(
+          new THREE.SphereGeometry(radius, 28, 18),
+          new THREE.MeshStandardMaterial({
+            color,
+            roughness: 0.38,
+            metalness: 0.04,
+            transparent: true,
+            opacity
+          })
+        );
+        return mesh;
+      }
+
+      function makeGlow(size, color, opacity) {
+        const material = new THREE.SpriteMaterial({
+          map: glowTexture(),
+          color,
+          transparent: true,
+          opacity,
+          depthWrite: false,
+          blending: THREE.NormalBlending
+        });
+        const sprite = new THREE.Sprite(material);
+        sprite.scale.set(size, size, 1);
+        sprite.userData.baseOpacity = opacity;
+        return sprite;
+      }
+
+      var cachedGlowTexture = null;
+      function glowTexture() {
+        if (cachedGlowTexture) return cachedGlowTexture;
+        const canvas = document.createElement("canvas");
+        canvas.width = 128;
+        canvas.height = 128;
+        const ctx = canvas.getContext("2d");
+        const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 62);
+        gradient.addColorStop(0, "rgba(255,255,255,0.95)");
+        gradient.addColorStop(0.18, "rgba(255,255,255,0.55)");
+        gradient.addColorStop(0.55, "rgba(255,255,255,0.14)");
+        gradient.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 128, 128);
+        cachedGlowTexture = new THREE.CanvasTexture(canvas);
+        return cachedGlowTexture;
+      }
+
+      function laneCurvePoints(lane, drawT) {
+        const points = [rootPoint.clone()];
+        if (drawT <= sharedRootT) return points;
+
+        const drawable = (drawT - sharedRootT) / (1 - sharedRootT);
+        const steps = Math.max(3, Math.ceil(95 * drawable));
+        for (let i = 0; i <= steps; i++) {
+          const t = sharedRootT + (drawT - sharedRootT) * (i / steps);
+          points.push(lanePoint(lane, t));
+        }
+        return points;
+      }
+
+      function lanePoint(lane, t) {
+        const u = clamp((t - sharedRootT) / (1 - sharedRootT), 0, 1);
+        const fan = smooth(clamp(u / 0.22, 0, 1));
+        const x = lerp(startX, endX, t);
+        const y = lerp(0, lane.y, fan) + Math.sin(t * Math.PI) * lane.arc;
+        const z = lerp(0.18, lane.z, fan);
+        return new THREE.Vector3(x, y, z);
+      }
+
+      function stargateCurvePoints(drawT) {
+        const points = [stargateRootPoint.clone()];
+        const steps = Math.max(3, Math.ceil(96 * drawT));
+        for (let i = 0; i <= steps; i++) {
+          const t = stargateStartT + (drawT - stargateStartT) * (i / steps);
+          points.push(stargatePoint(t));
+        }
+        return points;
+      }
+
+      function stargatePoint(t) {
+        const backendLane = lanes.find(l => l.key === "backend");
+        const merge = lanePoint(backendLane, stargateMergeT);
+        const x = lerp(startX, endX, t);
+
+        if (t >= stargateMergeT) {
+          return lanePoint(backendLane, t).add(new THREE.Vector3(0, -0.03, -0.02));
+        }
+
+        if (t <= 0.58) {
+          const u = smooth(clamp(t / 0.58, 0, 1));
+          const y = lerp(stargateRootPoint.y, -3.02, u) + Math.sin(u * Math.PI) * -0.08;
+          const z = lerp(stargateRootPoint.z, -0.42, u);
+          return new THREE.Vector3(x, y, z);
+        }
+
+        const u = smooth(clamp((t - 0.58) / (stargateMergeT - 0.58), 0, 1));
+        const y = lerp(-3.02, merge.y - 0.03, u) + Math.sin(u * Math.PI) * -0.24;
+        const z = lerp(-0.42, merge.z - 0.02, u);
+        return new THREE.Vector3(x, y, z);
+      }
+
+      function prdCurvePoints(drawDateT) {
+        const points = [];
+        const steps = 70;
+        for (let i = 0; i <= steps; i++) {
+          const t = prdStartT + (drawDateT - prdStartT) * (i / steps);
+          points.push(prdPoint(t));
+        }
+        return points;
+      }
+
+      function prdPoint(t) {
+        const x = lerp(startX, endX, t);
+        const factoryLane = lanes.find(l => l.key === "factory");
+        const intake = lanePoint(factoryLane, intakeT);
+
+        if (t <= intakeT) {
+          const u = smooth(clamp((t - prdStartT) / (intakeT - prdStartT), 0, 1));
+          const y = lerp(3.1, intake.y, u) + Math.sin(u * Math.PI) * 0.16;
+          const z = lerp(0.72, intake.z + 0.05, u);
+          return new THREE.Vector3(x, y, z);
+        }
+
+        const u = smooth(clamp((t - intakeT) / (1 - intakeT), 0, 1));
+        const y = lerp(intake.y, -2.06, u) - Math.sin(u * Math.PI) * 0.2;
+        const z = lerp(intake.z + 0.05, 0.58, u);
+        return new THREE.Vector3(x, y, z);
+      }
+
+      function updateRibbon(geometry, points, halfWidth) {
+        if (!points || points.length < 2) return;
+
+        const positions = [];
+        const indices = [];
+
+        for (let i = 0; i < points.length; i++) {
+          const prev = points[Math.max(0, i - 1)];
+          const next = points[Math.min(points.length - 1, i + 1)];
+          const dx = next.x - prev.x;
+          const dy = next.y - prev.y;
+          const len = Math.hypot(dx, dy) || 1;
+          const nx = -dy / len;
+          const ny = dx / len;
+          const p = points[i];
+
+          positions.push(p.x + nx * halfWidth, p.y + ny * halfWidth, p.z);
+          positions.push(p.x - nx * halfWidth, p.y - ny * halfWidth, p.z);
+
+          if (i < points.length - 1) {
+            const a = i * 2;
+            indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+          }
+        }
+
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setIndex(indices);
+        geometry.computeBoundingSphere();
+      }
+
+      function dateT(dateString) {
+        const d = new Date(dateString + "T00:00:00");
+        return clamp((d - START_DATE) / (END_DATE - START_DATE), 0, 1);
+      }
+
+      function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+      }
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      function smooth(t) {
+        return t * t * (3 - 2 * t);
+      }
+
+      function ease(t) {
+        t = clamp(t, 0, 1);
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function hexCss(value) {
+        return "#" + value.toString(16).padStart(6, "0").toUpperCase();
+      }
+    })();
+  </script>
+</body>
+</html>
