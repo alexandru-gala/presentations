@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Factories — AI Sync, Episode II</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+/* ===== Episode II — deck-specific ===== */
+
+.slot-note { border: 2px dashed var(--border); border-radius: var(--card-radius); padding: clamp(10px,1.4vh,16px) clamp(14px,1.6vw,22px); color: var(--text-muted); font-size: clamp(11px,1.1vw,14px); text-transform: uppercase; letter-spacing: 0.6px; align-self: flex-start; }
+
+/* --- F1: cold-open wave --- */
+.wave-stage { width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(10px,1.6vh,20px); }
+.wave-svg { width: 100%; height: clamp(220px,42vh,460px); }
+.wave-svg .axis-lbl { font: 600 15px 'DM Sans', sans-serif; fill: rgba(255,255,255,0.45); }
+.wave-svg .val-lbl { font: 700 16px 'DM Sans', sans-serif; fill: #fff; }
+.wave-line { fill: none; stroke: var(--pago-gold); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.wave-area { fill: url(#waveGrad); opacity: 0; transition: opacity 1.2s ease 2.6s; }
+.wave-svg.play .wave-area { opacity: 1; }
+.wave-svg.play .wave-line { stroke-dasharray: 1600; stroke-dashoffset: 1600; animation: wave-draw 3.2s cubic-bezier(0.5,0,0.3,1) forwards; }
+@keyframes wave-draw { to { stroke-dashoffset: 0; } }
+.wave-dot { fill: #fff; opacity: 0; }
+.wave-svg.play .wave-dot { animation: dot-in 0.4s ease forwards; }
+.cold-title { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease 3.4s, transform 0.8s ease 3.4s; }
+.wave-stage.play .cold-title { opacity: 1; transform: translateY(0); }
+@keyframes dot-in { to { opacity: 1; } }
+
+/* --- F3: decode-the-wave chart (light) --- */
+.chart-wrap { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+.chart-svg { width: 100%; height: clamp(220px,40vh,420px); }
+.chart-svg .axis-lbl { font: 600 15px 'DM Sans', sans-serif; fill: var(--text-muted); }
+.chart-svg .val-lbl { font: 700 15px 'DM Sans', sans-serif; fill: var(--text); }
+.chart-svg .bar { fill: var(--pago-blue); opacity: 0.85; }
+.chart-svg .bar.hot { fill: var(--pago-gold); opacity: 1; }
+.chart-svg .marker-line { stroke: var(--pact-green); stroke-width: 2; stroke-dasharray: 6 5; }
+.chart-svg .marker-lbl { font: 700 13.5px 'DM Sans', sans-serif; fill: var(--pact-green); }
+
+/* --- F4: activity feed ticker --- */
+.feed-viewport { flex: 1; min-height: 0; overflow: hidden; position: relative; border-radius: var(--card-radius); background: var(--surface); border: 1px solid var(--border); }
+.feed-viewport::before, .feed-viewport::after { content: ""; position: absolute; left: 0; right: 0; height: 46px; z-index: 2; pointer-events: none; }
+.feed-viewport::before { top: 0; background: linear-gradient(var(--surface), transparent); }
+.feed-viewport::after { bottom: 0; background: linear-gradient(transparent, var(--surface)); }
+.feed-scroll { display: flex; flex-direction: column; gap: 10px; padding: 16px; animation: feed-up 36s linear infinite; }
+.feed-viewport:hover .feed-scroll { animation-play-state: paused; }
+@keyframes feed-up { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+.feed-item { display: flex; gap: 12px; align-items: baseline; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: clamp(13px,1.25vw,17px); }
+.feed-item .f-when { font-weight: 700; color: var(--pago-blue); white-space: nowrap; font-size: 0.85em; }
+.feed-item .f-repo { font-weight: 600; color: var(--text-muted); white-space: nowrap; font-size: 0.85em; }
+.feed-item.f-gold { border-left: 4px solid var(--pago-gold); }
+
+/* --- F5: hardening two-col stats --- */
+.stat-big { font-family: 'DM Sans'; font-size: clamp(34px,4.5vw,64px); font-weight: 800; color: var(--pago-blue); line-height: 1; }
+.stat-cap { font-size: clamp(12px,1.2vw,16px); color: var(--text-muted); font-weight: 600; }
+
+/* --- F6: bridges (iOS <-> Android) --- */
+.bridge-scene { flex: 1; display: flex; align-items: center; justify-content: center; gap: clamp(30px,6vw,110px); position: relative; min-height: 0; }
+.island { display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 1; }
+.island .isl-box { width: clamp(120px,14vw,200px); height: clamp(120px,14vw,200px); border-radius: 22px; background: var(--card-bg); border: 2px solid var(--pago-blue); display: flex; align-items: center; justify-content: center; font-size: clamp(44px,5.5vw,84px); }
+.island .isl-name { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(15px,1.6vw,22px); }
+.bridge-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bridge-lines path { fill: none; stroke: var(--pago-gold); stroke-width: 3; stroke-linecap: round; opacity: 0; }
+.bridge-scene.visible path { animation: bridge-in 0.7s ease forwards; }
+@keyframes bridge-in { from { opacity: 0; stroke-dashoffset: 400; } to { opacity: 0.9; stroke-dashoffset: 0; } }
+
+/* --- F7: full-stack path --- */
+.pipe { display: flex; align-items: stretch; justify-content: center; flex-wrap: nowrap; gap: clamp(4px,0.4vw,8px); width: 100%; }
+.pipe-step { position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(6px,1vh,10px); border: 2px solid var(--pago-blue); color: var(--pago-blue-dark); border-radius: 14px; padding: clamp(10px,1.6vh,16px) clamp(6px,0.7vw,14px); font-weight: 700; font-size: clamp(11px,1vw,16px); background: var(--card-bg); white-space: nowrap; }
+.pipe-step[data-tag]::after { content: attr(data-tag); position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 6px; font-size: clamp(9px,0.85vw,11px); font-weight: 600; color: var(--pago-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.pipe-emoji { font-size: clamp(20px,2vw,32px); line-height: 1; }
+.pipe-arrow { flex: 0 0 auto; color: var(--text-muted); font-weight: 700; font-size: clamp(14px,1.6vw,22px); align-self: center; }
+.pipe-step.stop { border-color: var(--warn); color: var(--warn); }
+.pipe-step.stop::after { color: var(--warn); }
+
+/* --- F9: factory board --- */
+.board { flex: 1; display: flex; flex-direction: column; gap: clamp(8px,1.1vh,14px); justify-content: center; min-height: 0; }
+.board-row { display: grid; grid-template-columns: 22px minmax(140px, 0.6fr) 2fr auto; align-items: center; gap: clamp(12px,1.6vw,24px); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: clamp(9px,1.2vh,14px) clamp(14px,1.6vw,22px); }
+.board-row .b-light { width: 14px; height: 14px; border-radius: 50%; }
+.b-light.g { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.7); }
+.b-light.y { background: var(--pago-gold); box-shadow: 0 0 8px rgba(245,166,35,0.7); }
+.b-light.gr { background: var(--border); }
+.board-row .b-name { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(14px,1.4vw,19px); }
+.board-row .b-line { font-size: clamp(12.5px,1.2vw,16px); color: var(--text-muted); }
+.board-row .b-tag { font-size: clamp(11px,1vw,13px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--pago-blue); white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+  <symbol id="pago-logo" viewBox="0 0 82 38">
+    <g clip-path="url(#pl-clip)">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M16.5464 3.14993C14.9357 1.53922 12.3 0.660645 9.66429 0.660645C7.90714 0.660645 6.15 1.09993 4.53929 1.39279C2.92857 1.68564 1.46429 1.83207 0 2.12493V28.4821L2.78214 28.0428C3.36786 27.8964 3.80714 27.4571 3.80714 26.8714V18.9642C6.15 19.4035 8.78571 19.8428 9.51786 19.8428C12.1536 19.8428 14.7893 18.9642 16.5464 17.2071C18.3036 15.4499 19.0357 12.8142 19.1821 10.1785C19.1821 7.68922 18.3036 4.90707 16.5464 3.14993ZM13.9107 14.5713C12.8857 15.5963 11.1286 16.0356 9.66429 16.0356C7.76072 16.0356 5.85714 15.4499 3.95357 15.1571V5.34635C4.24643 5.34635 7.76072 4.46778 9.66429 4.46778C11.275 4.46778 12.8857 4.90706 13.9107 5.93206C14.9357 6.95706 15.375 8.71421 15.375 10.3249C15.375 11.7892 14.9357 13.5463 13.9107 14.5713Z" fill="currentColor"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M56.0822 10.1784C54.3251 9.88557 52.5679 9.44629 50.9572 9.44629C48.3215 9.44629 45.6858 10.3249 43.9286 11.9356C42.1715 13.6927 41.2929 16.3284 41.2929 18.9641C41.2929 21.5999 42.1715 24.2356 43.9286 25.9927C45.6858 27.7499 48.3215 28.6284 50.9572 28.6284C51.6893 28.6284 54.3251 28.1891 56.6679 27.7499C56.6679 28.6284 56.6679 29.507 56.6679 30.3856C56.6679 31.4106 56.2286 32.2891 55.4965 32.8749C54.3251 33.7534 52.7143 33.607 51.3965 33.3141C49.9322 33.1677 48.6143 32.7284 47.2965 32.2891C46.8572 32.1427 46.4179 32.2891 45.9786 32.582L44.0751 34.4856C46.1251 35.8034 48.6143 36.682 50.9572 37.1213C53.3001 37.5606 55.6429 37.4141 57.5465 35.9499C57.8393 35.657 58.2786 35.3641 58.5715 35.0713C59.8893 33.607 60.3286 31.8499 60.3286 30.0927V27.1641V10.9106C59.0108 10.6177 57.5465 10.4713 56.0822 10.1784ZM56.6679 23.7963C54.7643 24.2356 52.8608 24.6749 50.9572 24.6749C49.3465 24.6749 47.7358 24.2356 46.7108 23.2106C45.6858 22.1856 45.2465 20.5749 45.2465 18.9642C45.2465 17.3534 45.6858 15.7427 46.7108 14.5713C47.7358 13.5463 49.3465 13.107 50.9572 13.107C52.8608 13.107 56.5215 13.9856 56.8143 13.9856V23.7963H56.6679Z" fill="currentColor"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M79.3642 11.9355C77.6071 10.1784 74.9714 9.44623 72.3357 9.2998C69.7 9.2998 67.0642 10.1784 65.3071 11.9355C63.55 13.6927 62.8178 16.3284 62.6714 18.9641C62.6714 21.5998 63.55 24.2355 65.3071 25.9927C67.0642 27.7498 69.7 28.4819 72.3357 28.6284C74.9714 28.6284 77.6071 27.7498 79.3642 25.9927C81.1214 24.2355 82 21.5998 82 18.9641V18.8177C82 16.3284 81.1214 13.6927 79.3642 11.9355ZM76.7285 23.3569C75.7035 24.3819 73.9464 24.8212 72.4821 24.8212C70.8714 24.8212 69.2607 24.3819 68.2357 23.3569C67.2107 22.3319 66.7714 20.5748 66.7714 18.9641C66.7714 17.3534 67.2107 15.7427 68.2357 14.7177C69.2607 13.6927 71.0178 13.2534 72.6285 13.2534C74.2392 13.2534 75.85 13.6927 76.875 14.7177C77.9 15.7427 78.3392 17.4998 78.3392 19.1105C78.1928 20.5748 77.7535 22.3319 76.7285 23.3569Z" fill="currentColor"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M36.4607 11.9355C34.7036 10.1784 32.0679 9.44623 29.4322 9.2998C26.7965 9.2998 24.1607 10.1784 22.4036 11.9355C20.6465 13.6927 19.7679 16.3284 19.7679 18.9641C19.7679 21.5998 20.6465 24.2355 22.4036 25.9927C24.1607 27.7498 26.7965 28.4819 29.4322 28.6284C31.4822 28.6284 33.6786 28.1891 35.2893 27.0177C35.4357 27.8962 36.1679 28.6284 37.1929 28.6284H39.0965V18.8177V18.6712C38.95 16.1819 38.0715 13.6927 36.4607 11.9355ZM33.6786 23.3569C32.6536 24.3819 30.8965 24.8212 29.2857 24.8212C27.675 24.8212 26.0643 24.3819 25.0393 23.3569C24.0143 22.3319 23.575 20.5748 23.575 18.9641C23.575 17.3534 24.0143 15.7427 25.0393 14.7177C26.0643 13.6927 27.8215 13.2534 29.4322 13.2534C31.0429 13.2534 32.6536 13.6927 33.6786 14.7177C34.7036 15.7427 35.1429 17.4998 35.1429 19.1105C35.1429 20.5748 34.85 22.3319 33.6786 23.3569Z" fill="currentColor"/>
+    </g>
+    <defs><clipPath id="pl-clip"><rect width="82" height="36.6786" fill="white" transform="translate(0 0.660645)"/></clipPath></defs>
+  </symbol>
+</svg>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="fold-counter on-dark" id="foldCounter">1 / 11</div>
+
+<!-- ============ FOLD 1 · Cold open: the wave ============ -->
+<section class="fold fold--blue" data-dark>
+  <div class="gold-circle" style="width: 600px; height: 600px; top: -200px; right: -150px; opacity: 0.06;"></div>
+  <div class="pattern-dots"></div>
+  <div class="fold-inner wave-stage" id="waveStage">
+    <svg class="wave-svg" id="coldWave" viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(245,166,35,0.35)"/>
+          <stop offset="100%" stop-color="rgba(245,166,35,0)"/>
+        </linearGradient>
+      </defs>
+      <!-- PRs opened / month, PagoApp org: Jan 451 · Feb 859 · Mar 817 · Apr 828 · May 1220 · Jun 1498 · Jul 1419 · Aug 1489 -->
+      <g id="coldWaveG"></g>
+    </svg>
+    <div class="cold-title" style="display: flex; flex-direction: column; gap: clamp(10px,1.6vh,18px); align-items: flex-start;">
+      <svg viewBox="0 0 82 38" style="height: clamp(26px, 3vw, 40px); color: #fff;"><use href="#pago-logo"/></svg>
+      <h1 class="cover-title">Software Factories 🏭</h1>
+      <div><span class="cover-chip">Episode II</span></div>
+      <p class="cover-subtitle">Every pulse is a pull request. · AI Sync, September 2026</p>
+    </div>
+  </div>
+  <div class="scroll-hint"><span>scroll</span><div class="arrow"></div></div>
+</section>
+
+<!-- ============ FOLD 2 · 01 Previously ============ -->
+<section class="fold">
+  <div class="blue-blob" style="width: 480px; height: 480px; top: -180px; left: -150px;"></div>
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">01</span> · Previously, on Episode I</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">July 9 we drew the city. <strong style="color: var(--pago-blue);">It kept building.</strong></h2>
+    <div class="reveal reveal-d2" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+      <div class="city" id="city"></div>
+      <div class="city-floor"></div>
+    </div>
+    <div class="bottom-line reveal reveal-d4">Two months. Same six factories — <strong style="color: var(--pago-blue);">more lights on, more traffic between them</strong>.</div>
+  </div>
+</section>
+
+<!-- ============ FOLD 3 · 02 Decode the wave ============ -->
+<section class="fold">
+  <div class="gold-circle" style="width: 420px; height: 420px; bottom: -160px; right: -120px; opacity: 0.07;"></div>
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">02</span> · The wave</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">Pull requests, org-wide: <strong style="color: var(--pago-blue);">3.3× since January.</strong></h2>
+    <div class="chart-wrap reveal reveal-d2">
+      <svg class="chart-svg" id="prChart" viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid meet"><g id="prChartG"></g></svg>
+    </div>
+    <div class="bottom-line reveal reveal-d3">PRs tripled while commit volume stayed flat — work now arrives in <strong style="color: var(--pago-blue);">smaller, reviewable, agent-sized units</strong>.</div>
+  </div>
+</section>
+
+<!-- ============ FOLD 4 · 03 Activity feed ============ -->
+<section class="fold">
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">03</span> · Two months in the city</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">July & August, <strong style="color: var(--pago-blue);">as they happened.</strong></h2>
+    <div class="feed-viewport reveal reveal-d2">
+      <div class="feed-scroll" id="feedScroll">
+        <!-- DRAFT: placeholder items — to be replaced with real mined commits/PRs/achievements -->
+        <div class="feed-item f-gold"><span class="f-when">Jul 09</span><span class="f-repo">—</span><span>Episode I: the city gets its map. 🏭</span></div>
+        <div class="feed-item"><span class="f-when">Jul · Aug</span><span class="f-repo">pago-shared-config</span><span>751 commits of hardening — skills, agents, wrappers, gates.</span></div>
+        <div class="feed-item"><span class="f-when">Jul</span><span class="f-repo">TBD</span><span>[achievement placeholder — release / initiative milestone]</span></div>
+        <div class="feed-item"><span class="f-when">Jul</span><span class="f-repo">TBD</span><span>[achievement placeholder — factory run / gate pass]</span></div>
+        <div class="feed-item f-gold"><span class="f-when">Aug</span><span class="f-repo">ios-pago ↔ android-pago</span><span>First wave of cross-platform PRs lands. 🌉</span></div>
+        <div class="feed-item"><span class="f-when">Aug</span><span class="f-repo">TBD</span><span>[achievement placeholder — support full-stack fix]</span></div>
+        <div class="feed-item"><span class="f-when">Aug</span><span class="f-repo">TBD</span><span>[achievement placeholder — SDK / integrator ship]</span></div>
+        <div class="feed-item"><span class="f-when">Aug</span><span class="f-repo">TBD</span><span>[achievement placeholder — factory update]</span></div>
+      </div>
+    </div>
+    <div class="bottom-line reveal reveal-d3">~2,900 PRs merged across the org in two months. <strong style="color: var(--pago-blue);">This ticker is real work, not a screensaver.</strong></div>
+  </div>
+</section>
+
+<!-- ============ FOLD 5 · 04 Tools grew up ============ -->
+<section class="fold">
+  <div class="blue-blob" style="width: 420px; height: 420px; bottom: -160px; right: -140px;"></div>
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">04</span> · Behind the scenes</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">The tools had to <strong style="color: var(--pago-blue);">grow up</strong> to keep up with you.</h2>
+    <div class="two-col reveal reveal-d2" style="align-items: stretch;">
+      <div class="column-card column-card--warn">
+        <div class="column-eyebrow">The uncomfortable middle</div>
+        <div class="column-headline">Capability came with instability.</div>
+        <div class="column-body"><ul>
+          <li>150+ agents, 170+ skills — built fast, in the open.</li>
+          <li>Fragile wrappers, flaky CLIs, duplicated patterns.</li>
+          <li>Every stall cost a session; every silent failure cost trust.</li>
+        </ul></div>
+      </div>
+      <div class="column-card column-card--win">
+        <div class="column-eyebrow">Since July</div>
+        <div class="column-headline">From “it exists” to “it survives production”.</div>
+        <div class="column-body"><ul>
+          <li><strong>751 commits</strong> of hardening in shared-config alone.</li>
+          <li>Auth preflights, timeouts, retries, security scanning on every merge.</li>
+          <li>Weak paths retired. Strong paths made boring — and dependable.</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="bottom-line reveal reveal-d3">We didn’t just add tools — <strong style="color: var(--pago-blue);">we stabilized the ones that earned trust</strong>.</div>
+  </div>
+</section>
+
+<!-- ============ FOLD 6 · 05 Border 1: iOS ↔ Android ============ -->
+<section class="fold">
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">05</span> · Border 1 of 3</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">Mobile crosses the river: <strong style="color: var(--pago-blue);">iOS ↔ Android.</strong></h2>
+    <p class="fold-subtitle reveal reveal-d2">Started a while ago. Took off last month — same colleagues, both repos.</p>
+    <div class="bridge-scene reveal reveal-d3" id="bridgeScene">
+      <svg class="bridge-lines" id="bridgeSvg"></svg>
+      <div class="island"><div class="isl-box">🍎</div><div class="isl-name">ios-pago</div></div>
+      <div class="island"><div class="isl-box">🤖</div><div class="isl-name">android-pago</div></div>
+    </div>
+    <div class="slot-note reveal reveal-d4">Slot: real cross-repo contribution map — authors × platforms, July vs August (data mining TBD)</div>
+    <div class="bottom-line reveal reveal-d5">With agents carrying the platform specifics, <strong style="color: var(--pago-blue);">the border is thinner than it ever was</strong>.</div>
+  </div>
+</section>
+
+<!-- ============ FOLD 7 · 06 Border 2: full stack ============ -->
+<section class="fold">
+  <div class="gold-circle" style="width: 380px; height: 380px; top: -140px; left: -110px; opacity: 0.07;"></div>
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">06</span> · Border 2 of 3</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">One customer problem. <strong style="color: var(--pago-blue);">One owner, whole path.</strong></h2>
+    <p class="fold-subtitle reveal reveal-d2">Where a problem used to stop at every handoff, seniors now carry it end to end.</p>
+    <div class="reveal reveal-d3" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(20px,4vh,40px);">
+      <div class="pipe">
+        <div class="pipe-step"><span class="pipe-emoji">📱</span>Mobile app</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><span class="pipe-emoji">🌐</span>Web / frontend</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><span class="pipe-emoji">⚙️</span>Backend services</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><span class="pipe-emoji">🗄️</span>Data & migrations</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><span class="pipe-emoji">🚀</span>Deploy & operate</div>
+      </div>
+      <div class="body-lg muted" style="text-align: center;">The expectation for seniors: <strong style="color: var(--text);">trace it, change it, test it, ship it</strong> — across every box, with agents as the multiplier.</div>
+    </div>
+    <div class="bottom-line reveal reveal-d4">Cross-platform was step one. <strong style="color: var(--pago-blue);">Full-stack is the destination.</strong></div>
+  </div>
+</section>
+
+<!-- ============ FOLD 8 · 07 Border 3: support goes full-stack ============ -->
+<section class="fold">
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">07</span> · Border 3 of 3</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">Technical support joins the whole product — <strong style="color: var(--pago-blue);">not just the backend.</strong></h2>
+    <div class="two-col reveal reveal-d2" style="align-items: stretch;">
+      <div class="column-card column-card--warn">
+        <div class="column-eyebrow">Historically</div>
+        <div class="column-headline">Backend was the boundary.</div>
+        <div class="column-body"><ul>
+          <li>Support solved what lived in the services and the database.</li>
+          <li>Anything touching mobile or web meant a handoff — and a wait.</li>
+        </ul></div>
+      </div>
+      <div class="column-card column-card--win">
+        <div class="column-eyebrow">The goal</div>
+        <div class="column-headline">Full-stack problems, resolved end to end.</div>
+        <div class="column-body"><ul>
+          <li>Backend expertise stays valuable — it stops being the border.</li>
+          <li>Escalation becomes a choice, not the default.</li>
+          <li>Same agents, same skills, same factories — now in support’s hands too.</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="bottom-line reveal reveal-d3">One team owns the customer’s problem <strong style="color: var(--pago-blue);">until it’s done</strong> — wherever it lives.</div>
+  </div>
+</section>
+
+<!-- ============ FOLD 9 · 08 Factory status board ============ -->
+<section class="fold">
+  <div class="blue-blob" style="width: 400px; height: 400px; top: -150px; right: -130px;"></div>
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">08</span> · Factory status</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">Six factories, <strong style="color: var(--pago-blue);">sixty seconds.</strong></h2>
+    <div class="board reveal reveal-d2">
+      <!-- DRAFT: statuses are placeholders — fill from Pago-SF fact sheet -->
+      <div class="board-row"><span class="b-light g"></span><span class="b-name">Improvements</span><span class="b-line">[movement since July — TBD]</span><span class="b-tag">running</span></div>
+      <div class="board-row"><span class="b-light g"></span><span class="b-name">Bugs</span><span class="b-line">[movement since July — TBD]</span><span class="b-tag">running</span></div>
+      <div class="board-row"><span class="b-light y"></span><span class="b-name">New Features</span><span class="b-line">[movement since July — TBD]</span><span class="b-tag">in tuning</span></div>
+      <div class="board-row"><span class="b-light y"></span><span class="b-name">SDKs</span><span class="b-line">[movement since July — TBD]</span><span class="b-tag">in tuning</span></div>
+      <div class="board-row"><span class="b-light gr"></span><span class="b-name">Compliance</span><span class="b-line">[movement since July — TBD]</span><span class="b-tag">zoned</span></div>
+      <div class="board-row"><span class="b-light gr"></span><span class="b-name">Security</span><span class="b-line">[movement since July — TBD]</span><span class="b-tag">zoned</span></div>
+    </div>
+    <div class="bottom-line reveal reveal-d3">Details live offline — <strong style="color: var(--pago-blue);">the factories are the frame now, not the story</strong>.</div>
+  </div>
+</section>
+
+<!-- ============ FOLD 10 · 09 One Rule II ============ -->
+<section class="fold">
+  <div class="fold-inner quote-slide">
+    <div class="section-label reveal" style="align-self: center;"><span class="section-num">09</span> · One rule, episode II</div>
+    <div class="quote-mark reveal reveal-d1">“</div>
+    <div class="quote-text reveal reveal-d2">Your primary team is <strong style="color: var(--pago-blue);">Pago</strong>.<br>Your specialty is your <strong style="color: var(--pago-blue);">starting point</strong> — not your border.</div>
+    <p class="body-lg muted reveal reveal-d3">Episode I’s rule was about the AI. This one is about us.</p>
+  </div>
+</section>
+
+<!-- ============ FOLD 11 · 10 Enlist II ============ -->
+<section class="fold">
+  <div class="gold-circle" style="width: 500px; height: 500px; bottom: -180px; right: -140px; opacity: 0.07;"></div>
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="section-label reveal"><span class="section-num">10</span> · Enlist</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal reveal-d1">In July we asked you to join. <strong style="color: var(--pago-blue);">Now we ask you to cross.</strong></h2>
+    <div class="ask-list reveal reveal-d2" style="flex: 1; justify-content: center;">
+      <div class="ask-item"><div class="ask-icon">1</div><div class="ask-body"><strong>Pick one border</strong> — platform, layer, repo, or workflow — and cross it in September.</div></div>
+      <div class="ask-item"><div class="ask-icon">2</div><div class="ask-body"><strong>Take an agent with you.</strong> The tools are hardened now — that’s what the 751 commits were for.</div></div>
+      <div class="ask-item"><div class="ask-icon">3</div><div class="ask-body"><strong>Tell us where it broke.</strong> Every stall you report becomes next month’s stabilization.</div></div>
+    </div>
+    <div class="bottom-line reveal reveal-d3">Episode I: we built the map. Episode II: <strong style="color: var(--pago-blue);">the city started moving. Move with it.</strong></div>
+  </div>
+</section>
+
+<script>
+/* ---- Wave data (real, org-wide PagoApp): PRs opened per month 2026 ---- */
+var PR_DATA = [
+  { m: 'Jan', v: 451 }, { m: 'Feb', v: 859 }, { m: 'Mar', v: 817 }, { m: 'Apr', v: 828 },
+  { m: 'May', v: 1220 }, { m: 'Jun', v: 1498 }, { m: 'Jul', v: 1419 }, { m: 'Aug', v: 1489 }
+];
+
+/* ---- Fold 1: cold-open line wave (dark) ---- */
+(function(){
+  var g = document.getElementById('coldWaveG');
+  var W = 1000, H = 400, padL = 40, padR = 40, padT = 60, padB = 50;
+  var max = 1600;
+  var pts = PR_DATA.map(function(d, i){
+    var x = padL + i * ((W - padL - padR) / (PR_DATA.length - 1));
+    var y = H - padB - (d.v / max) * (H - padT - padB);
+    return { x: x, y: y, d: d };
+  });
+  var line = pts.map(function(p, i){ return (i ? 'L' : 'M') + p.x + ' ' + p.y; }).join(' ');
+  var area = line + ' L ' + pts[pts.length-1].x + ' ' + (H - padB) + ' L ' + pts[0].x + ' ' + (H - padB) + ' Z';
+  var ns = 'http://www.w3.org/2000/svg';
+  var ap = document.createElementNS(ns, 'path'); ap.setAttribute('d', area); ap.setAttribute('class', 'wave-area'); g.appendChild(ap);
+  var lp = document.createElementNS(ns, 'path'); lp.setAttribute('d', line); lp.setAttribute('class', 'wave-line'); g.appendChild(lp);
+  pts.forEach(function(p, i){
+    var c = document.createElementNS(ns, 'circle');
+    c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', 6);
+    c.setAttribute('class', 'wave-dot'); c.style.animationDelay = (0.4 + i * 0.35) + 's';
+    g.appendChild(c);
+    var t = document.createElementNS(ns, 'text');
+    t.setAttribute('x', p.x); t.setAttribute('y', H - padB + 28); t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('class', 'axis-lbl'); t.textContent = p.d.m; g.appendChild(t);
+    if (i === 0 || i === pts.length - 1) {
+      var v = document.createElementNS(ns, 'text');
+      v.setAttribute('x', p.x); v.setAttribute('y', p.y - 16); v.setAttribute('text-anchor', 'middle');
+      v.setAttribute('class', 'val-lbl'); v.textContent = p.d.v.toLocaleString('en-US'); g.appendChild(v);
+    }
+  });
+  function play(){ document.getElementById('coldWave').classList.add('play'); document.getElementById('waveStage').classList.add('play'); }
+  if (document.readyState === 'complete') setTimeout(play, 400); else window.addEventListener('load', function(){ setTimeout(play, 400); });
+})();
+
+/* ---- Fold 2: skyline (Ep I builder, all-lit "two months later" state) ---- */
+(function(){
+  var COLS = 4;
+  var buildings = [
+    { name: 'Improvements', h: 82 }, { name: 'Bugs', h: 64 }, { name: 'New Features', h: 74 },
+    { name: 'SDKs', h: 56 }, { name: 'Compliance', h: 48 }, { name: 'Security', h: 60 }
+  ];
+  var city = document.getElementById('city');
+  var timers = [];
+  function clearTimers(){ timers.forEach(function(t){ clearTimeout(t); clearInterval(t); }); timers = []; }
+  function buildCity(){
+    city.innerHTML = '';
+    var cityH = city.clientHeight || 360;
+    var perBld = [];
+    buildings.forEach(function(b){
+      var el = document.createElement('div');
+      el.className = 'bld';
+      var px = Math.round(b.h / 100 * cityH);
+      el.style.height = px + 'px';
+      var rows = Math.max(4, Math.round((px - 8) / 20));
+      el.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
+      var grid = [];
+      for (var r = 0; r < rows; r++){
+        grid.push([]);
+        for (var c = 0; c < COLS; c++){
+          var cell = document.createElement('div');
+          cell.className = 'cell';
+          el.appendChild(cell);
+          grid[r][c] = cell;
+        }
+      }
+      var nm = document.createElement('span'); nm.className = 'bld-name'; nm.textContent = b.name; el.appendChild(nm);
+      city.appendChild(el);
+      var ordered = [];
+      for (var r2 = rows - 1; r2 >= 0; r2--) for (var c2 = 0; c2 < COLS; c2++) ordered.push(grid[r2][c2]);
+      perBld.push({ el: el, cells: ordered });
+    });
+    return perBld;
+  }
+  function runAllLit(perBld){
+    clearTimers();
+    perBld.forEach(function(b, bi){
+      b.cells.forEach(function(cell, k){ timers.push(setTimeout(function(){ cell.classList.add('on'); }, bi * 160 + k * 12)); });
+      timers.push(setTimeout(function(){ b.el.classList.add('glow'); }, bi * 160 + b.cells.length * 12 + 120));
+    });
+  }
+  function boot(){ runAllLit(buildCity()); }
+  if (document.readyState === 'complete') boot(); else window.addEventListener('load', boot);
+})();
+
+/* ---- Fold 3: decode-the-wave bar chart with markers (light) ---- */
+(function(){
+  var g = document.getElementById('prChartG');
+  var W = 1000, H = 400, padL = 50, padR = 30, padT = 46, padB = 46;
+  var max = 1600;
+  var n = PR_DATA.length;
+  var slot = (W - padL - padR) / n;
+  var bw = slot * 0.56;
+  var ns = 'http://www.w3.org/2000/svg';
+  PR_DATA.forEach(function(d, i){
+    var h = (d.v / max) * (H - padT - padB);
+    var x = padL + i * slot + (slot - bw) / 2;
+    var y = H - padB - h;
+    var r = document.createElementNS(ns, 'rect');
+    r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', bw); r.setAttribute('height', h);
+    r.setAttribute('rx', 7);
+    r.setAttribute('class', 'bar' + (i >= 4 ? ' hot' : ''));
+    g.appendChild(r);
+    var t = document.createElementNS(ns, 'text');
+    t.setAttribute('x', x + bw/2); t.setAttribute('y', H - padB + 26); t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('class', 'axis-lbl'); t.textContent = d.m; g.appendChild(t);
+    var v = document.createElementNS(ns, 'text');
+    v.setAttribute('x', x + bw/2); v.setAttribute('y', y - 10); v.setAttribute('text-anchor', 'middle');
+    v.setAttribute('class', 'val-lbl'); v.textContent = d.v.toLocaleString('en-US'); g.appendChild(v);
+  });
+  /* marker: Episode I, Jul 9 — between Jun and Jul bars */
+  var mx = padL + 6 * slot + (slot - bw) / 2 - (slot - bw) / 2 - (slot * 0.22);
+  var ml = document.createElementNS(ns, 'line');
+  ml.setAttribute('x1', mx); ml.setAttribute('x2', mx);
+  ml.setAttribute('y1', padT - 18); ml.setAttribute('y2', H - padB);
+  ml.setAttribute('class', 'marker-line'); g.appendChild(ml);
+  var mt = document.createElementNS(ns, 'text');
+  mt.setAttribute('x', mx + 8); mt.setAttribute('y', padT - 24);
+  mt.setAttribute('class', 'marker-lbl'); mt.textContent = 'Jul 9 · Episode I'; g.appendChild(mt);
+})();
+
+/* ---- Fold 6: bridges drawn between the two island boxes ---- */
+(function(){
+  var scene = document.getElementById('bridgeScene');
+  var svg = document.getElementById('bridgeSvg');
+  var ns = 'http://www.w3.org/2000/svg';
+  function draw(){
+    svg.innerHTML = '';
+    var sr = scene.getBoundingClientRect();
+    var boxes = scene.querySelectorAll('.isl-box');
+    if (boxes.length < 2) return;
+    var a = boxes[0].getBoundingClientRect(), b = boxes[1].getBoundingClientRect();
+    svg.setAttribute('viewBox', '0 0 ' + sr.width + ' ' + sr.height);
+    var x1 = a.right - sr.left, x2 = b.left - sr.left;
+    var yTop = a.top - sr.top + a.height * 0.25;
+    var yMid = a.top - sr.top + a.height * 0.5;
+    var yBot = a.top - sr.top + a.height * 0.75;
+    [[yTop, -28, 0.2], [yMid, 0, 0.6], [yBot, 28, 1.0]].forEach(function(cfg){
+      var p = document.createElementNS(ns, 'path');
+      p.setAttribute('d', 'M ' + x1 + ' ' + cfg[0] + ' C ' + (x1 + (x2-x1)/2) + ' ' + (cfg[0] + cfg[1]) + ', ' + (x1 + (x2-x1)/2) + ' ' + (cfg[0] + cfg[1]) + ', ' + x2 + ' ' + cfg[0]);
+      p.setAttribute('stroke-dasharray', '400');
+      p.style.animationDelay = cfg[2] + 's';
+      svg.appendChild(p);
+    });
+  }
+  window.addEventListener('load', draw);
+  window.addEventListener('resize', draw);
+})();
+
+/* ---- Fold 4: duplicate feed items so the loop is seamless ---- */
+(function(){
+  var s = document.getElementById('feedScroll');
+  s.innerHTML = s.innerHTML + s.innerHTML;
+})();
+
+/* ---- Base deck runtime (Ep I) ---- */
+(function() {
+  var folds = document.querySelectorAll('.fold');
+  var counter = document.getElementById('foldCounter');
+  var bar = document.getElementById('progressBar');
+  var total = folds.length;
+
+  function update() {
+    var vh = window.innerHeight;
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var maxScroll = document.documentElement.scrollHeight - vh;
+    var progress = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+    bar.style.width = progress + '%';
+    var current = 1;
+    for (var i = 0; i < total; i++) {
+      if (folds[i].offsetTop <= scrollTop + vh * 0.5) current = i + 1;
+    }
+    counter.textContent = current + ' / ' + total;
+    counter.className = 'fold-counter' + (folds[current - 1] && folds[current - 1].hasAttribute('data-dark') ? ' on-dark' : '');
+    folds.forEach(function(fold) {
+      var rect = fold.getBoundingClientRect();
+      if (rect.top < vh * 0.8 && rect.bottom > vh * 0.2) {
+        fold.querySelectorAll('.reveal:not(.visible)').forEach(function(el) { el.classList.add('visible'); });
+      }
+    });
+  }
+
+  window.addEventListener('scroll', function() { update(); setTimeout(update, 50); setTimeout(update, 200); setTimeout(update, 400); }, { passive: true });
+  window.addEventListener('load', update);
+  window.addEventListener('resize', update);
+
+  document.addEventListener('keydown', function(e) {
+    var arr = Array.from(folds);
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault();
+      for (var i = 0; i < arr.length; i++) { if (arr[i].offsetTop > window.scrollY + 10) { arr[i].scrollIntoView({ behavior: 'smooth' }); break; } }
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      for (var i = arr.length - 1; i >= 0; i--) { if (arr[i].offsetTop < window.scrollY - 10) { arr[i].scrollIntoView({ behavior: 'smooth' }); break; } }
+    }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView({ behavior: 'smooth' }); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length - 1].scrollIntoView({ behavior: 'smooth' }); }
+  });
+
+  (function() {
+    function scaleFolds() {
+      document.querySelectorAll('.fold').forEach(function(fold) {
+        var inner = fold.querySelector('.fold-inner');
+        if (!inner) return;
+        inner.style.zoom = 1;
+        var cs = getComputedStyle(fold);
+        var padTop = parseFloat(cs.paddingTop) || 0;
+        var padBot = parseFloat(cs.paddingBottom) || 0;
+        var available = fold.clientHeight - padTop - padBot;
+        var natural = inner.scrollHeight;
+        if (natural > available + 2) { inner.style.zoom = Math.max(available / natural, 0.5); } else { inner.style.zoom = ''; }
+      });
+    }
+    window.addEventListener('load', scaleFolds);
+    window.addEventListener('resize', scaleFolds);
+    window.addEventListener('orientationchange', function() { setTimeout(scaleFolds, 200); });
+  })();
+})();
+</script>
+</body>
+</html>
