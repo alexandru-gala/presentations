@@ -126,8 +126,9 @@
 .pipe--before .pipe-step { border-color: #9AA3B2; color: var(--text-muted); background: #fff; filter: grayscale(0.5); }
 .pipe--before .pipe-emoji { filter: grayscale(0.8); opacity: 0.75; }
 .pipe--now .pipe-step.fix { border-color: var(--pact-green); color: var(--pact-green); background: var(--pact-green-soft); }
-.stage-in { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.stage-in.stage-visible { opacity: 1; transform: translateY(0); }
+.stage-in:not(.stage-visible) { display: none; }   /* unrevealed blocks take no space (codex v6.1) */
+.stage-in.stage-visible { animation: stage-pop 0.6s ease both; }
+@keyframes stage-pop { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .fork-note { font-size: clamp(11.5px,1.1vw,14px); color: var(--text-muted); }
 
 /* --- F8: road cards with animated illustrations --- */
@@ -301,8 +302,8 @@
     <div style="display: flex; flex-direction: column; gap: clamp(8px,1.4vh,16px); align-items: flex-start;">
       <svg viewBox="0 0 82 38" style="height: clamp(26px, 3vw, 40px); color: #fff;"><use href="#pago-logo"/></svg>
       <h1 class="cover-title">Software Factories 🏭</h1>
-      <div><span class="cover-chip">Episode III</span></div>
-      <p class="cover-subtitle">Every pull request answers a user need. · AI Sync, September 2026</p>
+      <div><span class="cover-chip">AI Sync September · Episode III</span></div>
+      <p class="cover-subtitle">Every pull request answers a user need.</p>
     </div>
     <div class="wave-box" data-stage="1">
       <svg class="wave-svg" viewBox="0 0 1000 400" preserveAspectRatio="xMinYMid meet">
