@@ -29,16 +29,16 @@
 .hw-edge.t { top: calc(14% + 8px); } .hw-edge.b { bottom: calc(14% + 8px); }
 .hw-lbl { position: absolute; left: 22px; font-family: 'DM Sans', system-ui, sans-serif; font-weight: 800; font-size: clamp(11px,1.05vw,14px); letter-spacing: 2px; text-transform: uppercase; color: #1E3F8F; background: rgba(255,255,255,0.85); padding: 4px 10px; border-radius: 6px; z-index: 4; }
 .hw-lbl.t { top: 3.5%; } .hw-lbl.b { bottom: 3.5%; }
-/* jersey barrier: hazard stripes + shadow; opens from the centre at 45% of the 22s cycle */
+/* jersey barrier: hazard stripes + shadow; opens from the centre at 45% of the 12s cycle */
 .hw-barrier { position: absolute; left: 0; right: 0; top: 50%; height: 14px; transform: translateY(-50%); border-radius: 4px; z-index: 2;
-  background: repeating-linear-gradient(135deg, #F5A623 0 14px, #1E293B 14px 28px); box-shadow: 0 4px 10px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.35); animation: hw-barrier 22s linear infinite; transform-origin: center; }
+  background: repeating-linear-gradient(135deg, #F5A623 0 14px, #1E293B 14px 28px); box-shadow: 0 4px 10px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.35); animation: hw-barrier 12s linear infinite; transform-origin: center; }
 @keyframes hw-barrier { 0%, 42% { transform: translateY(-50%) scaleX(1); opacity: 1; } 50%, 100% { transform: translateY(-50%) scaleX(0); opacity: 0; } }
-.hw-mid { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: translateY(-50%); background: repeating-linear-gradient(90deg, rgba(255,255,255,0.8) 0 40px, transparent 40px 80px); opacity: 0; animation: hw-mid 22s linear infinite; }
+.hw-mid { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: translateY(-50%); background: repeating-linear-gradient(90deg, rgba(255,255,255,0.8) 0 40px, transparent 40px 80px); opacity: 0; animation: hw-mid 12s linear infinite; }
 @keyframes hw-mid { 0%, 46% { opacity: 0; } 52%, 100% { opacity: 1; } }
 /* overhead gantry sign */
 .hw-gantry { position: absolute; left: 50%; top: 0; transform: translateX(-50%); z-index: 5; display: flex; flex-direction: column; align-items: center; }
 .hw-gantry .post { width: 6px; height: clamp(14px,3vh,26px); background: #1E293B; }
-.hw-gantry .sign { background: linear-gradient(180deg, #1E3F8F, #16307a); color: rgba(255,255,255,0.45); border: 2px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 6px 16px; font-family: 'DM Sans', system-ui, sans-serif; font-weight: 800; font-size: clamp(11px,1.1vw,15px); letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 8px 18px rgba(30,41,59,0.35); animation: hw-sign 22s linear infinite; white-space: nowrap; }
+.hw-gantry .sign { background: linear-gradient(180deg, #1E3F8F, #16307a); color: rgba(255,255,255,0.45); border: 2px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 6px 16px; font-family: 'DM Sans', system-ui, sans-serif; font-weight: 800; font-size: clamp(11px,1.1vw,15px); letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 8px 18px rgba(30,41,59,0.35); animation: hw-sign 12s linear infinite; white-space: nowrap; }
 @keyframes hw-sign { 0%, 42% { color: rgba(255,255,255,0.45); box-shadow: 0 8px 18px rgba(30,41,59,0.35); } 48%, 88% { color: #22C55E; text-shadow: 0 0 12px rgba(34,197,94,0.9); box-shadow: 0 0 22px rgba(34,197,94,0.45), 0 8px 18px rgba(30,41,59,0.35); } 96%, 100% { color: rgba(255,255,255,0.45); } }
 /* CSS-drawn cars with emoji drivers */
 .hw-car { position: absolute; width: clamp(66px,7.6vw,110px); height: clamp(30px,3.4vw,50px); z-index: 3; will-change: left, top; }
@@ -54,15 +54,15 @@
 .hw-car.lane-t { top: 25%; } .hw-car.lane-b { top: 58%; }
 .hw-car.drive { animation: hw-drive linear infinite; }
 @keyframes hw-drive { from { left: -14%; } to { left: 106%; } }
-.hw-car.cross-down { animation: hw-cross-down 22s linear infinite; }
-.hw-car.cross-down .blink { animation: hw-blink 22s linear infinite; }
-.hw-car.cross-up { animation: hw-cross-up 22s linear infinite; }
-.hw-car.cross-up .blink { animation: hw-blink-up 22s linear infinite; }
+.hw-car.cross-down { animation: hw-cross-down 12s linear infinite; }
+.hw-car.cross-down .blink { animation: hw-blink 12s linear infinite; }
+.hw-car.cross-up { animation: hw-cross-up 12s linear infinite; }
+.hw-car.cross-up .blink { animation: hw-blink-up 12s linear infinite; }
 @keyframes hw-cross-down { 0% { left: -14%; top: 25%; transform: rotate(0); } 40% { left: 30%; top: 25%; transform: rotate(0); } 46% { left: 38%; top: 28%; transform: rotate(6deg); } 56% { left: 52%; top: 55%; transform: rotate(6deg); } 60% { left: 58%; top: 58%; transform: rotate(0); } 100% { left: 106%; top: 58%; } }
 @keyframes hw-cross-up { 0%, 6% { left: -14%; top: 58%; transform: rotate(0); } 42% { left: 26%; top: 58%; transform: rotate(0); } 48% { left: 34%; top: 55%; transform: rotate(-6deg); } 58% { left: 48%; top: 28%; transform: rotate(-6deg); } 62% { left: 54%; top: 25%; transform: rotate(0); } 100% { left: 106%; top: 25%; } }
 @keyframes hw-blink { 0%, 36% { opacity: 0; } 38%, 40%, 42%, 44%, 46%, 48%, 50%, 52%, 54%, 56% { opacity: 1; } 39%, 41%, 43%, 45%, 47%, 49%, 51%, 53%, 55%, 57% { opacity: 0; } 58%, 100% { opacity: 0; } }
 @keyframes hw-blink-up { 0%, 38% { opacity: 0; } 40%, 42%, 44%, 46%, 48%, 50%, 52%, 54%, 56%, 58% { opacity: 1; } 41%, 43%, 45%, 47%, 49%, 51%, 53%, 55%, 57%, 59% { opacity: 0; } 60%, 100% { opacity: 0; } }
-.hw-stamp { position: absolute; right: 4%; top: 30%; transform: rotate(-11deg); border: 3px solid #22C55E; color: #22C55E; font-family: 'DM Sans', system-ui, sans-serif; font-weight: 800; letter-spacing: 1.5px; padding: 6px 14px; border-radius: 8px; font-size: clamp(12px,1.3vw,18px); text-transform: uppercase; background: rgba(30,41,59,0.75); opacity: 0; animation: hw-stamp 22s linear infinite; z-index: 6; }
+.hw-stamp { position: absolute; right: 4%; top: 30%; transform: rotate(-11deg); border: 3px solid #22C55E; color: #22C55E; font-family: 'DM Sans', system-ui, sans-serif; font-weight: 800; letter-spacing: 1.5px; padding: 6px 14px; border-radius: 8px; font-size: clamp(12px,1.3vw,18px); text-transform: uppercase; background: rgba(30,41,59,0.75); opacity: 0; animation: hw-stamp 12s linear infinite; z-index: 6; }
 @keyframes hw-stamp { 0%, 58% { opacity: 0; transform: rotate(-11deg) scale(0.7); } 62%, 90% { opacity: 1; transform: rotate(-11deg) scale(1); } 96%, 100% { opacity: 0; } }
 
 /* ---------- ROAD CARDS (07) — four illustration scenes ---------- */
@@ -107,11 +107,11 @@
 .sl-wall { position: relative; width: 17%; height: 88%; background: linear-gradient(180deg, #1E3F8F, #16307a); border-radius: 8px 8px 0 0; box-shadow: -4px 0 12px rgba(30,63,143,0.2); transform-origin: bottom; animation: sl-drop 6s ease-in-out infinite; }
 .sl-wall::before { content: ""; position: absolute; inset: 7px; border: 2px solid rgba(255,255,255,0.22); border-radius: 6px 6px 0 0; }
 .sl-wall:nth-child(3) { animation-delay: 0.3s; } .sl-wall:nth-child(4) { animation-delay: 0.6s; }
-@keyframes sl-drop { 0%, 30% { transform: scaleY(1); opacity: 1; } 42% { transform: scaleY(1.06); } 52%, 100% { transform: scaleY(0.1); opacity: 0.25; } }
+@keyframes sl-drop { 0%, 18% { transform: scaleY(1); opacity: 1; } 26% { transform: scaleY(1.06); } 34%, 90% { transform: scaleY(0.1); opacity: 0.25; } 100% { transform: scaleY(1); opacity: 1; } }
 .sl-badge { margin-left: auto; position: relative; font-size: clamp(30px,3.4vw,50px); line-height: 1; filter: drop-shadow(0 3px 5px rgba(30,41,59,0.25)); animation: sl-grow 6s ease-in-out infinite; transform-origin: center bottom; }
-@keyframes sl-grow { 0%, 36% { transform: scale(0.75); } 58%, 100% { transform: scale(1.3); } }
+@keyframes sl-grow { 0%, 24% { transform: scale(0.75); } 42%, 92% { transform: scale(1.3); } 100% { transform: scale(0.75); } }
 .sl-stamp { position: absolute; right: 0; top: 8%; transform: rotate(-11deg); border: 2.5px solid #E07A1F; color: #E07A1F; font-family: 'DM Sans', system-ui, sans-serif; font-weight: 800; letter-spacing: 1.5px; padding: 3px 9px; border-radius: 6px; font-size: clamp(10px,1vw,13px); text-transform: uppercase; opacity: 0; animation: sl-stamp 6s ease-in-out infinite; }
-@keyframes sl-stamp { 0%, 58% { opacity: 0; transform: rotate(-11deg) scale(0.6); } 66%, 94% { opacity: 1; transform: rotate(-11deg) scale(1); } 100% { opacity: 0; } }
+@keyframes sl-stamp { 0%, 40% { opacity: 0; transform: rotate(-11deg) scale(0.6); } 48%, 92% { opacity: 1; transform: rotate(-11deg) scale(1); } 100% { opacity: 0; } }
 
 /* ---------- LANE CROSSING (09) — Ep II qa-scene pattern ---------- */
 .xs { position: relative; width: 100%; height: 100%; min-height: 120px; border-radius: 14px; overflow: hidden; background: linear-gradient(180deg, #F8FAFF, #EEF2F9); box-shadow: inset 0 0 0 1px #E2E8F0; }
