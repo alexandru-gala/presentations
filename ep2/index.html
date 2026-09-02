@@ -55,6 +55,10 @@
 .chart-wrap.visible .pr-line { stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: wave-draw 2.6s ease forwards; }
 .pr-proj { fill: none; stroke: #E08E00; stroke-width: 5; stroke-dasharray: 4 9; stroke-linecap: round; }
 .pr-area { fill: rgba(43,89,195,0.08); }
+.pr-ghost { fill: none; stroke: #9AA3B2; stroke-width: 3; stroke-dasharray: 2 7; stroke-linecap: round; }
+.ghost-dot { fill: #fff; stroke: #9AA3B2; stroke-width: 2.5; }
+.ghost-lbl { font: 600 12.5px 'DM Sans', sans-serif; fill: #7B8598; }
+.chart-svg .sun-lbl { font: 700 13px 'DM Sans', sans-serif; fill: #B07508; }
 .chart-svg .marker-line { stroke: var(--pact-green); stroke-width: 2; stroke-dasharray: 6 5; }
 .chart-svg .marker-lbl { font: 700 13.5px 'DM Sans', sans-serif; fill: var(--pact-green); }
 .rel-strip { display: grid; grid-template-columns: clamp(90px,10vw,140px) 1fr; gap: 6px clamp(10px,1.2vw,18px); align-items: center; }
@@ -114,7 +118,16 @@
 .fork-now-wrap.stage-visible { opacity: 1; transform: translateY(0); }
 .fork-badge { align-self: center; font-family: 'DM Sans'; font-weight: 700; font-size: clamp(12px,1.2vw,16px); color: var(--warn); }
 
-/* --- F9: initiatives board --- */
+/* --- F5: factory-run handoff --- */
+.pipe-step[data-tag]::after { content: attr(data-tag); position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 6px; font-size: clamp(9px,0.85vw,11px); font-weight: 600; color: var(--pago-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.pipe-step[data-tag="agentic"]::after { color: var(--pago-blue); }
+.pipe-step[data-tag="human led"], .pipe-step[data-tag="human gate"] { border-color: var(--pago-gold); }
+.mic-card { display: flex; align-items: center; gap: clamp(16px,2vw,28px); background: linear-gradient(155deg, #2B59C3, #1E3F8F); color: #fff; border-radius: 16px; padding: clamp(16px,2.2vh,26px) clamp(20px,2.4vw,34px); box-shadow: 0 10px 32px rgba(43,89,195,0.25); }
+.mic-emoji { font-size: clamp(40px,4.6vw,68px); line-height: 1; animation: illo-pulse 2.4s ease infinite; }
+.mic-name { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(22px,2.6vw,36px); line-height: 1.1; }
+.mic-desc { font-size: clamp(13px,1.3vw,18px); color: rgba(255,255,255,0.8); margin-top: 6px; }
+
+/* --- F4: initiatives board --- */
 .board { flex: 1; display: flex; flex-direction: column; gap: clamp(7px,1vh,12px); justify-content: center; min-height: 0; }
 .board-row { display: grid; grid-template-columns: minmax(210px, 0.8fr) auto 2fr auto; align-items: center; gap: clamp(12px,1.6vw,24px); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: clamp(8px,1.1vh,13px) clamp(14px,1.6vw,22px); }
 .board-row .b-name { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(13.5px,1.35vw,18px); }
@@ -165,7 +178,7 @@
 </svg>
 
 <div class="progress-bar" id="progressBar"></div>
-<div class="fold-counter on-dark" id="foldCounter">1 / 11</div>
+<div class="fold-counter on-dark" id="foldCounter">1 / 10</div>
 
 <!-- ============ FOLD 1 · Cover: title above, wave drawn on space/click ============ -->
 <section class="fold fold--blue" data-dark data-stages="1">
@@ -203,17 +216,17 @@
       <div class="section-label reveal"><span class="section-num">01</span> · Previously, on Episode II</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
-    <h2 class="fold-title reveal reveal-d1">July 9 we drew the city. <strong style="color: var(--pago-blue);">Floors are lighting up.</strong></h2>
+    <h2 class="fold-title reveal reveal-d1">July 9 we drew the city. <strong style="color: var(--pago-blue);">Confidence is lighting up.</strong></h2>
     <div class="reveal reveal-d2" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
       <div class="city" id="city"></div>
       <div class="city-floor"></div>
     </div>
     <div class="sky-legend reveal reveal-d3">
-      <span><span class="sky-swatch live"></span> live floors</span>
-      <span><span class="sky-swatch up"></span> upcoming</span>
+      <span><span class="sky-swatch live"></span> confidence it runs on its own</span>
+      <span><span class="sky-swatch up"></span> still needs us</span>
       <span><span class="sky-swatch plan"></span> planned building</span>
     </div>
-    <div class="bottom-line reveal reveal-d4">Improvements 4 floors live · Bugs 2 · New Features & SDKs first floor on — <strong style="color: var(--pago-blue);">Compliance & Security zoned next</strong>.</div>
+    <div class="bottom-line reveal reveal-d4">Improvements 65% · Bugs 40% · New Features & SDKs 20% — <strong style="color: var(--pago-blue);">Compliance & Security zoned next</strong>.</div>
   </div>
 </section>
 
@@ -240,56 +253,64 @@
         <div class="rel-note">DRAFT — release dots are placeholders; real per-month counts from Linear release pipelines TBD. Volume here grew all year too.</div>
       </div>
     </div>
-    <div class="bottom-line reveal reveal-d3">PRs tripled while commit volume stayed flat — <strong style="color: var(--pago-blue);">smaller, reviewable, agent-sized units</strong> — and the dotted line is just the current pace, continued.</div>
+    <div class="bottom-line reveal reveal-d3">The Jul–Aug flat is <strong style="color: var(--pago-blue);">vacations, not a plateau</strong> — projection runs at the May–June pace, with the whole team back.</div>
   </div>
 </section>
 
-<!-- ============ FOLD 4 · 03 The changelog wall ============ -->
+<!-- ============ FOLD 4 · 03 Initiatives — then and now ============ -->
 <section class="fold">
+  <div class="blue-blob" style="width: 400px; height: 400px; top: -150px; right: -130px;"></div>
   <div class="fold-inner">
     <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">03</span> · The changelog</div>
+      <div class="section-label reveal"><span class="section-num">03</span> · The initiatives</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
-    <h2 class="fold-title reveal reveal-d1">Don’t count the PRs. <strong style="color: var(--pago-blue);">Read them.</strong></h2>
-    <p class="fold-subtitle reveal reveal-d2">Real commit titles from shared-config — the tooling every one of us runs on. A rolling sample, January → today.</p>
-    <div class="wall reveal reveal-d2" id="wall"></div>
-    <div class="bottom-line reveal reveal-d3">598 distinct improvements this year, <strong style="color: var(--pago-blue);">751 commits since July alone</strong> — this wall is why the tools feel steadier.</div>
+    <h2 class="fold-title reveal reveal-d1">The five we showed you in July — <strong style="color: var(--pago-blue);">plus what’s cooking now.</strong></h2>
+    <div class="board reveal reveal-d2">
+      <!-- DRAFT: chips + lines to be filled by Alex (launched / cooking / paused) -->
+      <div class="board-row"><span class="b-name">Loto · automated tickets</span><span class="b-plat">🤖🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
+      <div class="board-row"><span class="b-name">Loto</span><span class="b-plat">🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
+      <div class="board-row"><span class="b-name">Share location</span><span class="b-plat">🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
+      <div class="board-row"><span class="b-name">PADs</span><span class="b-plat">🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
+      <div class="board-row"><span class="b-name">Prepay IT</span><span class="b-plat">🤖🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
+      <div class="board-row"><span class="b-name">PJ · eFactura</span><span class="b-plat">🤖🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
+    </div>
+    <div class="bottom-line reveal reveal-d3">In July: five initiatives, all started, nothing live. <strong style="color: var(--pago-blue);">Today: [headline — TBD]</strong></div>
   </div>
 </section>
-
-<!-- ============ FOLD 5 · 04 Tools grew up (with illustrations) ============ -->
+<!-- ============ FOLD 5 · 04 Factory run — over to Lucian ============ -->
 <section class="fold">
   <div class="blue-blob" style="width: 420px; height: 420px; bottom: -160px; right: -140px;"></div>
   <div class="fold-inner">
     <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">04</span> · Behind the scenes</div>
+      <div class="section-label reveal"><span class="section-num">04</span> · Factory run</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
-    <h2 class="fold-title reveal reveal-d1">The tools had to <strong style="color: var(--pago-blue);">grow up</strong> to keep up with you.</h2>
-    <div class="two-col reveal reveal-d2" style="align-items: stretch;">
-      <div class="column-card column-card--warn">
-        <div class="column-eyebrow">The uncomfortable middle</div>
-        <div class="column-headline">Capability came with instability.</div>
-        <div class="column-body"><ul>
-          <li>150+ agents, 170+ skills — built fast, in the open.</li>
-          <li>Fragile wrappers, flaky CLIs, duplicated patterns.</li>
-          <li>Every stall cost a session; every silent failure cost trust.</li>
-        </ul></div>
-        <div class="col-illo"><span>🧪</span><span class="pulse">💥</span><span>🩹</span></div>
+    <h2 class="fold-title reveal reveal-d1">Enough charts. <strong style="color: var(--pago-blue);">Let’s watch one run.</strong></h2>
+    <p class="fold-subtitle reveal reveal-d2">One initiative, end to end — the way it actually moves through the factory today.</p>
+    <div class="reveal reveal-d3" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px,4vh,44px);">
+      <div class="pipe">
+        <div class="pipe-step" data-tag="human led"><span class="pipe-emoji">💡</span>Idea + PRD</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step" data-tag="agentic"><span class="pipe-emoji">📦</span>Intake</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step" data-tag="human gate"><span class="pipe-emoji">🕵️</span>Gate</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step" data-tag="agentic"><span class="pipe-emoji">🏭</span>Factory</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step" data-tag="human gate"><span class="pipe-emoji">✨</span>Polishing</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><span class="pipe-emoji">🚀</span>Live</div>
       </div>
-      <div class="column-card column-card--win">
-        <div class="column-eyebrow">Since July</div>
-        <div class="column-headline">From “it exists” to “it survives production”.</div>
-        <div class="column-body"><ul>
-          <li><strong>751 commits</strong> of hardening in shared-config alone.</li>
-          <li>Auth preflights, timeouts, retries, security scanning on every merge.</li>
-          <li>Weak paths retired. Strong paths made boring — and dependable.</li>
-        </ul></div>
-        <div class="col-illo"><span>🔩</span><span class="pulse">🛡️</span><span>✅</span></div>
+      <div class="mic-card">
+        <span class="mic-emoji">🎤</span>
+        <div>
+          <div class="mic-name">Over to Lucian</div>
+          <div class="mic-desc">A factory run, live — from requirement package to pull request. I’ll take the mic back at the borders.</div>
+        </div>
       </div>
     </div>
-    <div class="bottom-line reveal reveal-d3">We didn’t just add tools — <strong style="color: var(--pago-blue);">we stabilized the ones that earned trust</strong>.</div>
+    <div class="bottom-line reveal reveal-d4">Same pipeline we drew in July — <strong style="color: var(--pago-blue);">now with a real initiative going through it</strong>.</div>
   </div>
 </section>
 
@@ -378,45 +399,21 @@
     <div class="bottom-line reveal reveal-d4">Specialism stays. <strong style="color: var(--pago-blue);">Silos go.</strong></div>
   </div>
 </section>
-
-<!-- ============ FOLD 9 · 08 Initiatives — then and now ============ -->
-<section class="fold">
-  <div class="blue-blob" style="width: 400px; height: 400px; top: -150px; right: -130px;"></div>
-  <div class="fold-inner">
-    <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">08</span> · The initiatives</div>
-      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
-    </div>
-    <h2 class="fold-title reveal reveal-d1">The five we showed you in July — <strong style="color: var(--pago-blue);">plus what’s cooking now.</strong></h2>
-    <div class="board reveal reveal-d2">
-      <!-- DRAFT: chips + lines to be filled by Alex (launched / cooking / paused) -->
-      <div class="board-row"><span class="b-name">Loto · automated tickets</span><span class="b-plat">🤖🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
-      <div class="board-row"><span class="b-name">Loto</span><span class="b-plat">🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
-      <div class="board-row"><span class="b-name">Share location</span><span class="b-plat">🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
-      <div class="board-row"><span class="b-name">PADs</span><span class="b-plat">🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
-      <div class="board-row"><span class="b-name">Prepay IT</span><span class="b-plat">🤖🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
-      <div class="board-row"><span class="b-name">PJ · eFactura</span><span class="b-plat">🤖🧰</span><span class="b-line">[status since July — TBD]</span><span class="b-chip tbd">fill me</span></div>
-    </div>
-    <div class="bottom-line reveal reveal-d3">In July: five initiatives, all started, nothing live. <strong style="color: var(--pago-blue);">Today: [headline — TBD]</strong></div>
-  </div>
-</section>
-
-<!-- ============ FOLD 10 · 09 One Rule III ============ -->
+<!-- ============ FOLD 9 · 08 One Rule III ============ -->
 <section class="fold">
   <div class="fold-inner quote-slide">
-    <div class="section-label reveal" style="align-self: center;"><span class="section-num">09</span> · One rule, episode III</div>
+    <div class="section-label reveal" style="align-self: center;"><span class="section-num">08</span> · One rule, episode III</div>
     <div class="quote-mark reveal reveal-d1">“</div>
     <div class="quote-text reveal reveal-d2">Your primary team is <strong style="color: var(--pago-blue);">Pago</strong>.<br>Your specialty is your <strong style="color: var(--pago-blue);">starting point</strong> — not your border.</div>
     <p class="body-lg muted reveal reveal-d3">Last episode’s rule was about the AI. This one is about us.</p>
   </div>
 </section>
-
-<!-- ============ FOLD 11 · 10 Enlist — cross a border ============ -->
+<!-- ============ FOLD 10 · 09 Enlist — cross a border ============ -->
 <section class="fold">
   <div class="gold-circle" style="width: 500px; height: 500px; bottom: -180px; right: -140px; opacity: 0.07;"></div>
   <div class="fold-inner">
     <div class="pago-header">
-      <div class="section-label reveal"><span class="section-num">10</span> · Enlist</div>
+      <div class="section-label reveal"><span class="section-num">09</span> · Enlist</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
     <h2 class="fold-title reveal reveal-d1">In July we asked you to join. <strong style="color: var(--pago-blue);">Now we ask you to cross.</strong></h2>
@@ -437,8 +434,6 @@
     <div class="bottom-line reveal reveal-d4">Episode II: we built the map. Episode III: <strong style="color: var(--pago-blue);">the city started moving. Move with it.</strong></div>
   </div>
 </section>
-
-<script src="commits-data.js"></script>
 <script>
 /* ---- Wave data (real, org-wide PagoApp): PRs opened per month 2026 ---- */
 var PR_DATA = [
@@ -482,14 +477,14 @@ var PR_PROJ = [ { m: 'Sep', v: 1650 }, { m: 'Oct', v: 1880 }, { m: 'Nov', v: 213
 /* ---- Fold 2: skyline with per-factory progress lighting ---- */
 (function(){
   var COLS = 4;
-  /* lit = floors on (from the bottom); planned = dashed shell, nothing live */
+  /* conf = % confidence the factory runs on its own → lit fraction of the building; planned = dashed shell */
   var buildings = [
-    { name: 'Improvements', h: 82, lit: 4 },
-    { name: 'Bugs', h: 64, lit: 2 },
-    { name: 'New Features', h: 74, lit: 1 },
-    { name: 'SDKs', h: 56, lit: 1 },
-    { name: 'Compliance', h: 48, lit: 0, planned: true },
-    { name: 'Security', h: 60, lit: 0, planned: true }
+    { name: 'Improvements', h: 82, conf: 65 },
+    { name: 'Bugs', h: 64, conf: 40 },
+    { name: 'New Features', h: 74, conf: 20 },
+    { name: 'SDKs', h: 56, conf: 20 },
+    { name: 'Compliance', h: 48, conf: 0, planned: true },
+    { name: 'Security', h: 60, conf: 0, planned: true }
   ];
   var city = document.getElementById('city');
   var timers = [];
@@ -514,9 +509,10 @@ var PR_PROJ = [ { m: 'Sep', v: 1650 }, { m: 'Oct', v: 1880 }, { m: 'Nov', v: 213
           grid[r][c] = cell;
         }
       }
+      b.lit = b.planned ? 0 : Math.max(1, Math.round(rows * b.conf / 100));
       var tag = document.createElement('span');
-      tag.className = 'bld-tag' + (b.planned || !b.lit ? ' bld-tag--plan' : '');
-      tag.textContent = b.planned ? 'planned' : (b.lit + (b.lit === 1 ? ' floor live' : ' floors live'));
+      tag.className = 'bld-tag' + (b.planned ? ' bld-tag--plan' : '');
+      tag.textContent = b.planned ? 'planned' : (b.conf + '% confidence');
       el.appendChild(tag);
       var nm = document.createElement('span'); nm.className = 'bld-name'; nm.textContent = b.name; el.appendChild(nm);
       city.appendChild(el);
@@ -577,6 +573,22 @@ var PR_PROJ = [ { m: 'Sep', v: 1650 }, { m: 'Oct', v: 1880 }, { m: 'Nov', v: 213
     c.setAttribute('fill', i < PR_DATA.length ? 'var(--pago-blue)' : 'var(--pago-gold)');
     g.appendChild(c);
   });
+  /* summer band: Jul–Aug, many colleagues on vacation */
+  var slotW = XY(1,0).x - XY(0,0).x;
+  var band = document.createElementNS(ns, 'rect');
+  band.setAttribute('x', XY(6,0).x - slotW*0.5); band.setAttribute('y', padT - 30);
+  band.setAttribute('width', slotW*2); band.setAttribute('height', H - padB - padT + 30);
+  band.setAttribute('rx', 10); band.setAttribute('fill', 'rgba(245,166,35,0.11)');
+  g.insertBefore(band, g.firstChild);
+  var sun = document.createElementNS(ns, 'text');
+  sun.setAttribute('x', XY(6,0).x + slotW*0.5); sun.setAttribute('y', H - padB - 12); sun.setAttribute('text-anchor', 'middle');
+  sun.setAttribute('class', 'sun-lbl'); sun.textContent = '☀️ summer · vacations'; g.appendChild(sun);
+  /* vacation-adjusted ghost (what Jul–Aug look like at full headcount) */
+  var ghost = [ { i: 6, v: 1700 }, { i: 7, v: 1790 } ];
+  var gp = 'M ' + pts[5].x + ' ' + pts[5].y + ghost.map(function(d){ var q = XY(d.i, d.v); return ' L ' + q.x + ' ' + q.y; }).join('');
+  var gl = document.createElementNS(ns, 'path'); gl.setAttribute('d', gp); gl.setAttribute('class', 'pr-ghost'); g.appendChild(gl);
+  ghost.forEach(function(d){ var q = XY(d.i, d.v); var c = document.createElementNS(ns, 'circle'); c.setAttribute('cx', q.x); c.setAttribute('cy', q.y); c.setAttribute('r', 4); c.setAttribute('class', 'ghost-dot'); g.appendChild(c); });
+  var glbl = document.createElementNS(ns, 'text'); glbl.setAttribute('x', XY(7,1790).x + 10); glbl.setAttribute('y', XY(7,1790).y + 5); glbl.setAttribute('class', 'ghost-lbl'); glbl.textContent = 'vacation-adjusted'; g.appendChild(glbl);
   /* Episode II marker at Jul 9 */
   var mx = XY(6, 0).x + (XY(7, 0).x - XY(6, 0).x) * 0.27;
   var ml = document.createElementNS(ns, 'line');
@@ -598,38 +610,6 @@ var PR_PROJ = [ { m: 'Sep', v: 1650 }, { m: 'Oct', v: 1880 }, { m: 'Nov', v: 213
   }
   dots('laneApp', '', [6, 14, 22, 30, 37, 44, 50, 56, 61, 66, 71]);
   dots('laneSdk', 'sdk', [4, 9, 16, 20, 26, 31, 35, 40, 44, 48, 52, 57, 61, 64, 68, 71]);
-})();
-
-/* ---- Fold 4: commit wall — 3 columns, readable speed ---- */
-(function(){
-  var wall = document.getElementById('wall');
-  /* projector readability: ~180 titles in 2 columns, larger type, slower scroll */
-  var subjects = (window.COMMITS || []).slice(0, 180);
-  var COLS = 2;
-  var per = Math.floor(subjects.length / COLS);
-  for (var c = 0; c < COLS; c++){
-    var col = document.createElement('div'); col.className = 'wall-col';
-    var track = document.createElement('div'); track.className = 'wall-track';
-    var slice = subjects.slice(c * per, (c + 1) * per);
-    /* duplicate for seamless loop */
-    slice.concat(slice).forEach(function(s){
-      var it = document.createElement('div'); it.className = 'wall-item'; it.textContent = s;
-      track.appendChild(it);
-    });
-    col.appendChild(track);
-    wall.appendChild(col);
-  }
-  /* px-based loop: measure one copy's height (incl. inter-copy gap) so speed is uniform and the wrap is seamless */
-  function tune(){
-    wall.querySelectorAll('.wall-track').forEach(function(track, c){
-      var h = (track.scrollHeight + 8) / 2;
-      track.style.setProperty('--scrollH', h + 'px');
-      track.style.animationDuration = (h / 26) + 's';   /* ~26 px/s, readable */
-      track.style.animationDelay = (-c * 41) + 's';
-    });
-  }
-  window.addEventListener('load', function(){ requestAnimationFrame(tune); });
-  window.addEventListener('resize', function(){ requestAnimationFrame(tune); });
 })();
 
 /* ---- Fold 6: bridges drawn between the two island boxes ---- */
