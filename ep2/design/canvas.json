@@ -1,0 +1,11 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 880, "h": 320, "title": "05 · Highway lane change" },
+    { "file": "RoadCards.dc.html", "x": 0, "y": 460, "w": 880, "h": 430, "title": "07 · Road illustrations" },
+    { "file": "Crossing.dc.html", "x": 0, "y": 1020, "w": 880, "h": 260, "title": "09 · Lane crossing" }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 960, "y": 0, "w": 300, "text": "Episode III deck illustrations.\nDeck tokens: DM Sans, Pago blue #2B59C3, gold #F5A623, asphalt #2F3A4F.\nEach artboard is ported 1:1 into ep2/index.html — edit here, re-port after." }
+  ],
+  "launch": { "view": "canvas" }
+}
