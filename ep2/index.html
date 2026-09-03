@@ -564,7 +564,14 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
    One ticket travels the whole rail. The handoff points it passes stay grey —
    nobody takes it off the owner — and only the far end goes green. */
 .ow { position: relative; width: 100%; height: 100%; min-height: 84px;
-  display: flex; flex-direction: column; justify-content: center; gap: clamp(10px, 2.4vh, 26px); }
+  display: flex; flex-direction: column; justify-content: flex-end;
+  gap: clamp(6px, 1.4vh, 16px); padding-bottom: clamp(2px, 1vh, 10px); }
+/* The reporter's face. Absolutely-positioned children so GSAP owns their whole
+   transform — a translate(-50%) in CSS would be clobbered the moment it scales. */
+.ow-face { position: relative; flex: 1 1 auto; min-height: 0; }
+.ow-emo { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: clamp(34px, 4.6vw, 88px); line-height: 1;
+  filter: drop-shadow(0 3px 6px rgba(30,41,59,0.22)); }
 .ow-caps { display: flex; justify-content: space-between; padding: 0 2%;
   font-family: 'DM Sans', sans-serif; font-weight: 800; letter-spacing: 1.1px; text-transform: uppercase;
   font-size: clamp(11px, 1.1vw, 15px); }
@@ -593,12 +600,12 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
 /* the problem itself, in transit — positioned in percent so it can never drift
    out of step with the fill behind it */
 .ow-tkt { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%);
-  width: clamp(31px, 3.3vw, 44px); height: clamp(19px, 2.2vw, 27px); opacity: 0;
+  width: clamp(40px, 4.3vw, 57px); height: clamp(25px, 2.9vw, 35px); opacity: 0;
   background: #fff; border-radius: 4px; box-shadow: 0 2px 6px rgba(30,41,59,0.22);
-  display: flex; align-items: center; gap: 2.5px; padding: 0 3px 0 0; overflow: hidden; }
-.ow-edge { width: 4px; align-self: stretch; background: var(--warn); flex: 0 0 auto; }
-.ow-lines { display: flex; flex-direction: column; gap: 2.5px; flex: 1; }
-.ow-lines i { display: block; height: 2px; border-radius: 1px; background: #C6CEDC; }
+  display: flex; align-items: center; gap: 3.5px; padding: 0 4px 0 0; overflow: hidden; }
+.ow-edge { width: 5px; align-self: stretch; background: var(--warn); flex: 0 0 auto; }
+.ow-lines { display: flex; flex-direction: column; gap: 3.5px; flex: 1; }
+.ow-lines i { display: block; height: 2.5px; border-radius: 1.5px; background: #C6CEDC; }
 .ow-lines i:last-child { width: 62%; }
 
 /* ═══════ Fold 08 · "Silos down ≠ ownership down" — V2 ═══════
@@ -636,6 +643,17 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
 .road-grid { grid-template-rows: 1fr 1fr; }
 .road-grid > .road-card { min-height: 0; }
 
+/* ═══════ Fold 08 · the OWNED stamp, restored ═══════
+   The V2 rebuild replaced the original card's single "owned" stamp with a green
+   shield per slab, which shows ownership accumulating but never names it. The
+   stamp puts the word back. Green, not the original orange: orange is this
+   deck's problem colour, and ownership is what the shields already say. It sits
+   in the right-hand half — the side a wall has already crossed the line on. */
+.si-stamp { position: absolute; right: 3%; top: 6%; transform: rotate(-11deg);
+  border: 2.5px solid var(--pact-green); color: var(--pact-green);
+  font-family: 'DM Sans', system-ui, sans-serif; font-weight: 800; letter-spacing: 1.5px;
+  padding: 3px 9px; border-radius: 6px; font-size: clamp(9px, 0.95vw, 13px);
+  text-transform: uppercase; background: rgba(255,255,255,0.72); z-index: 3; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
 </style>
 </head>
@@ -1053,7 +1071,7 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
       <div class="road-card">
         <div class="rc-title">Silos down ≠ ownership down</div>
         <div class="rc-body">Taking down platform silos doesn’t take away ownership — it asks for more of it.</div>
-        <div class="rc-illo"><div class="si" id="si"><div class="si-floor"></div><div class="si-thresh"></div><div class="si-stage" id="siStage"></div></div></div>
+        <div class="rc-illo"><div class="si" id="si"><div class="si-floor"></div><div class="si-thresh"></div><div class="si-stage" id="siStage"></div><span class="si-stamp">Owned</span></div></div>
       </div>
     </div>
     <div class="bottom-line reveal reveal-d3">Specialism stays. <strong style="color: var(--pago-blue);">Silos go.</strong></div>
@@ -2281,6 +2299,10 @@ var REL = {
     function build() {
       if (tl) tl.kill();
       scene.innerHTML =
+        '<div class="ow-face">' +
+          '<span class="ow-emo ow-emo--bad">\uD83D\uDE20</span>' +
+          '<span class="ow-emo ow-emo--ok">\uD83D\uDE0A</span>' +
+        '</div>' +
         '<div class="ow-caps"><span class="ow-cap ow-cap--a">Complaint</span>' +
         '<span class="ow-cap ow-cap--b">Live fix</span></div>' +
         '<div class="ow-track">' +
@@ -2296,8 +2318,16 @@ var REL = {
       var edge = scene.querySelector('.ow-edge'), tick = scene.querySelector('.ow-tick');
       var nodeB = scene.querySelector('.ow-node--b'), capB = scene.querySelector('.ow-cap--b');
       var pips = scene.querySelectorAll('.ow-pip');
+      var bad = scene.querySelector('.ow-emo--bad'), ok = scene.querySelector('.ow-emo--ok');
 
-      if (reduced) { gsap.set(fill, { scaleX: 1 }); gsap.set(tick, { scale: 1, opacity: 1 }); return; }
+      if (reduced) {
+        gsap.set(fill, { scaleX: 1 }); gsap.set(tick, { scale: 1, opacity: 1 });
+        gsap.set(bad, { opacity: 0 }); gsap.set(ok, { opacity: 1 });
+        return;
+      }
+      /* the two faces share one slot; only one is ever visible */
+      gsap.set(bad, { scale: 1, opacity: 1 });
+      gsap.set(ok, { scale: 0.4, opacity: 0 });
 
       tl = gsap.timeline({ paused: true, repeat: -1 });
       tl.fromTo(tkt, { left: '0%', opacity: 0 },
@@ -2322,7 +2352,20 @@ var REL = {
         { scale: 1, opacity: 1, duration: 0.34, ease: 'back.out(2.4)', immediateRender: false }, LAND + 0.1);
       tl.fromTo(tkt, { opacity: 1 },
         { opacity: 0, duration: 0.28, ease: 'sine.in', immediateRender: false }, LAND - 0.12);
+      /* the reporter's face turns over exactly when the bar reaches Live fix */
+      tl.fromTo(bad, { scale: 1, opacity: 1 },
+        { scale: 0.4, opacity: 0, duration: 0.26, ease: 'sine.in', immediateRender: false }, LAND - 0.02);
+      tl.fromTo(ok, { scale: 0.4, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.44, ease: 'back.out(2.6)', immediateRender: false }, LAND + 0.04);
+
       tl.call(function () { nodeB.classList.remove('is-hit'); capB.classList.remove('is-hit'); }, null, LAND + 1.5);
+      /* … and back to the next complaint only AFTER the rail has emptied. Going
+         angry while the bar still reads solved-and-green is the one thing the
+         card must never show. */
+      tl.fromTo(ok, { scale: 1, opacity: 1 },
+        { scale: 0.4, opacity: 0, duration: 0.28, ease: 'sine.in', immediateRender: false }, LAND + 1.95);
+      tl.fromTo(bad, { scale: 0.4, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.34, ease: 'sine.out', immediateRender: false }, LAND + 2.12);
       tl.fromTo(tick, { scale: 1, opacity: 1 },
         { scale: 0.8, opacity: 0, duration: 0.4, ease: 'sine.in', immediateRender: false }, LAND + 1.5);
       tl.fromTo(fill, { opacity: 1 },
@@ -2348,9 +2391,14 @@ var REL = {
     var scene = document.getElementById('si');
     if (!scene) return;
     var stage = document.getElementById('siStage');
-    var N = 4, FROM = 106, TO = -22, THRESH = 52;     /* all in % of the scene */
+    /* Travel is LEFT→RIGHT. Every other scene in this deck (the cars, the paver,
+       the ticket rail, the training tokens) moves that way, and the eye reads
+       progress along that axis — walls standing on the left, ownership marks
+       accumulating on the right. */
+    var N = 4, FROM = -22, TO = 106, THRESH = 52;     /* all in % of the scene */
     var TRAVEL = 7.2, DROP = 0.45;
     var live = [];
+    var stamp = scene.querySelector('.si-stamp');
 
     function build() {
       live.forEach(function (t) { t.kill(); });
@@ -2358,7 +2406,7 @@ var REL = {
       stage.innerHTML = '';
 
       /* when a slab's centre reaches the line, as a fraction of its journey */
-      var hit = (FROM - THRESH) / (FROM - TO);
+      var hit = (THRESH - FROM) / (TO - FROM);
 
       for (var i = 0; i < N; i++) {
         var slab = document.createElement('span');
@@ -2387,6 +2435,20 @@ var REL = {
         t.progress(i / N);                            /* evenly spaced down the line */
         live.push(t);
       }
+
+      /* The stamp nudges on every wall that lands. Slab i's drop falls at
+         TRAVEL*hit - i*TRAVEL/N (mod TRAVEL), and all four are congruent mod
+         TRAVEL/N — so one timeline of that period stays in step with all of
+         them, instead of four tweens fighting over one element. */
+      if (!reduced && stamp) {
+        var beat = TRAVEL / N, at = (TRAVEL * hit + DROP - 0.1) % beat;
+        var st = gsap.timeline({ repeat: -1 });
+        st.fromTo(stamp, { scale: 1 },
+          { scale: 1.13, duration: 0.14, ease: 'sine.out', immediateRender: false }, at);
+        st.to(stamp, { scale: 1, duration: 0.34, ease: 'sine.inOut' }, at + 0.14);
+        st.set({}, {}, beat);
+        live.push(st);
+      }
     }
 
     build();
@@ -2401,6 +2463,7 @@ var REL = {
   })();
 })();
 </script>
+
 
 
 </body>
