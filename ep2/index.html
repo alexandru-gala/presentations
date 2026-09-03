@@ -502,31 +502,40 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
 
 /* ═══════ Fold 08 · "More dedicated trainings" — V2 scene ═══════
    Three lanes. On each, somebody crosses from one discipline to another: the
-   dashed path fills in solid behind them and the destination banks a merged PR. */
-.tr2 { display: flex; flex-direction: column; justify-content: center;
-  gap: clamp(4px, 0.85vh, 11px); width: 100%; height: 100%;
-  /* the card clips at 22vh, so the icons scale with available HEIGHT, not width */
-  --tr-ico: clamp(26px, 5vh, 52px); }
-.tr2-row { display: grid; grid-template-columns: 1fr minmax(44px, 200px) 1fr; align-items: center;
-  gap: clamp(8px, 1.1vw, 16px); }
-.tr2-row > :first-child { justify-self: start; }
-.tr2-row > :last-child  { justify-self: end; }
-.tr2-pill { display: inline-flex; align-items: center; gap: 9px; position: relative;
+   dashed path fills in solid behind them and the destination banks a merged PR.
+
+   ONE grid owns all nine cells (not three per-row grids), so column 1 sizes to
+   the widest LEFT pill and column 3 to the widest RIGHT pill, and every pill in
+   a column is stretched to that width. No JS measuring, still correct if the
+   labels or the font change. */
+.tr2 { display: grid; grid-template-columns: max-content minmax(44px, 1fr) max-content;
+  align-items: center; align-content: center; justify-items: stretch;
+  column-gap: clamp(8px, 1.1vw, 16px); row-gap: clamp(3px, 0.5vh, 7px);
+  width: 100%; height: 100%;
+  /* The card clips at max-height clamp(120px,22vh,220px), so the icons scale with
+     available HEIGHT, not width. Budget: 3 rows are 2.94·--tr-ico (the per-row max
+     of the two icon multipliers) + 3·(20px padding + 3px border) + 2 row-gaps, and
+     that must stay under 22vh. Solving it gives ~6vh − 17px; the 46px cap is what
+     the 220px max-height allows once the padding went 5px → 10px. */
+  --tr-ico: clamp(16px, calc(6vh - 17px), 46px); }
+.tr2-pill { display: flex; align-items: center; justify-content: center; gap: 9px;
+  position: relative; box-sizing: border-box;
   background: #fff; border: 1.5px solid var(--border); border-radius: 999px;
-  padding: 5px 16px; box-shadow: 0 2px 7px rgba(30,41,59,0.07);
+  padding: 10px 16px; box-shadow: 0 2px 7px rgba(30,41,59,0.07);
   font-family: 'DM Sans', sans-serif; font-weight: 700; white-space: nowrap;
   font-size: clamp(12px, 1.15vw, 16px); color: var(--text);
   transition: border-color 0.3s ease, box-shadow 0.3s ease; }
 .tr2-pill.is-hit { border-color: var(--pact-green);
   box-shadow: 0 0 0 3px rgba(34,197,94,0.16), 0 2px 6px rgba(30,41,59,0.06); }
 /* sized for equal visual mass, not equal box — these are illustrations, not glyphs */
-.tr2-ico { display: block; width: auto; }
+.tr2-ico { display: block; width: auto; flex: none; }
 .tr2-ico--backend { height: calc(var(--tr-ico) * 0.94); }
 .tr2-ico--design  { height: calc(var(--tr-ico) * 0.84); }
 .tr2-ico--mobile  { height: calc(var(--tr-ico) * 1.00); }
 .tr2-ico--qa      { height: calc(var(--tr-ico) * 0.94); }
 
-.tr2-lane { position: relative; height: 12px; min-width: 44px; }
+.tr2-lane { position: relative; height: 12px; width: 100%; max-width: 200px;
+  margin-inline: auto; }
 .tr2-dash { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: translateY(-50%);
   border-radius: 2px; background: repeating-linear-gradient(90deg, #C3CCDA 0 6px, transparent 6px 13px); }
 /* the path made solid behind the person crossing */
@@ -2140,20 +2149,28 @@ var REL = {
            label + (dest ? '<span class="tr2-tick">' + CHECK + '</span>' : '') + '</span>';
   }
 
+  function el(html) {
+    var t = document.createElement('template');
+    t.innerHTML = html;
+    return t.content.firstElementChild;
+  }
+
   function build() {
     if (tl) tl.kill();
     scene.innerHTML = '';
 
+    /* the nine cells go straight into the one .tr2 grid — no per-row wrapper — so
+       each column can size itself to the widest pill in it. Each row's four
+       animated elements are held as direct references instead of being queried
+       back off a wrapper that no longer exists. */
     var rows = LANES.map(function (ln) {
-      var row = document.createElement('div');
-      row.className = 'tr2-row';
-      row.innerHTML = pill(ln.from, ln.fromLabel, false) +
-        '<span class="tr2-lane"><span class="tr2-dash"></span><span class="tr2-fill"></span>' +
-        '<span class="tr2-tok"></span></span>' +
-        pill(ln.to, ln.toLabel, true);
-      scene.appendChild(row);
-      return { fill: row.querySelector('.tr2-fill'), tok: row.querySelector('.tr2-tok'),
-               dest: row.querySelector('.tr2-dest'), tick: row.querySelector('.tr2-tick') };
+      var from = el(pill(ln.from, ln.fromLabel, false));
+      var lane = el('<span class="tr2-lane"><span class="tr2-dash"></span>' +
+        '<span class="tr2-fill"></span><span class="tr2-tok"></span></span>');
+      var dest = el(pill(ln.to, ln.toLabel, true));
+      scene.appendChild(from); scene.appendChild(lane); scene.appendChild(dest);
+      return { fill: lane.querySelector('.tr2-fill'), tok: lane.querySelector('.tr2-tok'),
+               dest: dest, tick: dest.querySelector('.tr2-tick') };
     });
 
     if (reduced) {
