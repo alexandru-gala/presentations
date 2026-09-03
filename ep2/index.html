@@ -78,7 +78,7 @@
 .chart-svg .inc-cell { fill: #FBE3DE; }
 .chart-svg .inc-change { fill: #DC2626; }
 .chart-svg .inc-other { fill: #fff; stroke: #DC2626; stroke-width: 1.8; }
-.chart-svg .g-inc.stage-visible .inc-change, .chart-svg .g-inc.stage-visible .inc-other { animation: dot-pop 0.4s cubic-bezier(0.34,1.4,0.64,1) backwards; }
+.chart-svg .g-inc.stage-visible .inc-change, .chart-svg .g-inc.stage-visible .inc-other { animation: dot-pop 0.53s cubic-bezier(0.34,1.4,0.64,1) backwards; }
 
 .chart-svg .rel-heat { fill: var(--pago-blue); }
 .chart-svg .rel-heat-lbl { font: 700 12px 'DM Sans', sans-serif; fill: #fff; paint-order: stroke; stroke: rgba(30,63,143,0.55); stroke-width: 2px; }
@@ -99,6 +99,9 @@
 .chart-svg .g-line .val-lbl, .chart-svg .g-line .pt { opacity: 0; }
 .chart-svg .g-line.stage-visible .pt { animation: dot-pop 0.4s cubic-bezier(0.34,1.4,0.64,1) forwards; }
 .chart-svg .g-line.stage-visible .val-lbl { animation: lbl-rise 0.5s cubic-bezier(0.22,0.61,0.36,1) forwards; }
+/* the month axis rides stage 1 too — per-label delays come from charts.js */
+.chart-svg .g-axis .axis-lbl { opacity: 0; }
+.chart-svg .g-axis.stage-visible .axis-lbl { animation: lbl-rise 0.5s cubic-bezier(0.22,0.61,0.36,1) forwards; }
 /* the projection wipes on left to right — one month at a time, drawn once */
 .chart-svg .proj-wipe { transform: scaleX(0); transform-origin: 0 0; transform-box: fill-box; }
 .chart-svg .g-proj.stage-visible .proj-wipe { animation: proj-wipe 1.9s cubic-bezier(0.22,0.61,0.36,1) forwards; }
@@ -107,8 +110,8 @@
 .chart-svg .g-proj.stage-visible .proj-dot { animation: dot-pop 0.38s cubic-bezier(0.34,1.4,0.64,1) forwards; }
 .chart-svg .proj-lbl { opacity: 0; }
 .chart-svg .g-proj.stage-visible .proj-lbl { animation: lbl-rise 0.45s cubic-bezier(0.22,0.61,0.36,1) forwards; }
-.chart-svg .g-rel.stage-visible .rel-minor, .chart-svg .g-rel.stage-visible .rel-patch, .chart-svg .g-rel.stage-visible .rel-heat { animation: dot-pop 0.4s cubic-bezier(0.34,1.4,0.64,1) backwards; }
-.chart-svg .rel-heat-lbl { opacity: 0; } .chart-svg .g-rel.stage-visible .rel-heat-lbl { animation: lbl-in 0.3s cubic-bezier(0.22,0.61,0.36,1) forwards; }
+.chart-svg .g-rel.stage-visible .rel-minor, .chart-svg .g-rel.stage-visible .rel-patch, .chart-svg .g-rel.stage-visible .rel-heat { animation: dot-pop 0.53s cubic-bezier(0.34,1.4,0.64,1) backwards; }
+.chart-svg .rel-heat-lbl { opacity: 0; } .chart-svg .g-rel.stage-visible .rel-heat-lbl { animation: lbl-in 0.4s cubic-bezier(0.22,0.61,0.36,1) forwards; }
 @keyframes lbl-in { to { opacity: 1; } }
 @keyframes lbl-rise { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes dot-pop { from { transform: scale(0.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -153,6 +156,10 @@
 .tp-stone-d { font-size: clamp(11px,1.1vw,14.5px); color: var(--text-muted); line-height: 1.4; }
 
 /* --- F4: gantt (July board, verbatim style) --- */
+/* the board reveals row by row on space; the stagger comes from JS */
+.gantt .g-row-in { opacity: 0; }
+.fold[data-stages] .gantt.stage-visible .g-row-in { animation: row-in 0.5s cubic-bezier(0.22,0.61,0.36,1) forwards; }
+@keyframes row-in { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
 .gantt { width: 100%; margin-top: clamp(6px,1vh,12px); display: grid; grid-template-columns: clamp(260px,24vw,360px) repeat(6, 1fr); row-gap: clamp(6px,1vh,11px); align-items: center; }
 .g-h { font-size: clamp(10px,1vw,13px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); text-align: center; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
 .g-h--gate { color: var(--pago-gold); }
@@ -653,13 +660,12 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
         <div class="tp-stone"><div class="tp-stone-ico">🧯</div><div class="tp-stone-t">Auto premortem runs</div><div class="tp-stone-d">“What can go wrong?” asked automatically before a release, not in the postmortem after.</div></div>
       </div>
     </div>
-    <div class="chart-cue reveal reveal-d3">space: pillars → foundation → what holds it up</div>
     <div class="bottom-line reveal reveal-d3">Faster releases are earned. <strong style="color: var(--pago-blue);">Signals first, speed follows.</strong></div>
   </div>
 </section>
 
 <!-- ============ FOLD 4 · 03 Initiatives — July board, September state ============ -->
-<section class="fold">
+<section class="fold" data-stages="1">
   <div class="blue-blob" style="width: 440px; height: 440px; top: -160px; right: -160px;"></div>
   <div class="fold-inner">
     <div class="pago-header">
@@ -1208,6 +1214,19 @@ function chartEaseInvert(frac, e){
   var g = document.getElementById('prChartG');
   var W = 1000, H = 560, padL = 6, padR = 128, padT = 40, chartB = 292;   /* chart occupies y ≤ chartB; lanes below */
   var max = 2600;
+  /* preserveAspectRatio="…meet" letterboxes a 1000×560 viewBox inside a wider
+     box, which left a dead band on the right. Widen the viewBox to the element's
+     real aspect instead, so the drawing spans the same width as the bottom line
+     while circles stay circles (no non-uniform scaling). */
+  (function fitViewBox(){
+    var svg = g.ownerSVGElement;
+    if (!svg) return;
+    var r = svg.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) {
+      W = Math.max(1000, Math.min(1700, Math.round(H * (r.width / r.height))));
+    }
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  })();
   var DRAW = 2.2;      /* stage-1 line draw   — keep in sync with charts.css */
   var PROJ = 1.9;      /* stage-3 clip wipe   — keep in sync with charts.css */
   var all = PR_DATA.concat(PR_PROJ);
@@ -1227,12 +1246,6 @@ function chartEaseInvert(frac, e){
   el('path', { d: chartSmoothPath(ghostPts, 0.5), 'class': 'pr-ghost' }, gSummer);
   ghost.forEach(function(d){ var q = XY(d.i, d.v); el('circle', { cx: q.x, cy: q.y, r: 4, 'class': 'ghost-dot' }, gSummer); });
   var gl = el('text', { x: XY(7,1790).x + 11, y: XY(7,1790).y - 11, 'class': 'ghost-lbl' }, gSummer); gl.textContent = 'vacation-adjusted';
-
-  /* axis (always visible) */
-  all.forEach(function(d, i){
-    var p = XY(i, 0);
-    var t = el('text', { x: p.x, y: chartB + 22, 'text-anchor': i === 0 ? 'start' : 'middle', 'class': 'axis-lbl' }); t.textContent = d.m;
-  });
 
   /* stage 1: line + area + points */
   var gLine = el('g', { 'class': 'g-line', 'data-stage': '1' });
@@ -1275,6 +1288,20 @@ function chartEaseInvert(frac, e){
     }
   });
 
+  /* The month axis is part of stage 1, not scenery: each label arrives as the
+     pen reaches its month, and the four projection months wait for the end of
+     the draw (their line is stage 3). Same group, so one stage class drives it. */
+  var gAxis = el('g', { 'class': 'g-axis', 'data-stage': '1' });
+  all.forEach(function(d, i){
+    var p = XY(i, 0);
+    var t = el('text', { x: p.x, y: chartB + 22, 'text-anchor': i === 0 ? 'start' : 'middle', 'class': 'axis-lbl' }, gAxis);
+    t.textContent = d.m;
+    var cue = i < fracs.length
+      ? chartEaseInvert(fracs[i], CHART_EASE) * DRAW
+      : DRAW + (i - fracs.length + 1) * 0.07;
+    t.style.animationDelay = chartRound(Math.max(0, cue - 0.02)) + 's';
+  });
+
   /* stage 3: projection */
   var gProj = el('g', { 'class': 'g-proj', 'data-stage': '3' });
   var projPts = PR_PROJ.map(function(d, i){ return XY(PR_DATA.length + i, d.v); });
@@ -1301,6 +1328,10 @@ function chartEaseInvert(frac, e){
   pl.style.animationDelay = chartRound(projLast + 0.14) + 's';
 
   /* stage 4: release lanes, aligned to the same month x */
+  /* The release + incident lanes run at 0.75× the original speed: every delay
+     is stretched by 1/0.75, and the two dot-pop durations in the stylesheet are
+     stretched to match (0.4s → 0.53s, lbl-in 0.3s → 0.4s). */
+  var LANE_SLOW = 1 / 0.75;
   var gRel = el('g', { 'class': 'g-rel', 'data-stage': '4' });
   var laneTop = chartB + 64, laneH = 54, gap = 8;
   var lanes = [
@@ -1321,8 +1352,8 @@ function chartEaseInvert(frac, e){
         if (!ln.heat[h]) continue;
         var hx = XY(h, 0).x, hw = slotW * 0.82;
         if (h === 0) { hw = slotW * 0.5; hx = padL + hw/2; }
-        el('rect', { x: hx - hw/2, y: y0 + 6, width: hw, height: laneH - 12, rx: 8, 'class': 'rel-heat', style: 'fill-opacity:' + (0.18 + 0.72 * ln.heat[h] / hmax) + '; animation-delay:' + (0.04 + animIdx * 0.045) + 's; transform-origin:' + hx + 'px ' + (y0 + laneH/2) + 'px' }, gRel);
-        var ht = el('text', { x: hx, y: y0 + laneH/2 + 5, 'text-anchor': 'middle', 'class': 'rel-heat-lbl', style: 'animation-delay:' + (0.16 + animIdx * 0.045) + 's' }, gRel); ht.textContent = ln.heat[h];
+        el('rect', { x: hx - hw/2, y: y0 + 6, width: hw, height: laneH - 12, rx: 8, 'class': 'rel-heat', style: 'fill-opacity:' + (0.18 + 0.72 * ln.heat[h] / hmax) + '; animation-delay:' + chartRound((0.04 + animIdx * 0.045) * LANE_SLOW) + 's; transform-origin:' + hx + 'px ' + (y0 + laneH/2) + 'px' }, gRel);
+        var ht = el('text', { x: hx, y: y0 + laneH/2 + 5, 'text-anchor': 'middle', 'class': 'rel-heat-lbl', style: 'animation-delay:' + chartRound((0.16 + animIdx * 0.045) * LANE_SLOW) + 's' }, gRel); ht.textContent = ln.heat[h];
         animIdx++;
       }
       return;
@@ -1340,7 +1371,7 @@ function chartEaseInvert(frac, e){
         var isMinor = k < minors;
         /* lanes read left→right by month, so stagger on the month column and
            only micro-offset the dots inside a column */
-        var relDelay = 0.04 + m * 0.075 + li * 0.09 + k * 0.03;
+        var relDelay = (0.04 + m * 0.075 + li * 0.09 + k * 0.03) * LANE_SLOW;
         var c = el('circle', { cx: x, cy: y0 + laneH/2, r: isMinor ? 6 : 3.8, 'class': isMinor ? 'rel-minor' : 'rel-patch', style: 'transform-origin:' + x + 'px ' + (y0 + laneH/2) + 'px; animation-delay:' + chartRound(relDelay) + 's' }, gRel);
         animIdx++;
       }
@@ -1370,15 +1401,43 @@ function chartEaseInvert(frac, e){
         var x = inRow === 1 ? cx0 : cx0 - spread/2 + col * (spread / (inRow - 1));
         var cy = rows === 1 ? y0 + laneH/2 : y0 + laneH/2 + (row === 0 ? -8 : 8);
         var isChange = k < ch;
-        var incDelay = 0.04 + m * 0.085 + k * 0.028;
+        var incDelay = (0.04 + m * 0.085 + k * 0.028) * LANE_SLOW;
         el('circle', { cx: x, cy: cy, r: isChange ? 5.2 : 4.2, 'class': isChange ? 'inc-change' : 'inc-other', style: 'transform-origin:' + x + 'px ' + cy + 'px; animation-delay:' + chartRound(incDelay) + 's' }, gInc);
         idx++;
       }
     }
   })();
+
+  /* The lane labels sit in the padR gutter and the ghost label overhangs its
+     dot, so the drawing can end up a little wider than W. svg clips at its
+     viewBox, so widen it to the real bbox once everything is built — otherwise
+     the right-hand lane captions get cut off. */
+  (function fitToContent(){
+    var svg = g.ownerSVGElement;
+    if (!svg || !g.getBBox) return;
+    var bb;
+    try { bb = g.getBBox(); } catch (err) { return; }
+    var need = Math.ceil(bb.x + bb.width + 4);
+    if (need > W) svg.setAttribute('viewBox', '0 0 ' + need + ' ' + H);
+  })();
 })();
 </script>
 <script>
+/* ---- Fold 4: the initiatives board arrives one row at a time ---- */
+(function(){
+  var gantt = document.querySelector('.fold[data-stages] .gantt');
+  if (!gantt) return;
+  gantt.setAttribute('data-stage', '1');
+  /* a "row" is a name + its track; a section divider counts as its own beat */
+  var STEP = 0.5, beat = 0;
+  [].forEach.call(gantt.children, function (node) {
+    if (node.classList.contains('g-h')) return;          /* the header stays put */
+    node.classList.add('g-row-in');
+    if (node.classList.contains('g-name') || node.classList.contains('g-sub')) beat++;
+    node.style.animationDelay = ((beat - 1) * STEP).toFixed(2) + 's';
+  });
+})();
+
 /* ---- Base deck runtime (Ep II) ---- */
 (function() {
   var folds = document.querySelectorAll('.fold');
