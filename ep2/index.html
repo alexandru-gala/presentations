@@ -85,12 +85,18 @@
 .chart-svg .g-line.stage-visible .pr-line { stroke-dasharray: 1600; stroke-dashoffset: 1600; animation: wave-draw 2.6s ease forwards; }
 .chart-svg .g-line .val-lbl, .chart-svg .g-line .pt { opacity: 0; transition: opacity 0.6s ease 2.2s; }
 .chart-svg .g-line.stage-visible .val-lbl, .chart-svg .g-line.stage-visible .pt { opacity: 1; }
-.chart-svg .g-proj.stage-visible .pr-proj { stroke-dasharray: 4 9; animation: proj-in 1.6s ease forwards; }
-@keyframes proj-in { from { stroke-dashoffset: 600; } to { stroke-dashoffset: 0; } }
+/* the projection wipes on left to right — one month at a time, drawn once */
+.chart-svg .proj-wipe { transform: scaleX(0); transform-origin: 0 0; transform-box: fill-box; }
+.chart-svg .g-proj.stage-visible .proj-wipe { animation: proj-wipe 1.9s cubic-bezier(0.33,0.62,0.4,1) forwards; }
+@keyframes proj-wipe { to { transform: scaleX(1); } }
+.chart-svg .proj-dot { opacity: 0; }
+.chart-svg .g-proj.stage-visible .proj-dot { animation: dot-pop 0.34s ease forwards; }
+.chart-svg .proj-lbl { opacity: 0; }
+.chart-svg .g-proj.stage-visible .proj-lbl { animation: lbl-in 0.45s ease 1.75s forwards; }
 .chart-svg .g-rel.stage-visible .rel-minor, .chart-svg .g-rel.stage-visible .rel-patch, .chart-svg .g-rel.stage-visible .rel-heat { animation: dot-pop 0.35s ease backwards; }
 .chart-svg .rel-heat-lbl { opacity: 0; } .chart-svg .g-rel.stage-visible .rel-heat-lbl { animation: lbl-in 0.3s ease 0.2s forwards; }
 @keyframes lbl-in { to { opacity: 1; } }
-@keyframes dot-pop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes dot-pop { from { transform: scale(0); opacity: 1; } to { transform: scale(1); opacity: 1; } }
 .chart-cue { font-size: clamp(11px,1.05vw,13px); color: var(--text-muted); font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; }
 
 /* --- F3b: two pillars temple --- */
@@ -735,7 +741,7 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
       </div>
       <div class="tp-found" data-stage="2"><span class="tp-found-lbl">Signaling &amp; monitoring</span><span class="tp-pulse"></span></div>
       <div class="tp-stones" data-stage="3">
-        <div class="tp-stone"><div class="tp-stone-ico">🔍</div><div class="tp-stone-t">Sweep</div><div class="tp-stone-d">Anomaly sweeps on live traffic — 1h · 4h · 24h — with a digest in Slack. Filed 10 incident reports this morning alone.</div></div>
+        <div class="tp-stone"><div class="tp-stone-ico">🔍</div><div class="tp-stone-t">Sweep</div><div class="tp-stone-d">Anomaly sweeps on live traffic — 1h · 4h · 24h — with a digest in Slack.</div></div>
         <div class="tp-stone"><div class="tp-stone-ico">🧪</div><div class="tp-stone-t">Mini-tester · gadget lab</div><div class="tp-stone-d">Agents drive the real app on real devices and hand back a report — before QA opens the build.</div></div>
         <div class="tp-stone"><div class="tp-stone-ico">🧯</div><div class="tp-stone-t">Auto premortem runs</div><div class="tp-stone-d">“What can go wrong?” asked automatically before a release, not in the postmortem after.</div></div>
       </div>
@@ -753,16 +759,13 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
       <div class="section-label reveal"><span class="section-num">04</span> · The initiatives</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
-    <h2 class="fold-title reveal reveal-d1">Where we were in July. <strong style="color: var(--pago-blue);">Where we are now.</strong></h2>
+    <h2 class="fold-title reveal reveal-d1"><strong style="color: var(--pago-blue);">Where we are now.</strong></h2>
         <div class="reveal reveal-d2" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
       <div class="gantt">
         <div class="g-h" style="text-align: right; padding-right: 12px;">Platform</div>
         <div class="g-h">Intake</div><div class="g-h">Gate</div><div class="g-h">Factory</div><div class="g-h g-h--gate">Polishing</div><div class="g-h g-h--gate">Prelive</div><div class="g-h">Live</div>
 
         <div class="g-name">Loto · auto tickets <span class="g-live">live</span><span class="g-emoji g-emoji--end">🤖 &#63743; 🧰</span></div>
-        <div class="g-track"><div class="g-seg g-done g-done--live" style="left: 0; width: 100%;"></div></div>
-
-        <div class="g-name">Loto <span class="g-live">live</span><span class="g-emoji g-emoji--end">🤖 &#63743; 🧰</span></div>
         <div class="g-track"><div class="g-seg g-done g-done--live" style="left: 0; width: 100%;"></div></div>
 
         <div class="g-name">PADs <span class="g-live">iOS live</span><span class="g-emoji g-emoji--end">&#63743; 🧰</span></div>
@@ -775,12 +778,6 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
           <div class="g-seg g-plan" style="left: 42.3%; width: 7.7%;"></div>
         </div>
 
-        <div class="g-name">PJ · eFactura <span class="g-emoji g-emoji--end">🤖 🧰</span></div>
-        <div class="g-track">
-          <div class="g-seg g-done" style="left: 0; width: 8.3%;"></div>
-          <div class="g-seg g-wip" style="left: 8.3%; width: 8.4%;"></div>
-          <div class="g-seg g-plan" style="left: 16.7%; width: 7%;"></div>
-        </div>
         <div class="g-sub">New since July</div>
 
         <div class="g-name">Direct payments <span class="g-emoji g-emoji--end">🤖 &#63743; 🧰</span></div>
@@ -818,6 +815,12 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
         </div>
 
         <div class="g-sub">Parked</div>
+
+        <div class="g-name g-parked">PJ · eFactura <span class="g-emoji g-emoji--end">🤖 🧰</span></div>
+        <div class="g-track g-parked">
+          <div class="g-seg g-done" style="left: 0; width: 8.3%;"></div>
+          <div class="g-seg g-plan" style="left: 8.3%; width: 8.4%;"></div>
+        </div>
 
         <div class="g-name g-parked">Share location <span class="g-emoji g-emoji--end">&#63743; 🧰</span></div>
         <div class="g-track g-parked">
@@ -1241,7 +1244,7 @@ var REL = {
   var gp = 'M ' + pts[5].x + ' ' + pts[5].y + ghost.map(function(d){ var q = XY(d.i, d.v); return ' L ' + q.x + ' ' + q.y; }).join('');
   el('path', { d: gp, 'class': 'pr-ghost' }, gSummer);
   ghost.forEach(function(d){ var q = XY(d.i, d.v); el('circle', { cx: q.x, cy: q.y, r: 4, 'class': 'ghost-dot' }, gSummer); });
-  var gl = el('text', { x: XY(7,1790).x + 10, y: XY(7,1790).y + 5, 'class': 'ghost-lbl' }, gSummer); gl.textContent = 'vacation-adjusted';
+  var gl = el('text', { x: XY(7,1790).x + 11, y: XY(7,1790).y - 11, 'class': 'ghost-lbl' }, gSummer); gl.textContent = 'vacation-adjusted';
 
   /* axis (always visible) */
   all.forEach(function(d, i){
@@ -1256,14 +1259,28 @@ var REL = {
   el('path', { d: line, 'class': 'pr-line' }, gLine);
   pts.forEach(function(p, i){
     el('circle', { cx: p.x, cy: p.y, r: 5, fill: 'var(--pago-blue)', 'class': 'pt' }, gLine);
-    if (i === 0 || i === pts.length - 1) { var v = el('text', { x: p.x, y: p.y - 14, 'text-anchor': i === 0 ? 'start' : 'middle', 'class': 'val-lbl' }, gLine); v.textContent = PR_DATA[i].v.toLocaleString('en-US'); }
+    if (i === 0 || i === pts.length - 1) {
+      var last = i === pts.length - 1;
+      /* Aug's label goes BELOW the point: the vacation-adjusted ghost sits above it */
+      var v = el('text', { x: p.x, y: last ? p.y + 25 : p.y - 14, 'text-anchor': i === 0 ? 'start' : 'middle', 'class': 'val-lbl' }, gLine); v.textContent = PR_DATA[i].v.toLocaleString('en-US');
+    }
   });
 
   /* stage 3: projection */
   var gProj = el('g', { 'class': 'g-proj', 'data-stage': '3' });
   var projPts = PR_PROJ.map(function(d, i){ return XY(PR_DATA.length + i, d.v); });
-  el('path', { d: 'M ' + pts[pts.length-1].x + ' ' + pts[pts.length-1].y + projPts.map(function(p){ return ' L ' + p.x + ' ' + p.y; }).join(''), 'class': 'pr-proj' }, gProj);
-  projPts.forEach(function(p){ el('circle', { cx: p.x, cy: p.y, r: 4, fill: '#E08E00' }, gProj); });
+  var projX0 = pts[pts.length-1].x;
+  /* The dashed projection is revealed by a clip wiping LEFT TO RIGHT, so it draws
+     itself once, month by month, instead of every dash fading in at the same time.
+     The clipPath lives inside .g-proj so the stage class can drive it in CSS. */
+  var cp = el('clipPath', { id: 'projClip' }, gProj);
+  el('rect', { x: projX0, y: 0, width: (W - projX0), height: chartB + 6, 'class': 'proj-wipe' }, cp);
+  var gClip = el('g', { 'clip-path': 'url(#projClip)' }, gProj);
+  el('path', { d: 'M ' + projX0 + ' ' + pts[pts.length-1].y + projPts.map(function(p){ return ' L ' + p.x + ' ' + p.y; }).join(''), 'class': 'pr-proj' }, gClip);
+  projPts.forEach(function(p, i){
+    var c = el('circle', { cx: p.x, cy: p.y, r: 4, fill: '#E08E00', 'class': 'proj-dot' }, gClip);
+    c.style.animationDelay = (0.28 + i * 0.42) + 's';
+  });
   var pl = el('text', { x: projPts[3].x, y: projPts[3].y - 14, 'text-anchor': 'middle', 'class': 'proj-lbl' }, gProj); pl.textContent = '2,400 ≈ 5.3×';
 
   /* stage 4: release lanes, aligned to the same month x */
