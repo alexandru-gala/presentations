@@ -544,6 +544,73 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
   background: var(--pact-green); box-shadow: 0 2px 5px rgba(22,163,74,0.4);
   display: flex; align-items: center; justify-content: center; opacity: 0; }
 .tr2-tick svg { width: 9px; height: 9px; display: block; }
+
+/* ═══════ Fold 08 · "Real user problems, end to end, faster" — V2 ═══════
+   One ticket travels the whole rail. The handoff points it passes stay grey —
+   nobody takes it off the owner — and only the far end goes green. */
+.ow { position: relative; width: 100%; height: 100%; min-height: 84px;
+  display: flex; flex-direction: column; justify-content: center; gap: clamp(8px, 1.6vh, 18px); }
+.ow-caps { display: flex; justify-content: space-between; padding: 0 2%;
+  font-family: 'DM Sans', sans-serif; font-weight: 800; letter-spacing: 1.1px; text-transform: uppercase;
+  font-size: clamp(10px, 1.02vw, 13.5px); }
+.ow-cap--a { color: var(--warn); }
+.ow-cap--b { color: var(--text-muted); transition: color 0.3s ease; }
+.ow-cap--b.is-hit { color: var(--pact-green); }
+.ow-track { position: relative; height: clamp(22px, 3.2vh, 32px); margin: 0 8%; }
+.ow-rail { position: absolute; left: 0; right: 0; top: 50%; height: 4px; transform: translateY(-50%);
+  border-radius: 2px; background: #D8DEE9; }
+.ow-fill { position: absolute; left: 0; right: 0; top: 50%; height: 4px; transform: translateY(-50%) scaleX(0);
+  transform-origin: 0 50%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--warn), var(--pago-blue) 62%, var(--pact-green)); }
+/* the handoff points that no longer get used */
+.ow-pip { position: absolute; top: 50%; width: 11px; height: 11px; margin: -5.5px 0 0 0;
+  transform: translateX(-50%); border-radius: 50%; background: #fff;
+  border: 2px solid #C6CEDC; box-sizing: border-box; }
+.ow-node { position: absolute; top: 50%; width: 16px; height: 16px; transform: translate(-50%, -50%);
+  border-radius: 50%; background: #fff; box-sizing: border-box; }
+.ow-node--a { left: 0; border: 3px solid var(--warn); }
+.ow-node--b { left: 100%; border: 3px solid #C6CEDC; transition: border-color 0.3s ease; }
+.ow-node--b.is-hit { border-color: var(--pact-green); }
+.ow-tick { position: absolute; left: 50%; top: 50%; width: 17px; height: 17px; transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%; background: var(--pact-green); box-shadow: 0 2px 5px rgba(22,163,74,0.4);
+  display: flex; align-items: center; justify-content: center; opacity: 0; }
+.ow-tick svg { width: 9px; height: 9px; display: block; }
+/* the problem itself, in transit — positioned in percent so it can never drift
+   out of step with the fill behind it */
+.ow-tkt { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%);
+  width: clamp(27px, 2.9vw, 38px); height: clamp(17px, 1.9vw, 23px); opacity: 0;
+  background: #fff; border-radius: 4px; box-shadow: 0 2px 6px rgba(30,41,59,0.22);
+  display: flex; align-items: center; gap: 2.5px; padding: 0 3px 0 0; overflow: hidden; }
+.ow-edge { width: 4px; align-self: stretch; background: var(--warn); flex: 0 0 auto; }
+.ow-lines { display: flex; flex-direction: column; gap: 2.5px; flex: 1; }
+.ow-lines i { display: block; height: 2px; border-radius: 1px; background: #C6CEDC; }
+.ow-lines i:last-child { width: 62%; }
+
+/* ═══════ Fold 08 · "Silos down ≠ ownership down" — V2 ═══════
+   Silo after silo arrives, drops at the line, and leaves an owner behind it.
+   The walls come down; the ownership marks accumulate rather than vanish. */
+.si { position: relative; width: 100%; height: 100%; min-height: 84px; overflow: hidden; }
+.si-floor { position: absolute; left: 0; right: 0; bottom: 14%; height: 2.5px; border-radius: 2px;
+  background: #1E293B; opacity: 0.5; }
+.si-thresh { position: absolute; left: 52%; bottom: 14%; width: 0; height: 46%;
+  border-left: 2px dashed rgba(34,197,94,0.42); }
+.si-stage { position: absolute; inset: 0; }
+.si-slab { position: absolute; bottom: 14%; left: 0; width: clamp(28px, 2.9vw, 42px);
+  transform: translateX(-50%); }
+.si-body { display: block; width: 100%; height: clamp(54px, 10.4vh, 116px); transform-origin: 50% 100%;
+  border-radius: 6px 6px 0 0;
+  background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.10) 0 1.5px, transparent 1.5px 22%),
+                    linear-gradient(180deg, #3767CE, #1E3F8F 66%, #16307A);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.16), inset 0 5px 0 rgba(255,255,255,0.13),
+              0 4px 10px rgba(30,63,143,0.22); }
+/* The badge is pinned just above the FLOOR, not to the wall's top: the wall comes
+   down by transform, so its laid-out height never changes and a top-anchored badge
+   would hang in mid-air far above the collapsed slab. */
+.si-badge { position: absolute; left: 50%; bottom: clamp(19px, 3.2vh, 30px);
+  width: clamp(16px, 1.7vw, 22px); transform: translate(-50%, 0) scale(0); opacity: 0;
+  filter: drop-shadow(0 2px 4px rgba(22,163,74,0.35)); }
+.si-badge svg { width: 100%; height: auto; display: block; }
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
 </style>
 </head>
@@ -959,12 +1026,12 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
       <div class="road-card">
         <div class="rc-title">Real user problems, end to end, faster</div>
         <div class="rc-body">One owner carries the problem from complaint to live fix — the road from 06, for everyone.</div>
-        <div class="rc-illo"><div class="e2"><span class="tlabel">complaint → live fix</span><span class="bub">😠</span><div class="path"></div><span class="bub ok">😊</span></div></div>
+        <div class="rc-illo"><div class="ow" id="ow"></div></div>
       </div>
       <div class="road-card">
         <div class="rc-title">Silos down ≠ ownership down</div>
         <div class="rc-body">Taking down platform silos doesn’t take away ownership — it asks for more of it.</div>
-        <div class="rc-illo"><div class="sl"><div class="sl-floor"></div><div class="sl-wall"></div><div class="sl-wall"></div><div class="sl-wall"></div><span class="sl-badge">🔑</span><span class="sl-stamp">owned</span></div></div>
+        <div class="rc-illo"><div class="si" id="si"><div class="si-floor"></div><div class="si-thresh"></div><div class="si-stage" id="siStage"></div></div></div>
       </div>
     </div>
     <div class="bottom-line reveal reveal-d3">Specialism stays. <strong style="color: var(--pago-blue);">Silos go.</strong></div>
@@ -2141,6 +2208,153 @@ var REL = {
     clearTimeout(rt);
     rt = setTimeout(function () { build(); if (tl) tl.play(0); }, 250);
   });
+})();
+</script>
+<script>
+/* ═══════ Fold 08 · cards 3 and 4 ═══════
+   Both are GSAP-driven and positioned in PERCENT rather than measured pixels:
+   the deck zooms .fold-inner to fit after load, so anything sized from a
+   build-time measurement drifts out of step later.                          */
+(function () {
+  if (!window.gsap) return;
+  var CHECK = '<svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" ' +
+              'stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3 L4.8 8.6 L9.5 3.6"/></svg>';
+  /* ownership reads better as a shield than a bare tick */
+  var SHIELD = '<svg viewBox="0 0 20 23"><path d="M10 1 L18.4 4.1 V11 c0 5.2-3.5 8.7-8.4 10.4' +
+               ' C5.1 19.7 1.6 16.2 1.6 11 V4.1 Z" fill="#16A34A"/>' +
+               '<path d="M6.3 11.3 L9.1 14.1 L14 8.6" fill="none" stroke="#fff" stroke-width="2.1"' +
+               ' stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- "Real user problems, end to end, faster" ---------- */
+  (function () {
+    var scene = document.getElementById('ow');
+    if (!scene) return;
+    var PIPS = [30, 50, 70];                          /* the handoff points, in % */
+    var GO = 0.15, CROSS = 2.45, LAND = GO + CROSS, LOOP = 5.6;
+    var tl;
+
+    function build() {
+      if (tl) tl.kill();
+      scene.innerHTML =
+        '<div class="ow-caps"><span class="ow-cap ow-cap--a">Complaint</span>' +
+        '<span class="ow-cap ow-cap--b">Live fix</span></div>' +
+        '<div class="ow-track">' +
+          '<span class="ow-rail"></span><span class="ow-fill"></span>' +
+          PIPS.map(function (p) { return '<span class="ow-pip" style="left:' + p + '%"></span>'; }).join('') +
+          '<span class="ow-node ow-node--a"></span>' +
+          '<span class="ow-node ow-node--b"><span class="ow-tick">' + CHECK + '</span></span>' +
+          '<span class="ow-tkt"><span class="ow-edge"></span>' +
+          '<span class="ow-lines"><i></i><i></i></span></span>' +
+        '</div>';
+
+      var fill = scene.querySelector('.ow-fill'), tkt = scene.querySelector('.ow-tkt');
+      var edge = scene.querySelector('.ow-edge'), tick = scene.querySelector('.ow-tick');
+      var nodeB = scene.querySelector('.ow-node--b'), capB = scene.querySelector('.ow-cap--b');
+      var pips = scene.querySelectorAll('.ow-pip');
+
+      if (reduced) { gsap.set(fill, { scaleX: 1 }); gsap.set(tick, { scale: 1, opacity: 1 }); return; }
+
+      tl = gsap.timeline({ paused: true, repeat: -1 });
+      tl.fromTo(tkt, { left: '0%', opacity: 0 },
+        { opacity: 1, duration: 0.2, ease: 'sine.out', immediateRender: false }, 0);
+      tl.fromTo(tkt, { left: '0%' },
+        { left: '100%', duration: CROSS, ease: 'power1.inOut', immediateRender: false }, GO);
+      tl.fromTo(fill, { scaleX: 0 },
+        { scaleX: 1, duration: CROSS, ease: 'power1.inOut', immediateRender: false }, GO);
+
+      /* each handoff point it passes gets a grey nudge — passed, never handed to */
+      PIPS.forEach(function (p, i) {
+        var at = GO + CROSS * (p / 100);
+        tl.fromTo(pips[i], { scale: 1 },
+          { scale: 1.5, duration: 0.16, ease: 'sine.out', immediateRender: false }, at - 0.08);
+        tl.to(pips[i], { scale: 1, duration: 0.3, ease: 'sine.inOut' }, at + 0.08);
+      });
+
+      /* it lands, and the far end is where it turns green */
+      tl.call(function () { nodeB.classList.add('is-hit'); capB.classList.add('is-hit'); }, null, LAND - 0.02);
+      tl.to(edge, { backgroundColor: '#16A34A', duration: 0.3, ease: 'sine.out' }, LAND - 0.05);
+      tl.fromTo(tick, { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.34, ease: 'back.out(2.4)', immediateRender: false }, LAND + 0.1);
+      tl.fromTo(tkt, { opacity: 1 },
+        { opacity: 0, duration: 0.28, ease: 'sine.in', immediateRender: false }, LAND - 0.12);
+      tl.call(function () { nodeB.classList.remove('is-hit'); capB.classList.remove('is-hit'); }, null, LAND + 1.5);
+      tl.fromTo(tick, { scale: 1, opacity: 1 },
+        { scale: 0.8, opacity: 0, duration: 0.4, ease: 'sine.in', immediateRender: false }, LAND + 1.5);
+      tl.fromTo(fill, { opacity: 1 },
+        { opacity: 0, duration: 0.5, ease: 'sine.in', immediateRender: false }, LAND + 1.5);
+      tl.set(fill, { scaleX: 0, opacity: 1 }, LAND + 2.1);
+      tl.set(edge, { backgroundColor: '#E07A1F' }, LAND + 2.1);
+      tl.set({}, {}, LOOP);
+    }
+
+    build();
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (!tl) return; if (e.isIntersecting) tl.play(); else tl.pause(); });
+    }, { threshold: 0.3 });
+    io.observe(scene);
+    var rt;
+    window.addEventListener('resize', function () {
+      clearTimeout(rt); rt = setTimeout(function () { build(); if (tl) tl.play(0); }, 250);
+    });
+  })();
+
+  /* ---------- "Silos down ≠ ownership down" ---------- */
+  (function () {
+    var scene = document.getElementById('si');
+    if (!scene) return;
+    var stage = document.getElementById('siStage');
+    var N = 4, FROM = 106, TO = -22, THRESH = 52;     /* all in % of the scene */
+    var TRAVEL = 7.2, DROP = 0.45;
+    var live = [];
+
+    function build() {
+      live.forEach(function (t) { t.kill(); });
+      live = [];
+      stage.innerHTML = '';
+
+      /* when a slab's centre reaches the line, as a fraction of its journey */
+      var hit = (FROM - THRESH) / (FROM - TO);
+
+      for (var i = 0; i < N; i++) {
+        var slab = document.createElement('span');
+        slab.className = 'si-slab';
+        slab.innerHTML = '<span class="si-body"></span>' +
+                         '<span class="si-badge">' + SHIELD + '</span>';
+        stage.appendChild(slab);
+        var body = slab.querySelector('.si-body'), badge = slab.querySelector('.si-badge');
+
+        if (reduced) {
+          gsap.set(slab, { left: (THRESH - 18 + i * 16) + '%' });
+          if (i < 2) { gsap.set(body, { scaleY: 0.18 }); gsap.set(badge, { scale: 1, opacity: 1 }); }
+          continue;
+        }
+
+        var t = gsap.timeline({ repeat: -1 });
+        t.fromTo(slab, { left: FROM + '%' },
+          { left: TO + '%', duration: TRAVEL, ease: 'none' }, 0);
+        /* the wall comes down as it crosses the line … */
+        t.fromTo(body, { scaleY: 1 },
+          { scaleY: 0.18, duration: DROP, ease: 'power2.in', immediateRender: false }, TRAVEL * hit);
+        /* … and the ownership it leaves behind stays up, and travels on with it */
+        t.fromTo(badge, { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.36, ease: 'back.out(2.2)', immediateRender: false },
+          TRAVEL * hit + DROP - 0.1);
+        t.progress(i / N);                            /* evenly spaced down the line */
+        live.push(t);
+      }
+    }
+
+    build();
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        live.forEach(function (t) { if (e.isIntersecting) t.play(); else t.pause(); });
+      });
+    }, { threshold: 0.3 });
+    io.observe(scene);
+    var rt;
+    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(build, 250); });
+  })();
 })();
 </script>
 
