@@ -1275,7 +1275,6 @@ img.en-fig { position: relative; display: block; height: 100%; width: auto;
 </svg>
 
 <div class="progress-bar" id="progressBar"></div>
-<div class="fold-counter on-dark" id="foldCounter">1 / 11</div>
 
 <!-- ============ FOLD 1 · Cover ============ -->
 <section class="fold fold--blue" data-dark data-stages="1">
@@ -2118,8 +2117,11 @@ function chartEaseInvert(frac, e){
     for (var i = 0; i < total; i++) {
       if (folds[i].offsetTop <= scrollTop + vh * 0.5) current = i + 1;
     }
-    counter.textContent = 'Ep III · ' + current + ' / ' + total;
-    counter.className = 'fold-counter' + (folds[current - 1] && folds[current - 1].hasAttribute('data-dark') ? ' on-dark' : '');
+    /* the fold counter was removed from the deck; the element may simply not exist */
+    if (counter) {
+      counter.textContent = 'Ep III · ' + current + ' / ' + total;
+      counter.className = 'fold-counter' + (folds[current - 1] && folds[current - 1].hasAttribute('data-dark') ? ' on-dark' : '');
+    }
     folds.forEach(function(fold) {
       var rect = fold.getBoundingClientRect();
       if (rect.top < vh * 0.8 && rect.bottom > vh * 0.2) {
