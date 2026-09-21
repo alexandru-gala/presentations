@@ -136,6 +136,14 @@
   width: 0; min-width: 0; opacity: 0; overflow: hidden;
   transition: width 0.9s cubic-bezier(0.22,0.61,0.36,1), opacity 0.7s ease 0.2s; }
 #f01.quote-in .f01-stack { width: 62%; opacity: 1; overflow: visible; }
+/* hidden stages collapse so the quote stays centred on the switch until they arrive */
+.f01-stack { gap: 0; }
+.f01-stack > [data-stage] { display: grid; grid-template-rows: 0fr; grid-auto-rows: 0fr; margin-top: 0;
+  transition: grid-template-rows 0.55s cubic-bezier(0.22,0.61,0.36,1), margin-top 0.55s cubic-bezier(0.22,0.61,0.36,1),
+    opacity 0.55s cubic-bezier(0.22,0.61,0.36,1), transform 0.55s cubic-bezier(0.22,0.61,0.36,1); }
+.f01-stack > [data-stage] > * { min-height: 0; }
+.f01-stack > [data-stage]:not(.stage-visible) { overflow: hidden; }
+.f01-stack > [data-stage].stage-visible { grid-template-rows: 1fr; grid-auto-rows: 1fr; margin-top: clamp(10px, 1.7vh, 20px); }
 .quote { border-left: 4px solid var(--pago-gold); background: linear-gradient(90deg, rgba(8,14,36,0.74), rgba(8,14,36,0.10)); padding: clamp(6px,1vh,12px) 0 clamp(6px,1vh,12px) clamp(14px,1.6vw,22px); }
 .quote p { font-size: clamp(17px, 1.95vw, 28px); font-weight: 500; line-height: 1.38; color: #fff; }
 .quote cite { display: block; margin-top: 8px; font-style: normal; font-size: clamp(11px,1.1vw,15px);
@@ -681,7 +689,7 @@
         </div>
       </div>
       <div class="borrowed" data-stage="3">
-        &#128279; <span><b>Studied Gas Town. Gas City wasn't launched yet &mdash; not stable.</b> Borrowed the shape, built our own implementation.</span>
+        &#128279; <span><b>Used Gas Town personally, on side projects.</b> The team found it over-engineered for our needs; Gas City wasn&rsquo;t stable yet.</span>
         <span class="stat-chip" hidden id="statF02">&mdash;</span>
       </div>
       <div class="insight" data-stage="4">
@@ -689,7 +697,7 @@
         <span>Backend agents already followed our instructions (the Opus&nbsp;4.8 era). The problem was <u>what goes IN</u>.</span>
       </div>
     </div>
-    <div class="bottom-line reveal reveal-d2">We didn&rsquo;t need better builders. We needed a better brief.</div>
+    <div class="bottom-line reveal reveal-d2">We didn&rsquo;t need better builders. We needed better requirements, templates and hardening &mdash; and agents talking as a graph, not a sequence: <code>figma-deep-dive &harr; ios-coder &harr; mini-tester</code>.</div>
   </div>
 </section>
 
