@@ -378,7 +378,8 @@
 .defect .dh svg { width: clamp(19px,2.1vw,29px); height: auto; flex: none; }
 .defect q { display: block; quotes: none; font-family: 'Inter', ui-monospace, monospace;
   font-size: clamp(13px,1.45vw,21px); line-height: 1.45; color: var(--text);
-  border-left: 4px solid #D6455B; padding: clamp(13px,1.7vw,22px) clamp(13px,1.6vw,22px); }
+  border-left: 4px solid #D6455B; padding: clamp(8px,1vw,13px) clamp(13px,1.6vw,22px); }
+.defect q + q { border-top: 1px solid var(--border); }
 .defect q b { color: #D6455B; font-weight: 800; }
 .stamps { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(6px,0.9vw,11px); }
 .stamps .st { display: flex; align-items: center; justify-content: center; border-radius: 8px;
@@ -760,9 +761,9 @@
       <div class="post post--floor" data-stage="3">
         <div class="p-n">POST 03</div>
         <div class="p-t">The Factory floor</div>
-        <div class="p-d">Planner &rarr; one builder per platform &rarr; review loops &rarr; PR.</div>
+        <div class="p-d">Planner &rarr; one builder per platform &rarr; review loops &rarr; PRs &rarr; human polishing.</div>
         <div class="p-art">
-          <svg viewBox="0 0 440 300">
+          <svg viewBox="0 0 560 300">
             <g class="floor-flow" stroke-width="2.2">
               <path d="M88 154 H124"/>
               <path d="M124 40 V262"/>
@@ -781,9 +782,15 @@
               <rect class="floor-box" x="158" y="186" width="124" height="44" rx="10"/><text class="floor-lbl" x="220" y="214" text-anchor="middle">Web</text>
               <rect class="floor-box" x="158" y="240" width="124" height="44" rx="10"/><text class="floor-lbl" x="220" y="268" text-anchor="middle">Tests</text>
             </g>
-            <text class="floor-lbl sm" x="369" y="104" text-anchor="middle">review loop</text>
+            <text class="floor-lbl sm" x="369" y="104" text-anchor="middle">review loops</text>
+            <rect x="372" y="118" width="72" height="52" rx="11" fill="#2B59C3" opacity="0.35"/>
+            <rect x="368" y="123" width="72" height="52" rx="11" fill="#2B59C3" opacity="0.6"/>
             <rect x="364" y="128" width="72" height="52" rx="11" fill="#2B59C3"/>
-            <text class="floor-lbl" x="400" y="160" text-anchor="middle" style="fill:#fff">PR</text>
+            <text class="floor-lbl" x="400" y="160" text-anchor="middle" style="fill:#fff">PRs</text>
+            <g class="floor-flow" stroke-width="2.2"><path d="M436 154 H466"/></g>
+            <rect class="floor-box" x="466" y="128" width="84" height="52" rx="11" style="stroke:var(--pago-gold)"/>
+            <text class="floor-lbl" x="508" y="150" text-anchor="middle" style="font-size:12px">&#129489; human</text>
+            <text class="floor-lbl" x="508" y="168" text-anchor="middle" style="font-size:12px">polishing</text>
           </svg>
         </div>
       </div>
@@ -832,8 +839,8 @@
         <span class="mi">what the user is already trying to improve</span>
       </div>
       <div class="acct" data-stage="4">
-        <span class="al">&#129309; The human is accountable throughout</span>
-        <span class="ac">interrupt</span><span class="ac">reset session</span><span class="ac">reset limits</span>
+        <span class="al">&#129309; The workflow handholds the user</span>
+        <span class="ac">the next step is always obvious</span>
       </div>
     </div>
     <div class="bottom-line reveal reveal-d2">You always know where you are in control &mdash; and where you are not.</div>
@@ -846,7 +853,7 @@
   <div class="pattern-dots"></div>
   <div class="fold-inner">
     <h2 class="cover-title reveal">Let me show you.</h2>
-    <p class="cover-subtitle reveal reveal-d1" style="margin:0;">A live intake run &middot; the Bouncer&rsquo;s verdict &middot; where humans checked in.</p>
+    <p class="cover-subtitle reveal reveal-d1" style="margin:0;">A live intake run &middot; where humans checked in.</p>
     <div class="keycaps" data-stage="1">
       <div class="keycap">&#8997;</div>
       <div class="keyplus">+</div>
@@ -930,6 +937,8 @@
         <div class="defect" data-stage="2">
           <div class="dh"><svg viewBox="0 0 64 64"><use href="#bouncer"/></svg>What the Bouncer caught</div>
           <q>POST /accept uses an action verb in the URL <b>([HARD] rule 3)</b></q>
+          <q>Rollup <b>79</b> vs bar <b>80</b> &mdash; ESCALATE, do not merge</q>
+          <q>HALT short-circuits the judges &mdash; <b>no reviewer spend</b></q>
         </div>
         <div class="stamps" data-stage="3">
           <div class="st" style="--s:0;--r:-4deg">NO-GO</div>
@@ -984,9 +993,9 @@
         </div>
       </div>
     </div>
-    <div class="wheel-note" data-stage="2">&#128161; <span>You <b>can</b> invest in the factory on its own.</span>
+    <div class="wheel-note" data-stage="2">&#128295; <span>Factory time needs <b>debugging</b> and <b>allocated resources</b>.</span>
       <span class="stat-chip" hidden id="statF08">&mdash;</span></div>
-    <div class="wheel-note" data-stage="3" style="color:var(--text);font-weight:800;">&#11088; <span>The biggest wins come from here.</span></div>
+    <div class="wheel-note" data-stage="3">&#129514; <span>Invest in <b>auto post-mortems</b>, <b>pre-mortems</b> before runs, and <b>simulated tests</b> you can run across model versions.</span></div>
     <div class="bottom-line reveal reveal-d2">Build the factory out of what people already reach for.</div>
   </div>
 </section>
@@ -1013,10 +1022,10 @@
         <text class="q" x="404" y="212" text-anchor="middle">?</text>
       </svg>
       <div class="mp-side" data-stage="1">
-        <div class="who"><span>&#128105;</span>PM<em>writes the brief</em></div>
-        <div class="who"><span>&#129333;</span>Designer<em>owns the screens</em></div>
-        <div class="who"><span>&#128104;</span>Engineer<em>judges the plan</em></div>
-        <div class="who"><span>&#128188;</span>Stakeholder<em>decides go/no-go</em></div>
+        <div class="who"><span>&#129489;&#8205;&#128187;</span>AI builder<em>usually 1 &middot; runs the session</em></div>
+        <div class="who"><span>&#128587;</span>Support<em>1 colleague</em></div>
+        <div class="who" style="opacity:0.5"><span>&#128105;</span>PM<em>writes the brief</em></div>
+        <div class="who" style="opacity:0.5"><span>&#128188;</span>Stakeholder<em>decides go/no-go</em></div>
       </div>
       <div class="mp-core">
         <svg class="pkg" viewBox="0 0 72 64" data-stage="1"><use href="#pkg"/></svg>
@@ -1031,9 +1040,9 @@
     </div>
     <div class="mp-note" data-stage="3">
       <span class="flag">&#128269; The interesting unsolved problem.</span>
-      <span>Handoffs between humans and agents are <b>invisible</b> &mdash; no shared state, no history. Partly solved elsewhere (<b>Grok bot</b>, <b>OpenClaw 2.0</b>). Not urgent for us: people talk on Slack.</span>
+      <span>Multiplayer interactivity <b>on the same session</b> is starting to be solved by <b>Grok bot</b> and <b>OpenClaw 2.0</b> &mdash; we want to integrate this as well.</span>
     </div>
-    <div class="bottom-line reveal reveal-d2">Honest gap. We&rsquo;d rather leave it open than pretend it&rsquo;s solved.</div>
+    <div class="bottom-line reveal reveal-d2">How do you solve this?</div>
   </div>
 </section>
 
