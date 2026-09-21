@@ -1207,6 +1207,11 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .mp-side .who em { font-style: normal; font-weight: 600; font-size: 0.82em; color: var(--text-muted); margin-left: auto; }
 .mp-side.agents .who { border-color: rgba(43,89,195,0.3); background: rgba(43,89,195,0.05); }
 .mp-core { display: flex; flex-direction: column; align-items: center; gap: clamp(6px,1vh,12px); z-index: 2; }
+.mp-factory { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--pago-blue);
+  background: #fff; border: 2px solid rgba(43,89,195,0.35); border-radius: 18px; padding: clamp(10px,1.2vw,16px) clamp(14px,1.6vw,22px);
+  box-shadow: 0 8px 24px rgba(43,89,195,0.12); }
+.mp-factory svg { width: clamp(54px,6.2vw,92px); height: auto; }
+.mp-factory span { font-size: clamp(10px,1vw,13px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
 .mp-core .pkg { width: clamp(54px,6.2vw,92px); height: auto;
   filter: drop-shadow(0 10px 22px rgba(30,63,143,0.22)); }
 .slack-bubble { position: relative; background: #4A154B; color: #fff; border-radius: 14px;
@@ -1851,7 +1856,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       <div class="kicker">Not solved yet</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
-    <h2 class="fold-title reveal">Multiplayer. <strong class="blue">Many people, many agents, one package &mdash; and no shared thread.</strong></h2>
+    <h2 class="fold-title reveal">Multiplayer. <strong class="blue">Many people, many agents, one factory &mdash; and many Slack threads.</strong></h2>
     <div class="mp" id="mp">
       <svg class="mp-wires" viewBox="0 0 600 300" preserveAspectRatio="none">
         <path d="M118 104 C240 104 260 150 300 150"/>
@@ -1868,7 +1873,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
         <div class="who"><span>&#129464;</span>Sidekick<em>1 colleague</em></div>
       </div>
       <div class="mp-core">
-        <svg class="pkg" viewBox="0 0 72 64" data-stage="1"><use href="#pkg"/></svg>
+        <div class="mp-factory" data-stage="1"><svg viewBox="0 0 64 64"><use href="#factory-ico"/></svg><span>the factory</span></div>
         <div class="slack-bubble" data-stage="2">The link between them is Slack.<em>but the work happens on PRs, in git.</em></div>
       </div>
       <div class="mp-side agents" data-stage="1">
