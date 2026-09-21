@@ -905,7 +905,9 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 /* one idea per press: whatever is no longer the subject falls back to 55% so
    the room always knows which line is live */
 [data-stage].past { opacity: 0.55; }
-.layers { display: flex; flex-direction: column; gap: clamp(8px,1.4vh,16px); }
+/* a block that lands a beat after the one it belongs to */
+[data-stage].late { transition-delay: 0.6s; }
+.layers { display: flex; flex-direction: column; gap: clamp(7px,1.2vh,13px); }
 .lyr-row { display: flex; align-items: center; gap: clamp(8px,1.2vw,16px); flex-wrap: wrap; }
 .lyr-t { font-size: clamp(12.5px,1.35vw,18px); font-weight: 600; color: var(--text); line-height: 1.35; }
 .lyr-t.big { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(15px,1.75vw,24px); }
@@ -920,7 +922,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   background: var(--card-bg); border-radius: 999px; padding: 5px 13px; }
 .chips span.warn { background: rgba(224,122,31,0.12); color: #9a5410; }
 
-.week { border-radius: 14px; padding: clamp(10px,1.4vw,18px) clamp(12px,1.5vw,20px);
+.week { border-radius: 14px; padding: clamp(9px,1.15vw,14px) clamp(12px,1.5vw,20px);
   background: linear-gradient(120deg, rgba(245,166,35,0.13), rgba(43,89,195,0.07));
   border: 1px solid rgba(245,166,35,0.32); }
 .week-head { display: flex; align-items: baseline; gap: clamp(8px,1.2vw,16px); flex-wrap: wrap; }
@@ -935,14 +937,14 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   font-size: clamp(11px,1.15vw,15.5px); font-weight: 700; line-height: 1.2; }
 .in-card .pkg { flex: none; width: clamp(24px,2.6vw,36px); height: auto; }
 .goals { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px,1.4vw,20px); }
-.goal { border: 2px solid var(--pago-blue); border-radius: 14px; padding: clamp(12px,1.5vw,20px);
+.goal { border: 2px solid var(--pago-blue); border-radius: 14px; padding: clamp(10px,1.25vw,15px);
   background: #fff; box-shadow: 0 8px 24px rgba(30,63,143,0.07); }
 .goal .gl { font-size: clamp(11px,1vw,13px); font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
   color: var(--pago-blue); margin-bottom: 6px; }
 .goal .gt { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(16px,1.85vw,26px); line-height: 1.2; }
 
 .anti { display: grid; grid-template-columns: 0.92fr auto 1.16fr; align-items: center; gap: clamp(10px,1.6vw,24px);
-  padding: clamp(11px,1.5vw,19px) clamp(13px,1.8vw,24px); border-radius: 14px;
+  padding: clamp(10px,1.3vw,16px) clamp(13px,1.8vw,24px); border-radius: 14px;
   background: linear-gradient(120deg, rgba(43,89,195,0.10), rgba(224,122,31,0.12)); }
 .anti b { display: block; font-family: 'DM Sans'; font-weight: 800; font-size: clamp(16px,2vw,28px);
   line-height: 1.08; letter-spacing: -0.5px; }
@@ -961,7 +963,10 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .post .p-n { font-size: clamp(10px,0.95vw,12px); font-weight: 800; letter-spacing: 1.6px; color: var(--pago-blue); }
 .post .p-t { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(15px,1.7vw,24px); line-height: 1.1; }
 .post .p-d { font-size: clamp(11px,1.12vw,15px); color: var(--text-muted); line-height: 1.4; }
-.post .p-art { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.post .p-art { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,0.61,0.36,1); }
+.post.stage-visible .p-art { opacity: 1; transform: none; transition-delay: 0.5s; }
 .post .p-art svg { width: 100%; height: 100%; max-height: 100%; display: block; }
 .post--gate { background: rgba(44,36,64,0.05); border-color: #d7d2e6; }
 .post--floor { background: linear-gradient(150deg, rgba(43,89,195,0.08), rgba(43,89,195,0.03)); border-color: rgba(43,89,195,0.22); }
@@ -998,7 +1003,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   font-weight: 600; color: var(--text-muted); }
 .legend b { color: var(--text); }
 .legend .chipGold { display: inline-block; width: 22px; height: 11px; border-radius: 4px; background: var(--pago-gold); }
-.bands { display: flex; gap: clamp(8px,1.2vw,18px); margin-bottom: clamp(30px,5.2vh,56px); }
+.bands { display: flex; gap: clamp(8px,1.2vw,18px); margin-bottom: clamp(30px,5.2vh,56px); align-items: stretch; }
 .band { flex: var(--f, 1); display: flex; flex-direction: column; gap: clamp(8px,1.3vh,14px); border-radius: 14px;
   padding: clamp(13px,1.8vw,24px) clamp(11px,1.4vw,18px); background: rgba(43,89,195,0.045);
   border: 1px solid rgba(43,89,195,0.14); }
@@ -1011,8 +1016,8 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   padding: clamp(12px,1.5vh,20px) clamp(8px,0.85vw,12px) clamp(14px,1.8vh,24px);
   border-radius: 10px; background: #fff; border: 1px solid var(--border);
   box-shadow: 0 3px 9px rgba(30,63,143,0.05); opacity: 0; transform: translateY(14px); }
-.bands.stage-visible .step { animation: step-in 0.4s cubic-bezier(0.22,0.61,0.36,1) both;
-  animation-delay: calc(var(--i) * 0.07s); }
+.band.stage-visible .step { animation: step-in 0.4s cubic-bezier(0.22,0.61,0.36,1) both;
+  animation-delay: calc(var(--i) * 0.09s); }
 @keyframes step-in { to { opacity: 1; transform: none; } }
 .step-top { display: flex; align-items: center; gap: 6px; }
 .step .ag { font-size: clamp(15px,1.65vw,23px); line-height: 1; }
@@ -1030,8 +1035,8 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .gate-flag b { font-size: 1.15em; margin-right: 4px; }
 .gate-flag::after { content: ''; position: absolute; bottom: 100%; left: 50%; margin-left: -5px;
   border: 5px solid transparent; border-bottom-color: var(--pago-gold); }
-.gates-on .gate-flag { animation: flag-in 0.5s cubic-bezier(0.34,1.5,0.64,1) both; }
-.gates-on .band:nth-child(3) .gate-flag { animation-delay: 0.25s; }
+.band.stage-visible .gate-flag { animation: flag-in 0.5s cubic-bezier(0.34,1.5,0.64,1) both;
+  animation-delay: 0.55s; }
 @keyframes flag-in { from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(0.85); }
   to { opacity: 1; transform: translateX(-50%); } }
 .tail { display: flex; align-items: center; justify-content: center; gap: clamp(10px,1.5vw,24px); margin-top: clamp(12px,2vh,20px); }
@@ -1194,6 +1199,11 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .mp { flex: 1; min-height: 0; position: relative; display: grid;
   grid-template-columns: 1fr 1.2fr 1fr; align-items: center; gap: clamp(8px,1.4vw,22px); }
 .mp-side { display: flex; flex-direction: column; gap: clamp(6px,1.1vh,13px); z-index: 2; }
+/* only two human seats, so give them weight and centre them on the package */
+.mp-side.people { justify-content: center; gap: clamp(14px,2.6vh,30px); }
+.mp-side.people .who { padding: clamp(11px,1.5vh,18px) clamp(13px,1.6vw,20px);
+  font-size: clamp(12px,1.3vw,17.5px); }
+.mp-side.people .who span { font-size: 1.5em; }
 .mp-side .who { display: flex; align-items: center; gap: 10px; padding: clamp(6px,0.9vw,11px) clamp(10px,1.3vw,16px);
   border-radius: 999px; background: #fff; border: 1px solid var(--border); box-shadow: 0 5px 16px rgba(30,63,143,0.07);
   font-size: clamp(10.5px,1.12vw,15px); font-weight: 700; }
@@ -1454,7 +1464,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
         </div>
         <div class="chips">
           <span>&#128640; more experiments</span>
-          <span>&#128301; keep a grasp</span>
+          <span>&#128301; keep oversight</span>
           <span class="warn">&#128465; no junk code</span>
         </div>
       </div>
@@ -1476,10 +1486,10 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       <div class="lyr anti" data-stage="5">
         <div class="a"><b>Building wasn&rsquo;t the problem.</b></div>
         <div class="x">but</div>
-        <div class="b"><b>Backend agents: garbage in, garbage out.</b><em>the Opus&nbsp;4.8 era</em></div>
+        <div class="b"><b>Backend agents: garbage in, garbage out.</b><em>the inputs were thin &mdash; Opus&nbsp;4.8 era</em></div>
       </div>
     </div>
-    <div class="bottom-line reveal reveal-d2">&#128301; We didn&rsquo;t need better builders. We needed better requirements, templates and hardening &mdash; and agents talking as a graph, not a sequence: <code>figma-deep-dive &harr; ios-coder &harr; mini-tester</code>.</div>
+    <div class="bottom-line late" data-stage="5">&#128301; We didn&rsquo;t need better builders. We needed better requirements, templates and hardening &mdash; and agents talking as a graph, not a sequence: <code>figma-deep-dive &harr; ios-coder &harr; mini-tester</code>.</div>
   </div>
 </section>
 
@@ -1606,7 +1616,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       <div class="stop" style="left:6%"><b>Intake</b></div>
       <div class="stop" style="left:50%"><b>Bouncer</b></div>
       <div class="stop" style="left:88%"><b>Factory</b></div>
-      <div class="dec-badge miss" id="decMiss">no DB schema &middot; no impact map</div>
+      <div class="dec-badge miss" id="decMiss">Missing DB schema &rarr; back to Intake</div>
       <div class="dec-badge pass" id="decPass">complete &mdash; GO</div>
       <div id="dpkg"><svg class="pkg incomplete" viewBox="0 0 72 64"><use href="#pkg"/></svg></div>
     </div>
@@ -1615,7 +1625,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 </section>
 
 <!-- ══════════════ FOLD 04 · The whole process ══════════════ -->
-<section class="fold wide" id="f04" data-stages="5" data-scene-stages data-dim-past>
+<section class="fold wide" id="f04" data-stages="5" data-dim-past>
   <div class="fold-inner">
     <div class="pago-header">
       <div class="kicker">Inside the intake</div>
@@ -1626,12 +1636,12 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       <div><span><b>&#128993; = a human decides.</b> Everything else: agents.</span></div>
     </div>
     <div class="stage-wrap" style="justify-content:center;" id="f04Wrap">
-      <div class="bands" data-stage="1" data-no-dim>
-        <div class="band" style="--b:1"><div class="band-h"><b>Define</b><em>&#129302; agents draft</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">01</span></span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">02</span></span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">03</span></span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">04</span></span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
-        <div class="band" style="--b:2"><div class="band-h"><b>Stress-test</b><em>&#129302; agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:5"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human" style="--i:6"><span class="gate-flag"><b>&#9873;</b>Human decision</span><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">06</span></span><span class="step-name">Working backwards</span><span class="step-sub">is it worth it</span></li><li class="step" style="--i:7"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
-        <div class="band" style="--b:3"><div class="band-h"><b>Package</b><em>&#129302; agents assemble</em></div><ul class="band-steps"><li class="step" style="--i:8"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">08</span></span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:9"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">09</span></span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step human" style="--i:10"><span class="gate-flag"><b>&#9873;</b>Human decision</span><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">10</span></span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
+      <div class="bands">
+        <div class="band" style="--b:1" data-stage="1" data-no-dim><div class="band-h"><b>Define</b><em>&#129302; agents draft</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">01</span></span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">02</span></span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">03</span></span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">04</span></span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
+        <div class="band" style="--b:2" data-stage="2" data-no-dim><div class="band-h"><b>Stress-test</b><em>&#129302; agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human" style="--i:2"><span class="gate-flag"><b>&#9873;</b>Is it worth it?</span><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">06</span></span><span class="step-name">Working backwards</span><span class="step-sub">is it worth it</span></li><li class="step" style="--i:3"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
+        <div class="band" style="--b:3" data-stage="3" data-no-dim><div class="band-h"><b>Package</b><em>&#129302; agents assemble</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">08</span></span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:2"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">09</span></span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step human" style="--i:3"><span class="gate-flag"><b>&#9873;</b>Ship the package?</span><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">10</span></span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
       </div>
-      <div class="tail" data-stage="3" data-no-dim>
+      <div class="tail late" data-stage="3" data-no-dim>
         <span class="arw">&#10230;</span>
         <div class="tbox b"><svg viewBox="0 0 64 64"><use href="#bouncer"/></svg>The Bouncer</div>
         <span class="arw">&#10230;</span>
@@ -1641,20 +1651,17 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
         <span class="compass">&#129517;</span>
         <div class="map-txt">
           <b>The package is the map the agents hunt with.</b>
-          <span class="list">Figma &middot; codebases &middot; configs &middot; what the user already tries to improve</span>
+          <span class="list">Figma &middot; codebases &middot; configs &middot; what users are already trying to improve</span>
           <em>A better map = agents work better.</em>
         </div>
         <svg class="map-trail" viewBox="0 0 126 44" aria-hidden="true">
-          <path d="M6 34 q20 -26 42 -8 t44 -14" fill="none" stroke="#B8894A" stroke-width="2.6"
+          <path d="M6 36 q20 -26 42 -8 t40 -16" fill="none" stroke="#B8894A" stroke-width="2.6"
                 stroke-dasharray="3 7" stroke-linecap="round"/>
-          <g stroke="#C0392B" stroke-width="4" stroke-linecap="round">
-            <path d="M104 6 L120 22"/><path d="M120 6 L104 22"/>
-          </g>
+          <svg x="90" y="2" width="34" height="30" viewBox="0 0 72 64"><use href="#pkg"/></svg>
         </svg>
       </div>
       <div class="acct" data-stage="5">
-        <span class="al">&#129309; The workflow handholds the user</span>
-        <span class="ac">the next step is always obvious</span>
+        <span class="al">&#129309; The workflow holds your hand &mdash; the next step is always obvious</span>
       </div>
     </div>
     <div class="bottom-line reveal reveal-d2">You always know where you are in control &mdash; and where you are not.</div>
@@ -1824,10 +1831,8 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     <h2 class="fold-title reveal">Multiplayer. <strong class="blue">Many people, many agents, one package &mdash; and no shared thread.</strong></h2>
     <div class="mp" id="mp">
       <svg class="mp-wires" viewBox="0 0 600 300" preserveAspectRatio="none">
-        <path d="M118 44 C240 44 260 150 300 150"/>
-        <path d="M118 108 C230 108 250 150 300 150"/>
-        <path d="M118 192 C230 192 250 150 300 150"/>
-        <path d="M118 256 C240 256 260 150 300 150"/>
+        <path d="M118 104 C240 104 260 150 300 150"/>
+        <path d="M118 196 C240 196 260 150 300 150"/>
         <path d="M482 44 C360 44 340 150 300 150"/>
         <path d="M482 108 C370 108 350 150 300 150"/>
         <path d="M482 192 C370 192 350 150 300 150"/>
@@ -1835,15 +1840,13 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
         <text class="q" x="196" y="100" text-anchor="middle">?</text>
         <text class="q" x="404" y="212" text-anchor="middle">?</text>
       </svg>
-      <div class="mp-side" data-stage="1">
-        <div class="who"><span>&#129489;&#8205;&#128187;</span>AI builder<em>usually 1 &middot; runs the session</em></div>
-        <div class="who"><span>&#128587;</span>Support<em>1 colleague</em></div>
-        <div class="who" style="opacity:0.5"><span>&#128105;</span>PM<em>writes the brief</em></div>
-        <div class="who" style="opacity:0.5"><span>&#128188;</span>Stakeholder<em>decides go/no-go</em></div>
+      <div class="mp-side people" data-stage="1">
+        <div class="who"><span>&#129489;&#8205;&#128187;</span>AI builder<em>runs the session</em></div>
+        <div class="who"><span>&#129464;</span>Sidekick<em>1 colleague</em></div>
       </div>
       <div class="mp-core">
         <svg class="pkg" viewBox="0 0 72 64" data-stage="1"><use href="#pkg"/></svg>
-        <div class="slack-bubble" data-stage="2">The only link between them is Slack.<em>copy-paste, threads, &ldquo;did you see my comment?&rdquo;</em></div>
+        <div class="slack-bubble" data-stage="2">The link between them is Slack.<em>but the work happens on PRs, in git.</em></div>
       </div>
       <div class="mp-side agents" data-stage="1">
         <div class="who"><span>&#129302;</span>Intake agent<em>10 stages</em></div>
@@ -2385,14 +2388,6 @@ function buildLightScene(root, onDone) {
 
   f03.addEventListener('ctostage', function (e) { if (e.detail.stage === 2) run(); });
   f03.addEventListener('ctostagereset', reset);
-})();
-
-/* ════════ Fold 04 — the two human gates land on stage 3 ════════ */
-(function () {
-  var f04 = document.getElementById('f04');
-  if (!f04) return;
-  f04.addEventListener('ctostage', function (e) { if (e.detail.stage >= 2) f04.classList.add('gates-on'); });
-  f04.addEventListener('ctostagereset', function () { f04.classList.remove('gates-on'); });
 })();
 
 /* ════════ Fold 06 — ONE diagram, morphed clean → tangled ════════
