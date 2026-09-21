@@ -167,43 +167,81 @@
 .talk-title { font-size: clamp(11px, 1.15vw, 15px); font-weight: 600; color: rgba(255,255,255,0.55); text-align: right; }
 .talk-title b { color: #fff; font-weight: 700; }
 
-/* ══ fold 02 ════════════════════════════════════════════════════════════ */
-.timeline { position: relative; height: 62px; }
+/* ══ fold 02 — a timeline that progresses, with layers stacking under it ══ */
+.timeline { position: relative; height: 60px; }
 .timeline .tl-line { position: absolute; left: 0; right: 0; top: 25px; height: 3px; border-radius: 2px;
-  background: linear-gradient(90deg, var(--border), var(--pago-blue)); }
+  background: var(--border); }
+.timeline .tl-done { position: absolute; left: 0; top: 25px; height: 3px; border-radius: 2px; width: 4%;
+  background: linear-gradient(90deg, rgba(43,89,195,0.45), var(--pago-blue));
+  transition: width 1s cubic-bezier(0.22,0.61,0.36,1); }
 .timeline .tick { position: absolute; top: 17px; width: 3px; height: 19px; background: var(--border); border-radius: 2px; }
 .timeline .tick b { position: absolute; top: 27px; left: 50%; transform: translateX(-50%);
   font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; }
 .timeline .marker { position: absolute; top: 0; width: 38px; height: 38px; margin-left: -19px;
   border-radius: 50%; background: var(--pago-blue); color: #fff; display: flex; align-items: center;
   justify-content: center; font-size: 18px; box-shadow: 0 6px 18px rgba(43,89,195,0.35);
-  transition: left 1s cubic-bezier(0.22,0.61,0.36,1); }
+  transition: left 1s cubic-bezier(0.22,0.61,0.36,1), background 0.5s ease, box-shadow 0.5s ease; }
 .timeline .marker::after { content: ''; position: absolute; inset: -8px; border-radius: 50%;
   border: 2px solid rgba(43,89,195,0.35); animation: ping 2.4s ease-out infinite; }
 @keyframes ping { 0% { transform: scale(0.8); opacity: 0.9; } 100% { transform: scale(1.5); opacity: 0; } }
 .is-parked .timeline .marker::after { animation-play-state: paused; }
-.want { display: flex; gap: clamp(8px,1.2vw,16px); }
-.want div { flex: 1; padding: clamp(10px,1.3vw,16px) clamp(12px,1.4vw,18px); border-radius: 12px;
-  background: var(--card-bg); font-size: clamp(13px,1.35vw,18px); font-weight: 600; line-height: 1.35; }
-.want div b { display: block; font-size: 1.5em; margin-bottom: 4px; }
-.want div.no { background: rgba(224,122,31,0.10); }
+/* June lands with a burst — that is the factory week */
+.timeline .marker.burst { background: var(--pago-gold); box-shadow: 0 0 0 5px rgba(245,166,35,0.22), 0 8px 24px rgba(245,166,35,0.5); }
+.timeline .marker.burst::after { border-color: rgba(245,166,35,0.5); }
+.timeline .marker.burst::before { content: ''; position: absolute; inset: -12px; border-radius: 50%;
+  border: 3px solid var(--pago-gold); animation: burst-out 0.9s cubic-bezier(0.22,0.61,0.36,1) 2 both; }
+@keyframes burst-out { from { transform: scale(0.55); opacity: 0.95; } to { transform: scale(2.6); opacity: 0; } }
+
+/* one idea per press: whatever is no longer the subject falls back to 55% so
+   the room always knows which line is live */
+[data-stage].past { opacity: 0.55; }
+.layers { display: flex; flex-direction: column; gap: clamp(8px,1.4vh,16px); }
+.lyr-row { display: flex; align-items: center; gap: clamp(8px,1.2vw,16px); flex-wrap: wrap; }
+.lyr-t { font-size: clamp(12.5px,1.35vw,18px); font-weight: 600; color: var(--text); line-height: 1.35; }
+.lyr-t.big { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(15px,1.75vw,24px); }
+.tag-gt { flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: clamp(10px,1vw,13px);
+  font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #7a4c00;
+  background: rgba(245,166,35,0.18); border: 1px solid rgba(245,166,35,0.45);
+  border-radius: 999px; padding: 4px 11px; }
+.conseq { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(14px,1.6vw,22px); color: var(--pago-blue); }
+.arrow-s { color: var(--machine); font-size: clamp(14px,1.5vw,20px); }
+.chips { display: flex; gap: clamp(6px,0.9vw,12px); flex-wrap: wrap; margin-top: 7px; }
+.chips span { font-size: clamp(10.5px,1.08vw,14px); font-weight: 600; color: var(--text-muted);
+  background: var(--card-bg); border-radius: 999px; padding: 5px 13px; }
+.chips span.warn { background: rgba(224,122,31,0.12); color: #9a5410; }
+
+.week { border-radius: 14px; padding: clamp(10px,1.4vw,18px) clamp(12px,1.5vw,20px);
+  background: linear-gradient(120deg, rgba(245,166,35,0.13), rgba(43,89,195,0.07));
+  border: 1px solid rgba(245,166,35,0.32); }
+.week-head { display: flex; align-items: baseline; gap: clamp(8px,1.2vw,16px); flex-wrap: wrap; }
+.week-head b { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(17px,2.1vw,30px);
+  line-height: 1.05; color: #a7690a; letter-spacing: -0.4px; }
+.week-head em { font-style: normal; font-size: clamp(11px,1.15vw,15px); font-weight: 700; color: var(--text-muted); }
+.mini-lbl { font-size: clamp(9.5px,0.98vw,12px); font-weight: 800; letter-spacing: 1.3px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+.in-cards { display: flex; gap: clamp(8px,1.1vw,16px); margin-top: clamp(8px,1.2vh,14px); }
+.in-card { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px;
+  background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: clamp(9px,1.3vh,15px) clamp(10px,1.2vw,16px);
+  font-size: clamp(11px,1.15vw,15.5px); font-weight: 700; line-height: 1.2; }
+.in-card .pkg { flex: none; width: clamp(24px,2.6vw,36px); height: auto; }
 .goals { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px,1.4vw,20px); }
 .goal { border: 2px solid var(--pago-blue); border-radius: 14px; padding: clamp(12px,1.5vw,20px);
   background: #fff; box-shadow: 0 8px 24px rgba(30,63,143,0.07); }
 .goal .gl { font-size: clamp(11px,1vw,13px); font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
   color: var(--pago-blue); margin-bottom: 6px; }
 .goal .gt { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(16px,1.85vw,26px); line-height: 1.2; }
-.borrowed { display: flex; align-items: center; gap: 12px; font-size: clamp(12px,1.3vw,17px);
-  color: var(--text-muted); padding: clamp(8px,1.1vw,13px) clamp(12px,1.4vw,18px);
-  border-radius: 10px; border: 1px dashed var(--border); }
-.borrowed b { color: var(--text); font-weight: 700; }
-.insight { display: flex; align-items: baseline; gap: clamp(10px,1.6vw,24px); flex-wrap: wrap;
-  padding: clamp(12px,1.7vw,22px) clamp(14px,2vw,28px); border-radius: 14px;
-  background: linear-gradient(120deg, rgba(43,89,195,0.10), rgba(245,166,35,0.12)); }
-.insight b { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(22px,3.1vw,42px); line-height: 1.05;
-  color: var(--pago-blue); letter-spacing: -0.5px; }
-.insight span { font-size: clamp(12px,1.3vw,17px); color: var(--text-muted); max-width: 46ch; line-height: 1.45; }
-.insight span u { text-decoration: none; font-weight: 800; color: var(--text); }
+
+.anti { display: grid; grid-template-columns: 0.92fr auto 1.16fr; align-items: center; gap: clamp(10px,1.6vw,24px);
+  padding: clamp(11px,1.5vw,19px) clamp(13px,1.8vw,24px); border-radius: 14px;
+  background: linear-gradient(120deg, rgba(43,89,195,0.10), rgba(224,122,31,0.12)); }
+.anti b { display: block; font-family: 'DM Sans'; font-weight: 800; font-size: clamp(16px,2vw,28px);
+  line-height: 1.08; letter-spacing: -0.5px; }
+.anti .a b { color: var(--pago-blue); }
+.anti .b b { color: var(--warn); }
+.anti .b em { display: block; font-style: normal; font-size: clamp(10.5px,1.05vw,13.5px);
+  font-weight: 600; color: var(--text-muted); margin-top: 4px; }
+.anti .x { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(12px,1.25vw,17px);
+  color: var(--text-muted); }
 
 /* ══ fold 03 — three work posts, one decision ═══════════════════════════ */
 .posts { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 0.86fr 1.4fr;
@@ -249,8 +287,6 @@
 .legend div { display: flex; align-items: center; gap: 8px; font-size: clamp(10.5px,1.05vw,14px);
   font-weight: 600; color: var(--text-muted); }
 .legend b { color: var(--text); }
-.legend .chipMix { display: inline-block; width: 52px; height: 11px; border-radius: 4px;
-  background: linear-gradient(90deg, var(--pago-blue) 0 58%, var(--machine) 58% 100%); }
 .legend .chipGold { display: inline-block; width: 22px; height: 11px; border-radius: 4px; background: var(--pago-gold); }
 .bands { display: flex; gap: clamp(8px,1.2vw,18px); margin-bottom: clamp(30px,5.2vh,56px); }
 .band { flex: var(--f, 1); display: flex; flex-direction: column; gap: clamp(8px,1.3vh,14px); border-radius: 14px;
@@ -259,7 +295,7 @@
 .band:nth-child(1) { flex: 4; } .band:nth-child(2) { flex: 3; } .band:nth-child(3) { flex: 3; }
 .band-h b { display: block; font-family: 'DM Sans'; font-weight: 800; font-size: clamp(17px,2.15vw,30px);
   line-height: 1.05; color: var(--pago-blue); letter-spacing: -0.3px; }
-.band-h em { font-style: normal; font-size: clamp(10.5px,1.1vw,14px); font-weight: 600; color: var(--text-muted); }
+.band-h em { font-style: normal; font-size: clamp(11px,1.15vw,15px); font-weight: 700; color: var(--pago-blue); opacity: 0.8; }
 .band-steps { list-style: none; display: flex; gap: 6px; }
 .band-steps .step { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;
   padding: clamp(12px,1.5vh,20px) clamp(8px,0.85vw,12px) clamp(14px,1.8vh,24px);
@@ -268,8 +304,12 @@
 .bands.stage-visible .step { animation: step-in 0.4s cubic-bezier(0.22,0.61,0.36,1) both;
   animation-delay: calc(var(--i) * 0.07s); }
 @keyframes step-in { to { opacity: 1; transform: none; } }
-.step .stripe { position: absolute; left: 7px; right: 7px; top: 0; height: 3px; border-radius: 0 0 3px 3px;
-  background: linear-gradient(90deg, var(--pago-blue) 0 var(--m), var(--machine) var(--m) 100%); }
+.step-top { display: flex; align-items: center; gap: 6px; }
+.step .ag { font-size: clamp(15px,1.65vw,23px); line-height: 1; }
+/* the only two places a human decides */
+.step.human { border-color: var(--pago-gold); background: rgba(245,166,35,0.10);
+  box-shadow: 0 0 0 2px rgba(245,166,35,0.22), 0 4px 12px rgba(245,166,35,0.18); }
+.step.human .step-n { color: #b9760a; }
 .step-n { font-size: clamp(10px,0.95vw,12px); font-weight: 800; letter-spacing: 1px; color: var(--machine); }
 .step-name { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(11.5px,1.22vw,16px); line-height: 1.18; }
 .step-sub { font-size: clamp(9.5px,0.95vw,12px); color: var(--text-muted); line-height: 1.25; margin-top: 2px; }
@@ -292,6 +332,19 @@
 .tail .tbox.b { background: #2c2440; color: #fff; --bnc-tie: #2c2440; }
 .tail .tbox.f { background: var(--pago-blue); color: #fff; }
 .tail .tbox span { font-size: 1.25em; }
+.mapstrip { display: flex; align-items: center; gap: clamp(11px,1.6vw,24px);
+  padding: clamp(11px,1.5vh,18px) clamp(14px,1.8vw,26px); border-radius: 10px;
+  margin-top: clamp(12px,2vh,20px); color: #5a4526;
+  background: linear-gradient(135deg, #F8F0DD 0%, #F2E4C6 55%, #EDDBB4 100%);
+  border: 1px solid #D8BE8B; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5); }
+.mapstrip .compass { font-size: clamp(19px,2.1vw,29px); line-height: 1; flex: none; }
+.mapstrip .map-txt { flex: 1; min-width: 0; }
+.mapstrip b { display: block; font-family: 'DM Sans'; font-weight: 800;
+  font-size: clamp(12px,1.25vw,17px); color: #4a3719; }
+.mapstrip .list { font-size: clamp(11.5px,1.2vw,16px); font-weight: 600; color: #6b5433; }
+.mapstrip em { display: block; font-style: normal; font-size: clamp(10.5px,1.05vw,13.5px);
+  font-weight: 700; color: #94743c; margin-top: 3px; }
+.mapstrip .map-trail { flex: none; width: clamp(78px,9vw,126px); height: auto; }
 .foundation { display: flex; align-items: center; gap: clamp(8px,1.2vw,16px); flex-wrap: wrap;
   padding: clamp(11px,1.5vh,17px) clamp(13px,1.6vw,22px); border-radius: 10px; margin-top: clamp(12px,2vh,20px);
   background: var(--machine-soft); border-bottom: 3px solid var(--machine); }
@@ -658,52 +711,71 @@
 </section>
 
 <!-- ══════════════ FOLD 02 · June ══════════════ -->
-<section class="fold" id="f02" data-stages="4">
+<section class="fold wide" id="f02" data-stages="5" data-dim-past>
   <div class="fold-inner">
     <div class="pago-header">
       <div class="kicker">How we started</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
-    <h2 class="fold-title reveal">June. We wanted more improvements &mdash; <strong class="blue">without the junk.</strong></h2>
+    <h2 class="fold-title reveal">From side projects to a <strong class="blue">factory week.</strong></h2>
     <div class="timeline reveal reveal-d1">
       <div class="tl-line"></div>
+      <div class="tl-done" id="tlDone"></div>
       <div class="tick" style="left:4%"><b>JAN</b></div>
-      <div class="tick" style="left:38%"><b>JUN</b></div>
-      <div class="tick" style="left:72%"><b>SEP</b></div>
-      <div class="tick" style="left:96%"><b>NOW</b></div>
+      <div class="tick" style="left:22%"><b>FEB</b></div>
+      <div class="tick" style="left:40%"><b>MAR</b></div>
+      <div class="tick" style="left:58%"><b>APR</b></div>
+      <div class="tick" style="left:76%"><b>MAY</b></div>
+      <div class="tick" style="left:94%"><b>JUN</b></div>
       <div class="marker" id="tlMarker" style="left:4%">&#128205;</div>
     </div>
-    <div class="stage-wrap" style="justify-content:center; gap:clamp(9px,1.5vh,17px);">
-      <div class="want" data-stage="1">
-        <div><b>&#128640;</b>Run more improvements &amp; experiments</div>
-        <div><b>&#128301;</b>Keep a grasp on all of them</div>
-        <div class="no"><b>&#128465;</b>Don&rsquo;t just insert junk code</div>
-      </div>
-      <div class="goals" data-stage="2">
-        <div class="goal">
-          <div class="gl">Goal 1</div>
-          <div class="gt">Non-devs can ship improvements</div>
-        </div>
-        <div class="goal">
-          <div class="gl">Goal 2</div>
-          <div class="gt">Standardised workflows, as much as possible</div>
+    <div class="stage-wrap layers" style="justify-content:center;">
+      <div class="lyr" data-stage="1">
+        <div class="lyr-row">
+          <span class="tag-gt">&#127961; Gas Town</span>
+          <span class="lyr-t">Personal tests with Gas Town &mdash; side projects and non-critical production systems.</span>
+          <span class="stat-chip" hidden id="statF02">&mdash;</span>
         </div>
       </div>
-      <div class="borrowed" data-stage="3">
-        &#128279; <span><b>Used Gas Town personally, on side projects.</b> The team found it over-engineered for our needs; Gas City wasn&rsquo;t stable yet.</span>
-        <span class="stat-chip" hidden id="statF02">&mdash;</span>
+      <div class="lyr" data-stage="2">
+        <div class="lyr-row">
+          <span class="lyr-t big">Many colleagues started opening PRs with agents.</span>
+          <span class="arrow-s">&#10230;</span>
+          <span class="conseq">We needed a factory.</span>
+        </div>
+        <div class="chips">
+          <span>&#128640; more experiments</span>
+          <span>&#128301; keep a grasp</span>
+          <span class="warn">&#128465; no junk code</span>
+        </div>
       </div>
-      <div class="insight" data-stage="4">
-        <b>Building wasn&rsquo;t<br>the problem.</b>
-        <span>Backend agents already followed our instructions (the Opus&nbsp;4.8 era). The problem was <u>what goes IN</u>.</span>
+      <div class="lyr week" data-stage="3">
+        <div class="week-head">
+          <b>&#10024; AI Factory Week</b>
+          <em>4 people &middot; 4 days &middot; setting it up</em>
+        </div>
+        <div class="in-cards">
+          <div class="in-card"><svg class="pkg" viewBox="0 0 72 64"><use href="#pkg"/></svg>a big experiment</div>
+          <div class="in-card"><svg class="pkg" viewBox="0 0 72 64"><use href="#pkg"/></svg>a small experiment</div>
+          <div class="in-card"><svg class="pkg" viewBox="0 0 72 64"><use href="#pkg"/></svg>a fully featured product</div>
+        </div>
+      </div>
+      <div class="lyr goals" data-stage="4">
+        <div class="goal"><div class="gl">Goal 1</div><div class="gt">Non-devs can ship improvements</div></div>
+        <div class="goal"><div class="gl">Goal 2</div><div class="gt">Standardised workflows, as much as possible</div></div>
+      </div>
+      <div class="lyr anti" data-stage="5">
+        <div class="a"><b>Building wasn&rsquo;t the problem.</b></div>
+        <div class="x">but</div>
+        <div class="b"><b>Backend agents: garbage in, garbage out.</b><em>the Opus&nbsp;4.8 era</em></div>
       </div>
     </div>
-    <div class="bottom-line reveal reveal-d2">We didn&rsquo;t need better builders. We needed better requirements, templates and hardening &mdash; and agents talking as a graph, not a sequence: <code>figma-deep-dive &harr; ios-coder &harr; mini-tester</code>.</div>
+    <div class="bottom-line reveal reveal-d2">&#128301; We didn&rsquo;t need better builders. We needed better requirements, templates and hardening &mdash; and agents talking as a graph, not a sequence: <code>figma-deep-dive &harr; ios-coder &harr; mini-tester</code>.</div>
   </div>
 </section>
 
 <!-- ══════════════ FOLD 03 · The shape ══════════════ -->
-<section class="fold wide" id="f03" data-stages="3">
+<section class="fold wide" id="f03" data-stages="3" data-dim-past>
   <div class="fold-inner">
     <div class="pago-header">
       <div class="kicker">The shape</div>
@@ -714,27 +786,33 @@
       <div class="post" data-stage="1">
         <div class="p-n">POST 01</div>
         <div class="p-t">Intake</div>
-        <div class="p-d">A small factory in front of the big one. Brief + Figma + codebase maps &rarr; a <b>Requirement Package</b>.</div>
+        <div class="p-d">A small factory in front of the big one.</div>
         <div class="p-art">
-          <svg viewBox="0 0 300 280">
-            <g fill="#2B59C3" opacity="0.15" transform="translate(166 8)">
+          <svg viewBox="0 0 300 300">
+            <g fill="#2B59C3" opacity="0.14" transform="translate(206 214) scale(0.6)">
               <path d="M8 268 V186 l34-25 v25 l34-25 v25 l34-25 v107 Z"/>
             </g>
-            <g class="floor-flow" stroke-width="2.4">
-              <path d="M154 50 H192 q16 0 16 18 V118"/>
-              <path d="M154 131 H208"/>
-              <path d="M154 212 H192 q16 0 16 -18 V144"/>
-              <path d="M208 131 H236"/>
+            <g class="floor-flow" stroke-width="2.2">
+              <path d="M152 30 H186 q14 0 14 16 V132"/>
+              <path d="M152 88 H186 q14 0 14 16 V132"/>
+              <path d="M152 146 H200"/>
+              <path d="M152 204 H186 q14 0 14 -16 V160"/>
+              <path d="M152 262 H186 q14 0 14 -16 V160"/>
+              <path d="M200 146 H232"/>
             </g>
             <g>
-              <rect class="floor-box" x="14" y="26" width="140" height="48" rx="11"/>
-              <text class="floor-lbl" x="84" y="56" text-anchor="middle">brief</text>
-              <rect class="floor-box" x="14" y="107" width="140" height="48" rx="11"/>
-              <text class="floor-lbl" x="84" y="137" text-anchor="middle">Figma</text>
-              <rect class="floor-box" x="14" y="188" width="140" height="48" rx="11"/>
-              <text class="floor-lbl" x="84" y="218" text-anchor="middle">codebases</text>
+              <rect class="floor-box" x="8" y="8" width="144" height="44" rx="10"/>
+              <text class="floor-lbl" x="80" y="36" text-anchor="middle">brief</text>
+              <rect class="floor-box" x="8" y="66" width="144" height="44" rx="10"/>
+              <text class="floor-lbl" x="80" y="94" text-anchor="middle">Figma</text>
+              <rect class="floor-box" x="8" y="124" width="144" height="44" rx="10"/>
+              <text class="floor-lbl" x="80" y="152" text-anchor="middle">codebases</text>
+              <rect class="floor-box" x="8" y="182" width="144" height="44" rx="10"/>
+              <text class="floor-lbl" x="80" y="210" text-anchor="middle">configs</text>
+              <rect class="floor-box" x="8" y="240" width="144" height="44" rx="10"/>
+              <text class="floor-lbl" x="80" y="268" text-anchor="middle">integrator flows</text>
             </g>
-            <svg class="pkg" x="236" y="99" width="60" height="64" viewBox="0 0 72 64"><use href="#pkg"/></svg>
+            <svg class="pkg" x="232" y="114" width="60" height="64" viewBox="0 0 72 64"><use href="#pkg"/></svg>
           </svg>
         </div>
       </div>
@@ -761,36 +839,55 @@
       <div class="post post--floor" data-stage="3">
         <div class="p-n">POST 03</div>
         <div class="p-t">The Factory floor</div>
-        <div class="p-d">Planner &rarr; one builder per platform &rarr; review loops &rarr; PRs &rarr; human polishing.</div>
+        <div class="p-d">Planner &rarr; builders &rarr; review loops &rarr; PRs &rarr; human polishing.</div>
         <div class="p-art">
-          <svg viewBox="0 0 560 300">
+          <svg viewBox="0 0 560 348">
             <g class="floor-flow" stroke-width="2.2">
-              <path d="M88 154 H124"/>
-              <path d="M124 40 V262"/>
-              <path d="M124 40 H158 M124 96 H158 M124 154 H158 M124 208 H158 M124 262 H158"/>
-              <path d="M282 40 H316 M282 96 H316 M282 154 H316 M282 208 H316 M282 262 H316"/>
-              <path d="M316 40 V262"/>
-              <path d="M316 154 H364"/>
-              <path d="M348 136 q22 -26 42 0" stroke-dasharray="5 4"/>
+              <path d="M78 130 H108"/>
+              <path d="M108 26 V234"/>
+              <path d="M108 26 H140 M108 78 H140 M108 130 H140 M108 182 H140 M108 234 H140"/>
+              <path d="M260 26 H292 M260 78 H292 M260 130 H292 M260 182 H292 M260 234 H292"/>
+              <path d="M292 26 V234"/>
+              <path d="M294 106 q34 24 0 48" stroke-dasharray="5 4"/>
+              <path d="M292 234 V262 H24 V297 H38"/>
+              <path d="M126 297 H166"/>
+              <path d="M280 296 H360 V218 H430"/>
             </g>
-            <rect class="floor-box" x="10" y="128" width="78" height="52" rx="11"/>
-            <text class="floor-lbl" x="49" y="160" text-anchor="middle">Plan</text>
+            <rect class="floor-box" x="6" y="104" width="72" height="52" rx="11"/>
+            <text class="floor-lbl" x="42" y="136" text-anchor="middle">Plan</text>
             <g>
-              <rect class="floor-box" x="158" y="18" width="124" height="44" rx="10"/><text class="floor-lbl" x="220" y="46" text-anchor="middle">iOS</text>
-              <rect class="floor-box" x="158" y="74" width="124" height="44" rx="10"/><text class="floor-lbl" x="220" y="102" text-anchor="middle">Android</text>
-              <rect class="floor-box" x="158" y="132" width="124" height="44" rx="10"/><text class="floor-lbl" x="220" y="160" text-anchor="middle">Backend</text>
-              <rect class="floor-box" x="158" y="186" width="124" height="44" rx="10"/><text class="floor-lbl" x="220" y="214" text-anchor="middle">Web</text>
-              <rect class="floor-box" x="158" y="240" width="124" height="44" rx="10"/><text class="floor-lbl" x="220" y="268" text-anchor="middle">Tests</text>
+              <rect class="floor-box" x="140" y="6" width="120" height="40" rx="10"/><text class="floor-lbl" x="200" y="32" text-anchor="middle">iOS</text>
+              <rect class="floor-box" x="140" y="58" width="120" height="40" rx="10"/><text class="floor-lbl" x="200" y="84" text-anchor="middle">Android</text>
+              <rect class="floor-box" x="140" y="110" width="120" height="40" rx="10"/><text class="floor-lbl" x="200" y="136" text-anchor="middle">Backend</text>
+              <rect class="floor-box" x="140" y="162" width="120" height="40" rx="10"/><text class="floor-lbl" x="200" y="188" text-anchor="middle">Web</text>
+              <rect class="floor-box" x="140" y="214" width="120" height="40" rx="10"/><text class="floor-lbl" x="200" y="240" text-anchor="middle">Tests</text>
             </g>
-            <text class="floor-lbl sm" x="369" y="104" text-anchor="middle">review loops</text>
-            <rect x="372" y="118" width="72" height="52" rx="11" fill="#2B59C3" opacity="0.35"/>
-            <rect x="368" y="123" width="72" height="52" rx="11" fill="#2B59C3" opacity="0.6"/>
-            <rect x="364" y="128" width="72" height="52" rx="11" fill="#2B59C3"/>
-            <text class="floor-lbl" x="400" y="160" text-anchor="middle" style="fill:#fff">PRs</text>
-            <g class="floor-flow" stroke-width="2.2"><path d="M436 154 H466"/></g>
-            <rect class="floor-box" x="466" y="128" width="84" height="52" rx="11" style="stroke:var(--pago-gold)"/>
-            <text class="floor-lbl" x="508" y="150" text-anchor="middle" style="font-size:12px">&#129489; human</text>
-            <text class="floor-lbl" x="508" y="168" text-anchor="middle" style="font-size:12px">polishing</text>
+            <text class="floor-lbl sm" x="298" y="182" text-anchor="start">review loops</text>
+            <!-- the PRs are the output of the whole builder column, so they sit under it -->
+            <rect x="46" y="264" width="88" height="46" rx="11" fill="#2B59C3" opacity="0.32"/>
+            <rect x="42" y="269" width="88" height="46" rx="11" fill="#2B59C3" opacity="0.6"/>
+            <rect x="38" y="274" width="88" height="46" rx="11" fill="#2B59C3"/>
+            <text class="floor-lbl" x="82" y="303" text-anchor="middle" style="fill:#fff">PRs</text>
+            <rect class="floor-box" x="166" y="272" width="114" height="48" rx="11" style="stroke:var(--pago-gold)"/>
+            <text class="floor-lbl" x="223" y="294" text-anchor="middle" style="font-size:12.5px">&#129489; human</text>
+            <text class="floor-lbl" x="223" y="311" text-anchor="middle" style="font-size:12.5px">polishing</text>
+            <!-- what actually ships -->
+            <text class="floor-lbl sm" x="478" y="18" text-anchor="middle">the product</text>
+            <g>
+              <rect class="floor-box" x="420" y="30" width="52" height="88" rx="10"/>
+              <rect x="428" y="42" width="36" height="60" rx="3" fill="rgba(43,89,195,0.14)"/>
+              <circle cx="446" cy="110" r="3" fill="#2B59C3"/>
+              <text class="floor-lbl sm" x="446" y="134" text-anchor="middle">iOS</text>
+              <rect class="floor-box" x="488" y="30" width="52" height="88" rx="10"/>
+              <rect x="496" y="42" width="36" height="60" rx="3" fill="rgba(43,89,195,0.14)"/>
+              <circle cx="514" cy="110" r="3" fill="#2B59C3"/>
+              <text class="floor-lbl sm" x="514" y="134" text-anchor="middle">Android</text>
+              <g class="floor-flow" stroke-width="2"><path d="M446 144 V158 H478 V176"/><path d="M514 144 V158 H478"/></g>
+              <rect class="floor-box" x="430" y="176" width="96" height="24" rx="6"/>
+              <rect class="floor-box" x="430" y="206" width="96" height="24" rx="6"/>
+              <circle cx="442" cy="188" r="3.5" fill="#2B59C3"/><circle cx="442" cy="218" r="3.5" fill="#2B59C3"/>
+              <text class="floor-lbl sm" x="478" y="252" text-anchor="middle">backend</text>
+            </g>
           </svg>
         </div>
       </div>
@@ -809,36 +906,44 @@
 </section>
 
 <!-- ══════════════ FOLD 04 · The whole process ══════════════ -->
-<section class="fold wide" id="f04" data-stages="4" data-scene-stages>
+<section class="fold wide" id="f04" data-stages="5" data-scene-stages data-dim-past>
   <div class="fold-inner">
     <div class="pago-header">
       <div class="kicker">Inside the intake</div>
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
-    <h2 class="fold-title reveal">Ten steps, three phases. <strong class="blue">The model drafts. The machine checks the handoff.</strong></h2>
+    <h2 class="fold-title reveal">Ten agentic steps. <strong class="blue">Two human decisions.</strong></h2>
     <div class="legend reveal reveal-d1">
-      <div><i class="chipMix"></i><span><b>Blue</b> model work &rarr; <b>grey</b> machine check. The stripe shows the mix.</span></div>
-      <div><i class="chipGold"></i><span><b>Gold</b> = a human decides</span></div>
+      <div><span><b>&#128993; = a human decides.</b> Everything else: agents.</span></div>
     </div>
     <div class="stage-wrap" style="justify-content:center;" id="f04Wrap">
-      <div class="bands" data-stage="1">
-        <div class="band" style="--b:1"><div class="band-h"><b>Define</b><em>the brief becomes a spec</em></div><ul class="band-steps"><li class="step" style="--i:1;--m:80%"><span class="stripe"></span><span class="step-n">01</span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2;--m:55%"><span class="stripe"></span><span class="step-n">02</span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3;--m:85%"><span class="stripe"></span><span class="step-n">03</span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4;--m:70%"><span class="stripe"></span><span class="step-n">04</span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
-        <div class="band" style="--b:2"><div class="band-h"><b>Stress-test</b><em>does it survive contact</em></div><ul class="band-steps"><li class="step" style="--i:5;--m:90%"><span class="stripe"></span><span class="step-n">05</span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step" style="--i:6;--m:75%"><span class="gate-flag"><b>&#9873;</b>Human decision</span><span class="stripe"></span><span class="step-n">06</span><span class="step-name">Working backwards</span><span class="step-sub">is it worth it</span></li><li class="step" style="--i:7;--m:60%"><span class="stripe"></span><span class="step-n">07</span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
-        <div class="band" style="--b:3"><div class="band-h"><b>Package</b><em>signed, scored, handed over</em></div><ul class="band-steps"><li class="step" style="--i:8;--m:65%"><span class="stripe"></span><span class="step-n">08</span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:9;--m:45%"><span class="stripe"></span><span class="step-n">09</span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step" style="--i:10;--m:20%"><span class="gate-flag"><b>&#9873;</b>Human decision</span><span class="stripe"></span><span class="step-n">10</span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
+      <div class="bands" data-stage="1" data-no-dim>
+        <div class="band" style="--b:1"><div class="band-h"><b>Define</b><em>&#129302; agents draft</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">01</span></span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">02</span></span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">03</span></span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">04</span></span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
+        <div class="band" style="--b:2"><div class="band-h"><b>Stress-test</b><em>&#129302; agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:5"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human" style="--i:6"><span class="gate-flag"><b>&#9873;</b>Human decision</span><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">06</span></span><span class="step-name">Working backwards</span><span class="step-sub">is it worth it</span></li><li class="step" style="--i:7"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
+        <div class="band" style="--b:3"><div class="band-h"><b>Package</b><em>&#129302; agents assemble</em></div><ul class="band-steps"><li class="step" style="--i:8"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">08</span></span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:9"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">09</span></span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step human" style="--i:10"><span class="gate-flag"><b>&#9873;</b>Human decision</span><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">10</span></span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
       </div>
-      <div class="tail" data-stage="2">
+      <div class="tail" data-stage="3" data-no-dim>
         <span class="arw">&#10230;</span>
         <div class="tbox b"><svg viewBox="0 0 64 64"><use href="#bouncer"/></svg>The Bouncer</div>
         <span class="arw">&#10230;</span>
         <div class="tbox f"><svg viewBox="0 0 64 64" style="color:#fff"><use href="#factory-ico"/></svg>The Factory floor</div>
       </div>
-      <div class="foundation">
-        <span class="ml">Always mapped</span>
-        <span class="mi">Figma</span><span class="sep">/</span>
-        <span class="mi">codebases</span><span class="sep">/</span>
-        <span class="mi">what the user is already trying to improve</span>
+      <div class="mapstrip" data-stage="4">
+        <span class="compass">&#129517;</span>
+        <div class="map-txt">
+          <b>The package is the map the agents hunt with.</b>
+          <span class="list">Figma &middot; codebases &middot; configs &middot; what the user already tries to improve</span>
+          <em>A better map = agents work better.</em>
+        </div>
+        <svg class="map-trail" viewBox="0 0 126 44" aria-hidden="true">
+          <path d="M6 34 q20 -26 42 -8 t44 -14" fill="none" stroke="#B8894A" stroke-width="2.6"
+                stroke-dasharray="3 7" stroke-linecap="round"/>
+          <g stroke="#C0392B" stroke-width="4" stroke-linecap="round">
+            <path d="M104 6 L120 22"/><path d="M120 6 L104 22"/>
+          </g>
+        </svg>
       </div>
-      <div class="acct" data-stage="4">
+      <div class="acct" data-stage="5">
         <span class="al">&#129309; The workflow handholds the user</span>
         <span class="ac">the next step is always obvious</span>
       </div>
@@ -1485,13 +1590,42 @@ function buildLightScene(root, onDone) {
   });
 })();
 
-/* ════════ Fold 02 — the timeline marker walks to June ════════ */
+/* ════════ One idea at a time — [data-dim-past] folds fade what is done ════
+   A fold marked data-dim-past keeps every revealed block on screen but drops
+   the ones behind the current beat to 55%, so the live line is unmistakable. */
+(function () {
+  document.querySelectorAll('.fold[data-dim-past]').forEach(function (section) {
+    var blocks = [].slice.call(section.querySelectorAll(':scope > .fold-inner [data-stage]'))
+                   .filter(function (b) { return !b.hasAttribute('data-no-dim'); });
+    function paint(stage) {
+      blocks.forEach(function (b) {
+        b.classList.toggle('past', parseInt(b.dataset.stage, 10) < stage);
+      });
+    }
+    section.addEventListener('ctostage', function (e) { paint(e.detail.stage); });
+    section.addEventListener('ctostagereset', function () { paint(0); });
+  });
+})();
+
+/* ════════ Fold 02 — the marker walks Jan → Jun, layers stack under it ════
+   Each stage moves the marker to its month and dims every earlier layer, so
+   the fold reads as one progressing story rather than four separate cards. */
 (function () {
   var f02 = document.getElementById('f02');
   var marker = document.getElementById('tlMarker');
+  var done = document.getElementById('tlDone');
   if (!f02 || !marker) return;
-  f02.addEventListener('ctostage', function () { marker.style.left = '38%'; });
-  f02.addEventListener('ctostagereset', function () { marker.style.left = '4%'; });
+  var AT = { 0: 4, 1: 22, 2: 76, 3: 94, 4: 94, 5: 94 };   /* Jan · Feb · May · Jun */
+
+  function place(stage) {
+    var pct = AT[stage] != null ? AT[stage] : 4;
+    marker.style.left = pct + '%';
+    if (done) done.style.width = pct + '%';
+    marker.classList.toggle('burst', stage >= 3);
+  }
+  place(0);
+  f02.addEventListener('ctostage', function (e) { place(e.detail.stage); });
+  f02.addEventListener('ctostagereset', function () { place(0); });
 })();
 
 /* ════════ Fold 03 — the Bouncer makes a DECISION, not a delivery ════════
@@ -1548,7 +1682,7 @@ function buildLightScene(root, onDone) {
 (function () {
   var f04 = document.getElementById('f04');
   if (!f04) return;
-  f04.addEventListener('ctostage', function (e) { if (e.detail.stage >= 3) f04.classList.add('gates-on'); });
+  f04.addEventListener('ctostage', function (e) { if (e.detail.stage >= 2) f04.classList.add('gates-on'); });
   f04.addEventListener('ctostagereset', function () { f04.classList.remove('gates-on'); });
 })();
 
