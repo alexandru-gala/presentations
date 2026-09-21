@@ -780,7 +780,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 
 .factory-scene { position: absolute; left: 0; right: 0; bottom: 0; height: 50%; width: 100%;
   pointer-events: none; z-index: 1; }
-#f10 .factory-scene { height: 40%; }
+#f11 .factory-scene { height: 40%; }
 #f01 .factory-scene { height: 44%; transition: opacity 0.7s ease; }
 /* the hands panel is the tallest block on this fold — lift the column and pull
    the skyline back so the rows never sit on a roofline */
@@ -837,7 +837,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 @keyframes bulb-flicker { 0%,100% { opacity: 0.85; } 38% { opacity: 0.25; } 60% { opacity: 1; } }
 
 /* fold 01 layout -------------------------------------------------------- */
-#f01 .fold-inner, #f10 .fold-inner { position: relative; z-index: 10; }
+#f01 .fold-inner, #f11 .fold-inner { position: relative; z-index: 10; }
 #f01 .pago-header { opacity: 0; transition: opacity 0.9s ease 0.6s; }
 #f01.lights-on .pago-header { opacity: 1; }
 .f01-grid { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
@@ -986,11 +986,11 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
   font-weight: 600; color: var(--text-muted); }
 .legend b { color: var(--text); }
 .legend .chipGold { display: inline-block; width: 22px; height: 11px; border-radius: 4px; background: var(--pago-gold); }
-.bands { display: flex; gap: clamp(8px,1.2vw,18px); margin-bottom: clamp(30px,5.2vh,56px); align-items: stretch; }
+.bands { display: flex; gap: clamp(8px,1.2vw,18px); margin-bottom: clamp(26px,4.4vh,46px); align-items: stretch; }
 .band { flex: var(--f, 1); display: flex; flex-direction: column; gap: clamp(8px,1.3vh,14px); border-radius: 14px;
   padding: clamp(13px,1.8vw,24px) clamp(11px,1.4vw,18px); background: rgba(43,89,195,0.045);
   border: 1px solid rgba(43,89,195,0.14); }
-.band:nth-child(1) { flex: 4; } .band:nth-child(2) { flex: 3; } .band:nth-child(3) { flex: 3; }
+.band:nth-child(1) { flex: 3.7; } .band:nth-child(2) { flex: 4.7; } .band:nth-child(3) { flex: 2.9; }
 .band-h b { display: block; font-family: 'DM Sans'; font-weight: 800; font-size: clamp(17px,2.15vw,30px);
   line-height: 1.05; color: var(--pago-blue); letter-spacing: -0.3px; }
 .band-h em { font-style: normal; font-size: clamp(11px,1.15vw,15px); font-weight: 700; color: var(--pago-blue); opacity: 0.8; }
@@ -1002,12 +1002,25 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .band.stage-visible .step { animation: step-in 0.4s cubic-bezier(0.22,0.61,0.36,1) both;
   animation-delay: calc(var(--i) * 0.09s); }
 @keyframes step-in { to { opacity: 1; transform: none; } }
-.step-top { display: flex; align-items: center; gap: 6px; }
-.step .ag { font-size: clamp(15px,1.65vw,23px); line-height: 1; }
+.step-top { display: flex; align-items: center; gap: 7px; }
+/* one monoline glyph per step — same family, same weight, never an emoji */
+.ln { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.step .ag { flex: none; width: clamp(17px,1.65vw,22px); height: auto; color: var(--pago-blue); }
 /* the only two places a human decides */
 .step.human { border-color: var(--pago-gold); background: rgba(245,166,35,0.10);
   box-shadow: 0 0 0 2px rgba(245,166,35,0.22), 0 4px 12px rgba(245,166,35,0.18); }
 .step.human .step-n { color: #b9760a; }
+.step.human .ag { color: #b9760a; }
+/* step 06 is the check-in: humans answer questions, so it shows them */
+.band-steps .step.ask { flex: 2.35; background: rgba(245,166,35,0.16);
+  box-shadow: 0 0 0 2px rgba(245,166,35,0.4), 0 6px 18px rgba(245,166,35,0.26); }
+.ask-box { margin-top: clamp(6px,0.9vh,10px); border-top: 1px dashed rgba(184,120,10,0.42); padding-top: clamp(5px,0.8vh,9px); }
+.ask-h { display: block; font-size: clamp(9px,0.9vw,11.5px); font-weight: 800; letter-spacing: 0.7px;
+  text-transform: uppercase; color: #8a5a06; margin-bottom: 4px; }
+.ask-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.ask-list li { font-size: clamp(9.5px,0.98vw,12.5px); font-weight: 600; color: #6b4200; line-height: 1.3; }
+.ask-list li::before { content: '\00B7'; font-weight: 800; margin-right: 5px; }
+.ask-list b { font-weight: 800; text-transform: uppercase; }
 .step-n { font-size: clamp(10px,0.95vw,12px); font-weight: 800; letter-spacing: 1px; color: var(--machine); }
 .step-name { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(11.5px,1.22vw,16px); line-height: 1.18; }
 .step-sub { font-size: clamp(9.5px,0.95vw,12px); color: var(--text-muted); line-height: 1.25; margin-top: 2px; }
@@ -1219,24 +1232,40 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 .mp-note .flag { font-family: 'DM Sans'; font-weight: 800; color: var(--pago-blue);
   font-size: clamp(11.5px,1.25vw,17px); }
 
-/* ══ fold 10 — close ════════════════════════════════════════════════════ */
-#f10 .fold-inner { text-align: center; align-items: center; gap: clamp(12px,2.2vh,26px); }
-#f10 .close-big { margin-top: auto; }
-#f10 .close-lights { margin-bottom: auto; }
+/* ══ fold 10 — the factory lanes ════════════════════════════════════════ */
+/* grid + closing line centre as one group between the title and bottom line */
+.lanes { flex: none; margin-top: auto; display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(10px,1.5vw,22px); }
+.lane { display: flex; flex-direction: column; gap: clamp(5px,0.8vh,9px);
+  padding: clamp(16px,2.1vw,28px) clamp(14px,1.8vw,26px); border-radius: 16px;
+  background: rgba(43,89,195,0.045); border: 1px solid rgba(43,89,195,0.15); }
+.lane-top { display: flex; align-items: center; gap: clamp(9px,1.1vw,14px); }
+.lane-top svg { flex: none; width: clamp(24px,2.5vw,34px); height: auto; color: var(--pago-blue); }
+.lane-t { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(15px,1.75vw,25px);
+  line-height: 1.1; letter-spacing: -0.3px; }
+.lane-tag { flex: none; font-size: clamp(8.5px,0.86vw,11px); font-weight: 800; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--pago-blue); background: rgba(43,89,195,0.11);
+  border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+.lane-job { font-size: clamp(11px,1.15vw,15.5px); font-weight: 600; color: var(--text-muted); line-height: 1.4; }
+.lane-st { align-self: flex-start; margin-top: auto; font-size: clamp(9.5px,0.95vw,12.5px);
+  font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; border-radius: 999px; padding: 4px 12px; }
+.lane-st.run { color: #0f7a38; background: rgba(22,163,74,0.13); }
+.lane-st.wip { color: #9a5410; background: rgba(224,122,31,0.14); }
+/* the running lane is the one that already exists — it gets the gold edge */
+.lane.is-live { border-color: rgba(245,166,35,0.55); background: rgba(245,166,35,0.09);
+  box-shadow: 0 0 0 1px rgba(245,166,35,0.25); }
+.lane.is-live .lane-top svg { color: #b9760a; }
+.lane.is-live .lane-tag { color: #8a5a06; background: rgba(245,166,35,0.2); }
+.lane-same { padding-top: clamp(3px,0.9vh,9px); text-align: center; font-family: 'DM Sans'; font-weight: 700;
+  font-size: clamp(12.5px,1.4vw,19px); color: var(--pago-blue); }
+
+/* ══ fold 11 — close ════════════════════════════════════════════════════ */
+#f11 .fold-inner { text-align: center; align-items: center; gap: clamp(14px,2.6vh,30px); }
+#f11 .close-big { margin-top: auto; }
+#f11 .close-lights { margin-bottom: auto; }
 .close-big { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(28px,4.4vw,62px); line-height: 1.06;
   color: #fff; letter-spacing: -1px; }
 .close-big u { text-decoration: none; color: var(--pago-gold); }
-.pilot { display: flex; align-items: center; justify-content: center; gap: clamp(6px,1.2vw,18px); flex-wrap: wrap; }
-.pilot .pnode { display: flex; flex-direction: column; align-items: center; gap: 7px;
-  padding: clamp(9px,1.2vw,16px) clamp(11px,1.5vw,22px); border-radius: 14px;
-  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.17); min-width: clamp(120px,14vw,190px); }
-.pilot .pnode svg { width: clamp(26px,3vw,42px); height: auto; }
-.pilot .pnode .pt { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(11px,1.2vw,16px); color: #fff; line-height: 1.2; }
-.pilot .pnode .pk { font-size: clamp(9px,0.92vw,11.5px); font-weight: 800; letter-spacing: 1.4px;
-  text-transform: uppercase; color: var(--pago-gold); }
-.pilot .parw { color: rgba(255,255,255,0.4); font-size: clamp(16px,1.9vw,26px); }
-.pilot-lbl { font-size: clamp(11px,1.2vw,15.5px); font-weight: 600; color: rgba(255,255,255,0.6); }
-.pilot-lbl.cooking b { color: #ffd9a0; font-weight: 700; }
 .close-lights { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(16px,1.9vw,26px); color: #ffd9a0;
   text-shadow: 0 0 22px rgba(255,180,80,0.5); }
 .speaker { display: flex; align-items: center; justify-content: space-between; gap: clamp(10px,1.4vw,20px);
@@ -1274,6 +1303,25 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     <path d="M6 58 V30 l14 -9 v9 l14 -9 v9 l14 -9 v37 Z" fill="currentColor"/>
     <rect x="46" y="8" width="8" height="50" fill="currentColor"/>
   </symbol>
+
+  <!-- ── one monoline family, 24×24, currentColor: the ten intake steps ──
+       drawn as strokes so a step card can tint its glyph with colour alone -->
+  <symbol id="g-prd" viewBox="0 0 24 24"><g class="ln"><path d="M6.2 3h7.3l4.3 4.3v13.4a1.3 1.3 0 0 1-1.3 1.3H6.2a1.3 1.3 0 0 1-1.3-1.3V4.3A1.3 1.3 0 0 1 6.2 3z"/><path d="M13.5 3v4.6h4.3"/><path d="M8.4 12.4h7.2M8.4 16.1h4.8"/></g></symbol>
+  <symbol id="g-design" viewBox="0 0 24 24"><g class="ln"><rect x="2.6" y="3.4" width="12" height="10.4" rx="1.6"/><rect x="9.4" y="10.2" width="12" height="10.4" rx="1.6"/><path d="M9.4 13.6h12"/></g></symbol>
+  <symbol id="g-research" viewBox="0 0 24 24"><g class="ln"><circle cx="3.8" cy="12" r="1.9"/><path d="M5.9 12h2.4c3 0 2.2-6 5.4-6M5.9 12h7.8M5.9 12h2.4c3 0 2.2 6 5.4 6"/><circle cx="15.9" cy="6" r="1.9"/><circle cx="16.2" cy="12" r="1.9"/><circle cx="15.9" cy="18" r="1.9"/></g></symbol>
+  <symbol id="g-plan" viewBox="0 0 24 24"><g class="ln"><rect x="2.8" y="3.8" width="18.4" height="16.4" rx="2"/><path d="M2.8 10.2h18.4M9.6 3.8v16.4"/><path d="M13 13h5.2v4.4H13z"/></g></symbol>
+  <symbol id="g-review" viewBox="0 0 24 24"><g class="ln"><circle cx="10.6" cy="10.6" r="6.6"/><path d="M15.4 15.4L21 21"/><path d="M7.8 10.6h5.6"/></g></symbol>
+  <symbol id="g-backwards" viewBox="0 0 24 24"><g class="ln"><circle cx="8.4" cy="8.6" r="3.1"/><path d="M3 20.8c0-3.2 2.4-5.4 5.4-5.4s5.4 2.2 5.4 5.4"/><rect x="14.4" y="2.6" width="7.2" height="6" rx="2"/><path d="M16.8 8.6l-.4 2.6 2.7-2.6"/><path d="M17.1 4.7a1.1 1.1 0 0 1 1.9.8c0 .8-.9.9-.9 1.5"/></g></symbol>
+  <symbol id="g-impact" viewBox="0 0 24 24"><g class="ln"><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="12" r="6.1"/><circle cx="12" cy="12" r="9.8"/></g></symbol>
+  <symbol id="g-sequence" viewBox="0 0 24 24"><g class="ln"><path d="M4.6 3v18M12 3v18M19.4 3v18" stroke-dasharray="2 2.6"/><path d="M4.6 8.2h7.4M12 15.2h7.4"/><path d="M10.2 6.6L12 8.2l-1.8 1.7M17.6 13.6l1.8 1.6-1.8 1.7"/></g></symbol>
+  <symbol id="g-schema" viewBox="0 0 24 24"><g class="ln"><ellipse cx="12" cy="6" rx="6.9" ry="3"/><path d="M5.1 6v12c0 1.7 3.1 3 6.9 3s6.9-1.3 6.9-3V6"/><path d="M5.1 12c0 1.7 3.1 3 6.9 3s6.9-1.3 6.9-3"/></g></symbol>
+  <symbol id="g-package" viewBox="0 0 24 24"><g class="ln"><rect x="2.8" y="6.8" width="18.4" height="14" rx="1.8"/><path d="M2.8 11.2h18.4"/><path d="M9.2 6.8V3.6h5.6v3.2"/><circle cx="12" cy="15.9" r="2.1"/></g></symbol>
+
+  <!-- ── same family, the four factory lanes ── -->
+  <symbol id="g-lane-feat" viewBox="0 0 24 24"><g class="ln"><path d="M3.4 15.6l5.2-5.2 3.8 3.8 7.4-7.4"/><path d="M14.8 6.8h5.2V12"/><path d="M3.4 20.6h17.2"/></g></symbol>
+  <symbol id="g-lane-fix" viewBox="0 0 24 24"><g class="ln"><path d="M7.3 10.4a4.7 6 0 0 1 9.4 0v3.9a4.7 5.6 0 0 1-9.4 0z"/><path d="M9 6.9L7.2 4.6M15 6.9l1.8-2.3"/><path d="M7.3 11.4H3.4M16.7 11.4h3.9M7.3 16.3H3.9M16.7 16.3h3.4"/></g></symbol>
+  <symbol id="g-lane-sec" viewBox="0 0 24 24"><g class="ln"><path d="M12 2.6l8 2.9v5.9c0 5-3.4 8.9-8 10.4-4.6-1.5-8-5.4-8-10.4V5.5z"/><path d="M8.6 11.9l2.5 2.5 4.4-5"/></g></symbol>
+  <symbol id="g-lane-crash" viewBox="0 0 24 24"><g class="ln"><rect x="6" y="2.6" width="12" height="18.8" rx="2.6"/><path d="M12.9 6.4l-3.2 5.3h4.4l-2.9 5.5"/></g></symbol>
 </svg>
 
 <div class="progress-bar" id="progressBar"></div>
@@ -1614,9 +1662,9 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
     </div>
     <div class="stage-wrap" style="justify-content:center;" id="f04Wrap">
       <div class="bands">
-        <div class="band" style="--b:1" data-stage="1" data-no-dim><div class="band-h"><b>Define</b><em>&#129302; agents draft</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">01</span></span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">02</span></span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">03</span></span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">04</span></span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
-        <div class="band" style="--b:2" data-stage="2" data-no-dim><div class="band-h"><b>Stress-test</b><em>&#129302; agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human" style="--i:2"><span class="gate-flag"><b>&#9873;</b>Is it worth it?</span><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">06</span></span><span class="step-name">Working backwards</span><span class="step-sub">is it worth it</span></li><li class="step" style="--i:3"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
-        <div class="band" style="--b:3" data-stage="3" data-no-dim><div class="band-h"><b>Package</b><em>&#129302; agents assemble</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">08</span></span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:2"><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">09</span></span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step human" style="--i:3"><span class="gate-flag"><b>&#9873;</b>Ship the package?</span><span class="step-top"><span class="ag">&#129302;</span><span class="step-n">10</span></span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
+        <div class="band" style="--b:1" data-stage="1" data-no-dim><div class="band-h"><b>Define</b><em>agents draft</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-prd"/></svg><span class="step-n">01</span></span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-design"/></svg><span class="step-n">02</span></span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-research"/></svg><span class="step-n">03</span></span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-plan"/></svg><span class="step-n">04</span></span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
+        <div class="band" style="--b:2" data-stage="2" data-no-dim><div class="band-h"><b>Stress-test</b><em>agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-review"/></svg><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human ask" style="--i:2"><span class="gate-flag"><b>&#9873;</b>Check-in &middot; humans answer questions</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-backwards"/></svg><span class="step-n">06</span></span><span class="step-name">Working backwards</span><div class="ask-box"><span class="ask-h">&#9997;&#65039; humans answer</span><ul class="ask-list"><li>who is it for?</li><li>what must be true?</li><li>what do we <b>not</b> build?</li></ul></div></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-impact"/></svg><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
+        <div class="band" style="--b:3" data-stage="3" data-no-dim><div class="band-h"><b>Package</b><em>agents assemble</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-sequence"/></svg><span class="step-n">08</span></span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:2"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-schema"/></svg><span class="step-n">09</span></span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step human" style="--i:3"><span class="gate-flag"><b>&#9873;</b>Ship the package?</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-package"/></svg><span class="step-n">10</span></span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
       </div>
       <div class="tail late" data-stage="3" data-no-dim>
         <span class="arw">&#10230;</span>
@@ -1839,7 +1887,59 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
 </section>
 
 <!-- ══════════════ FOLD 10 · Close ══════════════ -->
-<section class="fold fold--night" id="f10" data-dark data-stages="3" data-scene-stages>
+<!-- ══════════════ FOLD 10 · The factory lanes ══════════════ -->
+<section class="fold wide" id="f10" data-stages="4">
+  <div class="fold-inner">
+    <div class="pago-header">
+      <div class="kicker">What&rsquo;s cooking</div>
+      <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
+    </div>
+    <h2 class="fold-title reveal">More than one factory. <strong class="blue">Same shape, different lanes.</strong></h2>
+    <div class="lanes">
+      <div class="lane is-live" data-stage="1">
+        <div class="lane-top">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#g-lane-feat"/></svg>
+          <span class="lane-t">Improvements factory</span>
+          <span class="lane-tag">FEAT lane</span>
+        </div>
+        <div class="lane-job">brief + Figma &rarr; package &rarr; Bouncer &rarr; build</div>
+        <span class="lane-st run">running</span>
+      </div>
+      <div class="lane" data-stage="2">
+        <div class="lane-top">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#g-lane-fix"/></svg>
+          <span class="lane-t">Auto bugs factory</span>
+          <span class="lane-tag">FIX lane</span>
+        </div>
+        <div class="lane-job">a Linear bug &rarr; evidence + repro &rarr; package &rarr; fix PR</div>
+        <span class="lane-st wip">in progress</span>
+      </div>
+      <div class="lane" data-stage="3">
+        <div class="lane-top">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#g-lane-sec"/></svg>
+          <span class="lane-t">Auto security factory</span>
+          <span class="lane-tag">SEC lane</span>
+        </div>
+        <div class="lane-job">weekly sweep &rarr; findings pack &rarr; deep gauntlet, 2 human keys</div>
+        <span class="lane-st wip">in progress</span>
+      </div>
+      <div class="lane" data-stage="4">
+        <div class="lane-top">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#g-lane-crash"/></svg>
+          <span class="lane-t">Crash crusher</span>
+          <span class="lane-tag">Crashlytics</span>
+        </div>
+        <div class="lane-job">Crashlytics top crashes &rarr; root cause &rarr; fix PR</div>
+        <span class="lane-st wip">in progress</span>
+      </div>
+    </div>
+    <div class="lane-same late" data-stage="4">Same intake, same Bouncer, same floor &mdash; only the input changes.</div>
+    <div class="bottom-line reveal reveal-d2">Build the shape once. Feed it different inputs.</div>
+  </div>
+</section>
+
+<!-- ══════════════ FOLD 11 · Close ══════════════ -->
+<section class="fold fold--night" id="f11" data-dark data-stages="2" data-scene-stages>
   <div class="night-lift"></div>
   <div class="stars"></div>
   <svg class="factory-scene" viewBox="0 0 1600 520" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
@@ -1925,28 +2025,7 @@ body { font-family: 'DM Sans', 'Inter', -apple-system, sans-serif; color: var(--
       <span><b>Alexandru Gala Popescu</b> &middot; Pago &middot; Bra&#537;ov + Bucharest</span>
     </div>
     <div class="close-big" data-stage="1">Start using a factory.<br><u>Or build one yourself.</u></div>
-    <div class="pilot-lbl" data-stage="2">One pilot is enough to find out:</div>
-    <div class="pilot" data-stage="2">
-      <div class="pnode">
-        <div class="pk">start</div>
-        <svg viewBox="0 0 64 64" style="color:#fff"><use href="#factory-ico"/></svg>
-        <div class="pt">one recurring change</div>
-      </div>
-      <span class="parw">&#10230;</span>
-      <div class="pnode">
-        <div class="pk">then</div>
-        <svg class="pkg" viewBox="0 0 72 64"><use href="#pkg"/></svg>
-        <div class="pt">one reviewed package</div>
-      </div>
-      <span class="parw">&#10230;</span>
-      <div class="pnode">
-        <div class="pk">ship</div>
-        <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="#F5A623" stroke-width="5"/><path d="M20 33 l9 9 l16 -18" fill="none" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="pt">one controlled PR</div>
-      </div>
-    </div>
-    <div class="pilot-lbl cooking" data-stage="3">Same shape, more factories cooking: <b>&#128027; Auto bugs</b> &middot; <b>&#128274; Auto security</b> &middot; <b>&#128165; Crash crusher</b></div>
-    <div class="close-lights" data-stage="3">And leave the lights on.</div>
+    <div class="close-lights" data-stage="2">And leave the lights on.</div>
   </div>
 </section>
 
@@ -2261,20 +2340,20 @@ function buildLightScene(root, onDone) {
 
 /* ════════ Fold 10 — the same timeline, as the bookend ════════ */
 (function () {
-  var f10 = document.getElementById('f10');
-  if (!f10) return;
-  var scene = buildLightScene(f10);
+  var f11 = document.getElementById('f11');
+  if (!f11) return;
+  var scene = buildLightScene(f11);
   if (!scene) return;
   var played = false;
-  function light() { if (played) return; played = true; f10.classList.add('lights-on'); scene.play(); }
-  f10.addEventListener('ctostage', light);
+  function light() { if (played) return; played = true; f11.classList.add('lights-on'); scene.play(); }
+  f11.addEventListener('ctostage', light);
   if (window.IntersectionObserver) {
     new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) light(); });
-    }, { threshold: 0.35 }).observe(f10);
+    }, { threshold: 0.35 }).observe(f11);
   }
-  f10.addEventListener('ctostagereset', function () {
-    played = false; f10.classList.remove('lights-on'); scene.reset();
+  f11.addEventListener('ctostagereset', function () {
+    played = false; f11.classList.remove('lights-on'); scene.reset();
   });
 })();
 
