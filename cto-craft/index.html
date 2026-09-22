@@ -32,6 +32,13 @@
   stroke-linecap: round; stroke-linejoin: round; }
 .ico .sol { fill: currentColor; stroke: none; }
 .ico .dim { opacity: 0.45; }
+.ico.inl { display: inline-block; vertical-align: -0.15em; }
+#f02 .ent .acc span { display: inline-flex; align-items: center; gap: 6px; }
+#f02 .ent .acc .ico { width: 1.05em; height: 1.05em; }
+.legend .ico { color: var(--pago-gold); }
+.ask-h .ico { width: 1.05em; height: 1.05em; }
+.mapstrip .compass { color: #B8894A; }
+.hands .hrow .ico, .mapstrip .compass .ico { flex: none; }
 [hidden] { display: none !important; }
 
 /* staged-fold affordances (carried over from ep2) */
@@ -91,7 +98,12 @@
 .fold--night { background: #02040a; }
 .fold--night .fold-inner { color: #fff; }
 .night-lift { position: absolute; inset: 0; pointer-events: none; opacity: var(--lit, 0);
-  background: radial-gradient(130% 95% at 50% 102%, #1a2c60 0%, #0c1533 44%, #050914 100%); }
+  background:
+    /* the warm wash the works throw up into the sky */
+    radial-gradient(76% 46% at 50% 100%, rgba(255,176,86,0.22) 0%,
+                    rgba(255,176,86,0.085) 46%, rgba(255,176,86,0) 100%),
+    /* and the night itself, lifted wider and a shade brighter than before */
+    radial-gradient(155% 118% at 50% 104%, #2d3c78 0%, #1a2859 26%, #0d1734 58%, #050914 100%); }
 .stars { position: absolute; inset: 0; pointer-events: none; opacity: calc(0.22 + var(--lit, 0) * 0.4);
   background-image: radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px),
                     radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px);
@@ -122,9 +134,26 @@
 .factory-scene .win { fill: #FFCE6B; opacity: 0; }
 .factory-scene .win--far { fill: #9FB4E8; transition: opacity 1.4s ease 0.6s; }
 .lights-on .factory-scene .win--far { opacity: 0.5; }   /* the far town, only half awake */
+/* figures cross the lit openings; two more work at a bench. Each is PLACED by
+   an outer <g transform> and MOVED on an inner one — the transform-ownership
+   rule applies to CSS animation exactly as it does to GSAP. */
+.factory-scene .workers { opacity: 0; transition: opacity 1.2s ease 1.1s; }
+.lights-on .factory-scene .workers { opacity: 1; }
+.factory-scene .w-fig { fill: #16203F; }
+.factory-scene .w-walk { animation: worker-walk var(--wdur) linear var(--wdel) infinite; }
+.factory-scene .w-bob  { animation: worker-bob  var(--wdur) ease-in-out var(--wdel) infinite; }
+@keyframes worker-walk { from { transform: translateX(var(--wa, -20px)); }
+                         to   { transform: translateX(var(--wb, 40px)); } }
+@keyframes worker-bob  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.7px); } }
+.is-parked .factory-scene .w-fig { animation-play-state: paused; }
 .factory-scene .gate { fill: #FFCE6B; opacity: 0; transition: opacity 0.8s ease 0.5s; }
 .lights-on .factory-scene .gate { opacity: 0.85; }
-.factory-scene .fglow { opacity: 0; }
+.factory-scene .fglow, .factory-scene .fcore { opacity: 0; }
+/* the windows carry a halo once they are all up — ONE filter over the group,
+   not forty-three, and only after the stagger has finished painting */
+.factory-scene .fwins { filter: drop-shadow(0 0 0 rgba(255,206,107,0));
+  transition: filter 1s ease 1.15s; }
+.lights-on .factory-scene .fwins { filter: drop-shadow(0 0 7px rgba(255,206,107,0.6)); }
 .factory-scene .tank-rings path { fill: none; stroke: rgba(150,175,230,0.13); stroke-width: 2;
   transition: stroke 1.4s var(--e-soft); }
 .lights-on .factory-scene .tank-rings path { stroke: rgba(255,203,120,0.30); }
@@ -181,7 +210,9 @@
   flex: none; transform: scale(2); transform-origin: 50% 42%;
   transition: transform 0.95s var(--e-back); }
 #f01.lights-on .switch-col { transform: scale(1); }
-.switch-btn { background: none; border: 0; padding: 0; cursor: pointer; line-height: 0; }
+.switch-btn { background: none; border: 0; padding: 0; cursor: pointer; line-height: 0; border-radius: 14px; }
+.switch-btn:focus { outline: none; }
+.switch-btn:focus-visible { outline: 2px solid var(--pago-gold); outline-offset: 9px; }
 .switch-btn svg { width: clamp(64px, 7vw, 104px); height: auto; display: block;
   filter: drop-shadow(0 18px 40px rgba(0,0,0,0.6)); transition: filter 0.6s ease; }
 .lights-on .switch-btn svg { filter: drop-shadow(0 16px 44px rgba(255,180,80,0.28)); }
@@ -238,10 +269,22 @@
 .f01-stack > [data-stage] > * { min-height: 0; }
 .f01-stack > [data-stage]:not(.stage-visible) { overflow: hidden; }
 .f01-stack > [data-stage].stage-visible { grid-template-rows: 1fr; grid-auto-rows: 1fr; margin-top: clamp(10px, 1.7vh, 20px); }
-.quote { border-left: 4px solid var(--pago-gold); background: linear-gradient(90deg, rgba(8,14,36,0.74), rgba(8,14,36,0.10)); padding: clamp(6px,1vh,12px) 0 clamp(6px,1vh,12px) clamp(14px,1.6vw,22px); }
-.quote p { font-size: clamp(17px, 1.95vw, 28px); font-weight: 500; line-height: 1.38; color: #fff; }
+.quote { position: relative; background: linear-gradient(90deg, rgba(8,14,36,0.74), rgba(8,14,36,0.10));
+  padding: clamp(6px,1vh,12px) 0 clamp(6px,1vh,12px) clamp(14px,1.6vw,22px);
+  opacity: 0; transition: opacity 0.5s var(--e-out) 0.42s; }
+/* the rule is a pseudo-element so it can wipe downward ahead of the words */
+.quote::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--pago-gold); transform: scaleY(0); transform-origin: 50% 0;
+  transition: transform 0.5s var(--e-out) 0.38s; }
+#f01.lights-on .quote { opacity: 1; }
+#f01.lights-on .quote::before { transform: scaleY(1); }
+.quote p { font-size: clamp(17px, 1.95vw, 28px); font-weight: 500; line-height: 1.38; color: #fff;
+  transform: translateY(13px); transition: transform 0.62s var(--e-out) 0.46s; }
+#f01.lights-on .quote p { transform: none; }
 .quote cite { display: block; margin-top: 8px; font-style: normal; font-size: clamp(11px,1.1vw,15px);
-  font-weight: 600; color: rgba(255,255,255,0.55); }
+  font-weight: 600; color: rgba(255,255,255,0.55);
+  transform: translateY(11px); transition: transform 0.62s var(--e-out) 0.6s; }
+#f01.lights-on .quote cite { transform: none; }
 .quote cite em { color: rgba(255,255,255,0.82); }
 .callback { align-self: flex-start; font-family: 'DM Sans'; font-weight: 700;
   font-size: clamp(15px, 1.7vw, 24px); color: #ffd7cf; padding: clamp(8px,1.1vh,13px) clamp(14px,1.6vw,22px);
@@ -676,9 +719,25 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
   <!-- shared scene gradients: the night glow, lamp cones and chimney smoke -->
+  <clipPath id="wc-a" clipPathUnits="userSpaceOnUse"><rect x="420" y="338" width="30" height="26" rx="2"/></clipPath>
+  <clipPath id="wc-b" clipPathUnits="userSpaceOnUse"><rect x="474" y="292" width="30" height="26" rx="2"/></clipPath>
+  <clipPath id="wc-c" clipPathUnits="userSpaceOnUse"><rect x="690" y="384" width="30" height="26" rx="2"/></clipPath>
+  <clipPath id="wc-d" clipPathUnits="userSpaceOnUse"><rect x="636" y="338" width="30" height="26" rx="2"/></clipPath>
+  <clipPath id="wc-e" clipPathUnits="userSpaceOnUse"><rect x="528" y="292" width="30" height="26" rx="2"/></clipPath>
+  <clipPath id="wc-f" clipPathUnits="userSpaceOnUse"><rect x="744" y="292" width="30" height="26" rx="2"/></clipPath>
+  <clipPath id="wc-g" clipPathUnits="userSpaceOnUse"><rect x="198" y="382" width="26" height="22" rx="2"/></clipPath>
+  <clipPath id="wc-h" clipPathUnits="userSpaceOnUse"><rect x="1104" y="366" width="26" height="22" rx="2"/></clipPath>
+  <clipPath id="wc-i" clipPathUnits="userSpaceOnUse"><rect x="1248" y="406" width="26" height="22" rx="2"/></clipPath>
+  <clipPath id="wc-j" clipPathUnits="userSpaceOnUse"><rect x="1414" y="414" width="26" height="22" rx="2"/></clipPath>
+  <radialGradient id="scene-core">
+    <stop offset="0%" stop-color="rgba(255,199,110,0.58)"/>
+    <stop offset="50%" stop-color="rgba(255,186,92,0.21)"/>
+    <stop offset="100%" stop-color="rgba(255,182,88,0)"/>
+  </radialGradient>
   <radialGradient id="scene-glow" cx="0.5" cy="0.62" r="0.62">
-    <stop offset="0%" stop-color="rgba(255,190,92,0.30)"/>
-    <stop offset="45%" stop-color="rgba(255,190,92,0.13)"/>
+    <stop offset="0%" stop-color="rgba(255,193,98,0.52)"/>
+    <stop offset="38%" stop-color="rgba(255,190,92,0.26)"/>
+    <stop offset="72%" stop-color="rgba(255,190,92,0.09)"/>
     <stop offset="100%" stop-color="rgba(255,190,92,0)"/>
   </radialGradient>
   <radialGradient id="smoke-soft">
@@ -755,6 +814,16 @@
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9.1 3.4h5.8l-.8 5.5 3.3 3.2H6.6l3.3-3.2z"/><path d="M12 12.1v8.5"/></symbol>
   <symbol id="i-hand" viewBox="0 0 24 24"><path d="M7.2 12.4V6.7a1.5 1.5 0 0 1 3 0v4.4"/><path d="M10.2 11.1V5a1.5 1.5 0 0 1 3 0v6.1"/><path d="M13.2 11.1V6.6a1.5 1.5 0 0 1 3 0v7.6a6.8 6.8 0 0 1-6.8 6.8A5.8 5.8 0 0 1 3.6 15v-3.4a1.8 1.8 0 0 1 3.6 0V14"/></symbol>
   <symbol id="i-plant" viewBox="0 0 24 24"><path d="M3.5 20.5V10.4l5.2 3.2v-3.2l5.2 3.2v-3.2l5.1 3.2v7.1z"/><path d="M18 3.5h2.6v17" class="dim"/></symbol>
+  <symbol id="i-factory" viewBox="0 0 24 24"><path d="M2.6 20.6V10.3l5.5 3.5V10.3l5.5 3.5V10.3l5.5 3.5v6.8z"/><path d="M19.1 13.8V3.4h-3"/><path d="M6.6 17.3h1.9M11 17.3h1.9M15.4 17.3h1.9" class="dim"/></symbol>
+  <symbol id="i-scope" viewBox="0 0 24 24"><path d="M2.9 13.1l3.2-5.7 4.7 2.6-3.2 5.7z"/><path d="M10.4 9.3l3.1-5.5 4.7 2.6-3.1 5.5z"/><path d="M9 15.9L11.7 21M11.7 21l-3.2-.7M11.7 21l3.1-1.1"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M10.4 2.7l2 5.4 5.4 2-5.4 2-2 5.4-2-5.4-5.4-2 5.4-2z"/><path d="M18.3 15.9l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" class="dim"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M12 2.9l8.4 4.2v9.8L12 21.1 3.6 16.9V7.1z"/><path d="M3.6 7.1L12 11.3l8.4-4.2M12 11.3v9.8"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.2" class="sol"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.1"/><path d="M15.9 8.1l-2 5.8-5.8 2 2-5.8z"/><circle cx="12" cy="12" r="1" class="sol"/></symbol>
+  <symbol id="i-handshake" viewBox="0 0 24 24"><path d="M2.6 10.2l3.6-3h3.3l2.5 2.2 2.5-2.2h3.3l3.6 3"/><path d="M2.6 10.2v4.6l3 2.8 2.3-2 2.4 2.1 2-1.6"/><path d="M21.4 10.2v4.6l-3 2.8-4.4-3.7"/></symbol>
+  <symbol id="i-hammer" viewBox="0 0 24 24"><path d="M13.3 2.9l7.8 7.8-2.8 2.8-7.8-7.8z"/><path d="M11.9 8.1L3.5 16.5a2.1 2.1 0 0 0 3 3l8.4-8.4"/></symbol>
+  <symbol id="i-dev" viewBox="0 0 24 24"><circle cx="8.6" cy="6.4" r="3.2"/><path d="M2.6 20.5a6 6 0 0 1 9.5-4.9"/><path d="M16.6 13.5L14 16.1l2.6 2.6M20 13.5l2.6 2.6-2.6 2.6"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M15.7 3.6l4.7 4.7-11 11-5.9 1.2 1.2-5.9z"/><path d="M13.4 5.9l4.7 4.7" class="dim"/></symbol>
 </svg>
 
 <div class="progress-bar" id="progressBar"></div>
@@ -764,7 +833,9 @@
   <div class="night-lift"></div>
   <div class="stars"></div>
   <svg class="factory-scene" viewBox="0 0 1600 520" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-      <ellipse class="fglow" cx="800" cy="452" rx="780" ry="250" fill="url(#scene-glow)"/>
+      <ellipse class="fglow" cx="800" cy="450" rx="1040" ry="310" fill="url(#scene-glow)"/>
+      <ellipse class="fcore" cx="800" cy="466" rx="660" ry="200" fill="url(#scene-core)"/>
+      <ellipse class="surge" cx="800" cy="448" rx="900" ry="330" fill="url(#scene-core)" opacity="0"/>
 
       <!-- far band: distant blocks, one value flatter than the works -->
       <g class="band band--far">
@@ -858,6 +929,38 @@
         <rect class="win" x="1414" y="414" width="26" height="22" rx="2"/>
         <rect class="win" x="1460" y="414" width="26" height="22" rx="2"/>
       </g>
+      <g class="workers">
+        <g clip-path="url(#wc-a)"><g transform="translate(420 364)">
+          <g class="w-fig w-walk" style="--wdur:8.4s;--wdel:0s;--wa:-21px;--wb:39px"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-b)"><g transform="translate(474 318)">
+          <g class="w-fig w-walk" style="--wdur:11.2s;--wdel:-3.5s;--wa:-21px;--wb:39px"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-c)"><g transform="translate(690 410)">
+          <g class="w-fig w-walk" style="--wdur:9.6s;--wdel:-6s;--wa:-21px;--wb:39px"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-d)"><g transform="translate(636 364)">
+          <g class="w-fig w-walk" style="--wdur:10.4s;--wdel:-1.2s;--wa:-21px;--wb:39px"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-e)"><g transform="translate(543 318)">
+          <g class="w-fig w-bob" style="--wdur:3.6s;--wdel:0s"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-f)"><g transform="translate(759 318)">
+          <g class="w-fig w-bob" style="--wdur:4.8s;--wdel:-2.1s"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-g)"><g transform="translate(198 404)">
+          <g class="w-fig w-walk" style="--wdur:12.6s;--wdel:-4.4s;--wa:-18px;--wb:33px"><circle cx="0" cy="-14.6" r="2.9"/><rect x="-3.1" y="-11.2" width="6.2" height="8.9" rx="2.2"/><rect x="-2.8" y="-2.4" width="2.1" height="3.1" rx="1"/><rect x="0.7" y="-2.4" width="2.1" height="3.1" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-h)"><g transform="translate(1104 388)">
+          <g class="w-fig w-walk" style="--wdur:13s;--wdel:-2s;--wa:-18px;--wb:33px"><circle cx="0" cy="-14.6" r="2.9"/><rect x="-3.1" y="-11.2" width="6.2" height="8.9" rx="2.2"/><rect x="-2.8" y="-2.4" width="2.1" height="3.1" rx="1"/><rect x="0.7" y="-2.4" width="2.1" height="3.1" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-i)"><g transform="translate(1261 428)">
+          <g class="w-fig w-bob" style="--wdur:4.4s;--wdel:-1.6s"><circle cx="0" cy="-14.6" r="2.9"/><rect x="-3.1" y="-11.2" width="6.2" height="8.9" rx="2.2"/><rect x="-2.8" y="-2.4" width="2.1" height="3.1" rx="1"/><rect x="0.7" y="-2.4" width="2.1" height="3.1" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-j)"><g transform="translate(1427 436)">
+          <g class="w-fig w-bob" style="--wdur:5.2s;--wdel:-3s"><circle cx="0" cy="-14.6" r="2.9"/><rect x="-3.1" y="-11.2" width="6.2" height="8.9" rx="2.2"/><rect x="-2.8" y="-2.4" width="2.1" height="3.1" rx="1"/><rect x="0.7" y="-2.4" width="2.1" height="3.1" rx="1"/></g>
+        </g></g>
+      </g>
       <path class="gate" d="M566 470v-74a34 34 0 0 1 68 0v74z"/>
 
       <!-- foreground: ground, a truck, and the two lamps that sell the hour -->
@@ -930,9 +1033,9 @@
         </blockquote>
         <div class="callback" data-stage="2">In Bra&#537;ov, we leave the lights on for Claude.</div>
         <div class="hands" data-stage="3">
-          <div class="hrow"><span>&#9995;</span>Follow Steve Yegge?</div>
-          <div class="hrow"><span>&#9995;</span>Know Gas Town?</div>
-          <div class="hrow"><span>&#9995;</span>Tried Gas City?</div>
+          <div class="hrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-hand"/></svg><span>Follow Steve Yegge?</span></div>
+          <div class="hrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-hand"/></svg><span>Know Gas Town?</span></div>
+          <div class="hrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-hand"/></svg><span>Tried Gas City?</span></div>
         </div>
       </div>
     </div>
@@ -954,14 +1057,14 @@
         <span class="mon">JAN &mdash; FEB</span><span class="dot"></span>
         <div class="hl">Personal tests with Gas Town.</div>
         <div class="sub">Side projects and non-critical production systems.</div>
-        <div class="acc"><span class="gt">&#127981; Gas Town</span><span class="stat-chip" hidden id="statF02">&mdash;</span></div>
+        <div class="acc"><span class="gt"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-factory"/></svg><span>Gas Town</span></span><span class="stat-chip" hidden id="statF02">&mdash;</span></div>
       </div>
 
       <div class="ent" data-stage="2">
         <span class="mon">MAR &mdash; APR</span><span class="dot"></span>
         <div class="hl">Colleagues started opening PRs with agents.</div>
         <div class="sub lead">&#10230; We needed a factory.</div>
-        <div class="acc"><span>&#128640; more experiments</span><span>&#128301; keep oversight</span><span class="warn">&#128465; no junk code</span></div>
+        <div class="acc"><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rocket"/></svg><span>more experiments</span></span><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-radar"/></svg><span>keep oversight</span></span><span class="warn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trash"/></svg><span>no junk code</span></span></div>
       </div>
 
       <div class="ent" data-stage="3">
@@ -972,9 +1075,9 @@
 
       <div class="ent ent--burst" data-stage="4">
         <span class="mon">JUN</span><span class="dot"></span>
-        <div class="hl">&#10024; AI Factory Week &mdash; 4 people &middot; 4 days &middot; setting it up.</div>
+        <div class="hl"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spark"/></svg> AI Factory Week &mdash; 4 people &middot; 4 days &middot; setting it up.</div>
         <div class="sub">Three inputs tested in parallel. Goals: non-devs can ship improvements &middot; standardised workflows, as much as possible.</div>
-        <div class="acc"><span>&#128230; a big experiment</span><span>&#128230; a small experiment</span><span>&#128230; a fully featured product</span></div>
+        <div class="acc"><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-box"/></svg><span>a big experiment</span></span><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-box"/></svg><span>a small experiment</span></span><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-box"/></svg><span>a fully featured product</span></span></div>
       </div>
 
       <div class="ent ent--lesson" data-stage="5">
@@ -983,7 +1086,7 @@
         <div class="sub">The inputs were thin &mdash; Opus&nbsp;4.8 era.</div>
       </div>
     </div></div>
-    <div class="bottom-line late" data-stage="5">&#128301; We didn&rsquo;t need better builders. We needed better requirements, templates and hardening &mdash; and agents talking as a team graph, not a sequence: <code>figma-deep-dive &harr; ios-coder &harr; mini-tester</code>.</div>
+    <div class="bottom-line late" data-stage="5"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scope"/></svg> We didn&rsquo;t need better builders. We needed better requirements, templates and hardening &mdash; and agents talking as a team graph, not a sequence: <code>figma-deep-dive &harr; ios-coder &harr; mini-tester</code>.</div>
   </div>
 </section>
 
@@ -1108,7 +1211,8 @@
             <path d="M448 24 V336" stroke="#c9d2e4" stroke-width="2.5" stroke-dasharray="6 6" fill="none"/>
             <text class="floor-lbl sm" x="448" y="16" text-anchor="middle" style="letter-spacing:1.6px">EXIT</text>
             <rect class="floor-box" x="462" y="154" width="76" height="56" rx="12" style="stroke:var(--pago-gold)"/>
-            <text class="floor-lbl" x="500" y="178" text-anchor="middle" style="font-size:12px">&#129489; human</text>
+            <svg x="471" y="167" width="15" height="15" viewBox="0 0 24 24" style="color:var(--text);fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;overflow:visible"><use href="#i-user"/></svg>
+            <text class="floor-lbl" x="491" y="178" style="font-size:12px">human</text>
             <text class="floor-lbl" x="500" y="195" text-anchor="middle" style="font-size:12px">polishing</text>
           </svg>
         </div>
@@ -1136,12 +1240,12 @@
     </div>
     <h2 class="fold-title reveal">Ten agentic steps. <strong class="blue">Two human decisions.</strong></h2>
     <div class="legend reveal reveal-d1">
-      <div><span><b>&#128993; = a human decides.</b> Everything else: agents.</span></div>
+      <div><span><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dot"/></svg><b>= a human decides.</b> Everything else: agents.</span></div>
     </div>
     <div class="stage-wrap" style="justify-content:center;" id="f04Wrap">
       <div class="bands">
         <div class="band" style="--b:1" data-stage="1" data-no-dim><div class="band-h"><b>Define</b><em>agents draft</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-prd"/></svg><span class="step-n">01</span></span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-design"/></svg><span class="step-n">02</span></span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-research"/></svg><span class="step-n">03</span></span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-plan"/></svg><span class="step-n">04</span></span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
-        <div class="band" style="--b:2" data-stage="2" data-no-dim><div class="band-h"><b>Stress-test</b><em>agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-review"/></svg><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human ask" style="--i:2"><span class="gate-flag"><b>&#9873;</b>Check-in &middot; humans answer questions</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-backwards"/></svg><span class="step-n">06</span></span><span class="step-name">Working backwards</span><div class="ask-box"><span class="ask-h">&#9997;&#65039; humans answer</span><ul class="ask-list"><li>who is it for?</li><li>what must be true?</li><li>what do we <b>not</b> build?</li></ul></div></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-impact"/></svg><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
+        <div class="band" style="--b:2" data-stage="2" data-no-dim><div class="band-h"><b>Stress-test</b><em>agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-review"/></svg><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human ask" style="--i:2"><span class="gate-flag"><b>&#9873;</b>Check-in &middot; humans answer questions</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-backwards"/></svg><span class="step-n">06</span></span><span class="step-name">Working backwards</span><div class="ask-box"><span class="ask-h"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pencil"/></svg> humans answer</span><ul class="ask-list"><li>who is it for?</li><li>what must be true?</li><li>what do we <b>not</b> build?</li></ul></div></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-impact"/></svg><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
         <div class="band" style="--b:3" data-stage="3" data-no-dim><div class="band-h"><b>Package</b><em>agents assemble</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-sequence"/></svg><span class="step-n">08</span></span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:2"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-schema"/></svg><span class="step-n">09</span></span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step human" style="--i:3"><span class="gate-flag"><b>&#9873;</b>Ship the package?</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-package"/></svg><span class="step-n">10</span></span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
       </div>
       <div class="tail late" data-stage="3" data-no-dim>
@@ -1151,7 +1255,7 @@
         <div class="tbox f"><svg viewBox="0 0 64 64" style="color:#fff"><use href="#factory-ico"/></svg>The Factory floor</div>
       </div>
       <div class="mapstrip" data-stage="4">
-        <span class="compass">&#129517;</span>
+        <span class="compass"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-compass"/></svg></span>
         <div class="map-txt">
           <b>The package is the map the agents hunt with.</b>
           <span class="list">Figma &middot; codebases &middot; configs &middot; what users are already trying to improve</span>
@@ -1164,7 +1268,7 @@
         </svg>
       </div>
       <div class="acct" data-stage="5">
-        <span class="al">&#129309; The workflow holds your hand &mdash; the next step is always obvious</span>
+        <span class="al"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-handshake"/></svg>The workflow holds your hand &mdash; the next step is always obvious</span>
       </div>
     </div>
     <div class="bottom-line reveal reveal-d2">You always know where you are in control &mdash; and where you are not.</div>
@@ -1274,7 +1378,7 @@
         </div>
         <div class="consensus" data-stage="3">7 of 8 reviewers returned NO-GO.
           <em>Different model families, same objection. That is the signal.</em></div>
-        <div class="proof" data-stage="3">&#128204; Parts of the Bouncer are used by the team as proof &mdash; not as a gate to survive.</div>
+        <div class="proof" data-stage="3"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>Parts of the Bouncer are used by the team as proof &mdash; not as a gate to survive.</div>
       </div>
     </div>
     <div class="bottom-line reveal reveal-d2">Give people artifacts that help them decide.</div>
@@ -1302,22 +1406,22 @@
           </g>
         </svg>
         <div class="wnode" style="left:50%;top:6%;--wd:0.1s">
-          <div class="we">&#128104;&#8205;&#128187;</div><div class="wt">Devs use agents &amp; skills daily</div>
+          <div class="we"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dev"/></svg></div><div class="wt">Devs use agents &amp; skills daily</div>
         </div>
         <div class="wnode" style="left:92%;top:50%;--wd:0.3s">
-          <div class="we">&#128296;</div><div class="wt">They improve them</div>
+          <div class="we"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-hammer"/></svg></div><div class="wt">They improve them</div>
         </div>
         <div class="wnode hot" style="left:50%;top:94%;--wd:0.5s">
-          <div class="we">&#127981;</div><div class="wt">The factory runs on the same agents &amp; skills</div>
+          <div class="we"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-factory"/></svg></div><div class="wt">The factory runs on the same agents &amp; skills</div>
         </div>
         <div class="wnode" style="left:8%;top:50%;--wd:0.7s">
-          <div class="we">&#128200;</div><div class="wt">The factory gets better</div>
+          <div class="we"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trend"/></svg></div><div class="wt">The factory gets better</div>
         </div>
       </div>
     </div>
-    <div class="wheel-note" data-stage="2">&#128295; <span>Factory time needs <b>debugging</b> and <b>allocated resources</b>.</span>
+    <div class="wheel-note" data-stage="2"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wrench"/></svg> <span>Factory time needs <b>debugging</b> and <b>allocated resources</b>.</span>
       <span class="stat-chip" hidden id="statF08">&mdash;</span></div>
-    <div class="wheel-note" data-stage="3">&#129514; <span>Invest in <b>auto post-mortems</b>, <b>pre-mortems</b> before runs, and <b>simulated tests</b> you can run across model versions.</span></div>
+    <div class="wheel-note" data-stage="3"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flask"/></svg> <span>Invest in <b>auto post-mortems</b>, <b>pre-mortems</b> before runs, and <b>simulated tests</b> you can run across model versions.</span></div>
     <div class="bottom-line reveal reveal-d2">Build the factory out of what people already reach for.</div>
   </div>
 </section>
@@ -1342,22 +1446,22 @@
         <text class="q" x="404" y="212" text-anchor="middle">?</text>
       </svg>
       <div class="mp-side people" data-stage="1">
-        <div class="who"><span>&#129489;&#8205;&#128187;</span>AI builder<em>runs the session</em></div>
-        <div class="who"><span>&#129464;</span>Sidekick<em>1 colleague</em></div>
+        <div class="who"><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dev"/></svg></span>AI builder<em>runs the session</em></div>
+        <div class="who"><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span>Sidekick<em>1 colleague</em></div>
       </div>
       <div class="mp-core">
         <div class="mp-factory" data-stage="1"><svg viewBox="0 0 64 64"><use href="#factory-ico"/></svg><span>the factory</span></div>
         <div class="slack-bubble" data-stage="2">The link between them is Slack.<em>but the work happens on PRs, in git.</em></div>
       </div>
       <div class="mp-side agents" data-stage="1">
-        <div class="who"><span>&#129302;</span>Intake agent<em>10 stages</em></div>
-        <div class="who"><span>&#129302;</span>Bouncer panel<em>8 reviewers</em></div>
-        <div class="who"><span>&#129302;</span>Platform builders<em>4 surfaces</em></div>
-        <div class="who"><span>&#129302;</span>Review loops<em>per PR</em></div>
+        <div class="who"><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bot"/></svg></span>Intake agent<em>10 stages</em></div>
+        <div class="who"><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bot"/></svg></span>Bouncer panel<em>8 reviewers</em></div>
+        <div class="who"><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bot"/></svg></span>Platform builders<em>4 surfaces</em></div>
+        <div class="who"><span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bot"/></svg></span>Review loops<em>per PR</em></div>
       </div>
     </div>
     <div class="mp-note" data-stage="3">
-      <span class="flag">&#128269; The interesting unsolved problem.</span>
+      <span class="flag"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>The interesting unsolved problem.</span>
       <span>Multiplayer interactivity <b>on the same session</b> is starting to be solved by <b>Grok bot</b> and <b>OpenClaw 2.0</b> &mdash; we want to integrate this as well.</span>
     </div>
     <div class="bottom-line reveal reveal-d2">How do you solve this?</div>
@@ -1421,7 +1525,9 @@
   <div class="night-lift"></div>
   <div class="stars"></div>
   <svg class="factory-scene" viewBox="0 0 1600 520" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-      <ellipse class="fglow" cx="800" cy="452" rx="780" ry="250" fill="url(#scene-glow)"/>
+      <ellipse class="fglow" cx="800" cy="450" rx="1040" ry="310" fill="url(#scene-glow)"/>
+      <ellipse class="fcore" cx="800" cy="466" rx="660" ry="200" fill="url(#scene-core)"/>
+      <ellipse class="surge" cx="800" cy="448" rx="900" ry="330" fill="url(#scene-core)" opacity="0"/>
 
       <!-- far band: distant blocks, one value flatter than the works -->
       <g class="band band--far">
@@ -1514,6 +1620,38 @@
         <rect class="win" x="1368" y="414" width="26" height="22" rx="2"/>
         <rect class="win" x="1414" y="414" width="26" height="22" rx="2"/>
         <rect class="win" x="1460" y="414" width="26" height="22" rx="2"/>
+      </g>
+      <g class="workers">
+        <g clip-path="url(#wc-a)"><g transform="translate(420 364)">
+          <g class="w-fig w-walk" style="--wdur:8.4s;--wdel:0s;--wa:-21px;--wb:39px"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-b)"><g transform="translate(474 318)">
+          <g class="w-fig w-walk" style="--wdur:11.2s;--wdel:-3.5s;--wa:-21px;--wb:39px"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-c)"><g transform="translate(690 410)">
+          <g class="w-fig w-walk" style="--wdur:9.6s;--wdel:-6s;--wa:-21px;--wb:39px"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-d)"><g transform="translate(636 364)">
+          <g class="w-fig w-walk" style="--wdur:10.4s;--wdel:-1.2s;--wa:-21px;--wb:39px"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-e)"><g transform="translate(543 318)">
+          <g class="w-fig w-bob" style="--wdur:3.6s;--wdel:0s"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-f)"><g transform="translate(759 318)">
+          <g class="w-fig w-bob" style="--wdur:4.8s;--wdel:-2.1s"><circle cx="0" cy="-17.0" r="3.4"/><rect x="-3.6" y="-13.0" width="7.2" height="10.4" rx="2.6"/><rect x="-3.2" y="-2.8" width="2.4" height="3.6" rx="1"/><rect x="0.8" y="-2.8" width="2.4" height="3.6" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-g)"><g transform="translate(198 404)">
+          <g class="w-fig w-walk" style="--wdur:12.6s;--wdel:-4.4s;--wa:-18px;--wb:33px"><circle cx="0" cy="-14.6" r="2.9"/><rect x="-3.1" y="-11.2" width="6.2" height="8.9" rx="2.2"/><rect x="-2.8" y="-2.4" width="2.1" height="3.1" rx="1"/><rect x="0.7" y="-2.4" width="2.1" height="3.1" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-h)"><g transform="translate(1104 388)">
+          <g class="w-fig w-walk" style="--wdur:13s;--wdel:-2s;--wa:-18px;--wb:33px"><circle cx="0" cy="-14.6" r="2.9"/><rect x="-3.1" y="-11.2" width="6.2" height="8.9" rx="2.2"/><rect x="-2.8" y="-2.4" width="2.1" height="3.1" rx="1"/><rect x="0.7" y="-2.4" width="2.1" height="3.1" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-i)"><g transform="translate(1261 428)">
+          <g class="w-fig w-bob" style="--wdur:4.4s;--wdel:-1.6s"><circle cx="0" cy="-14.6" r="2.9"/><rect x="-3.1" y="-11.2" width="6.2" height="8.9" rx="2.2"/><rect x="-2.8" y="-2.4" width="2.1" height="3.1" rx="1"/><rect x="0.7" y="-2.4" width="2.1" height="3.1" rx="1"/></g>
+        </g></g>
+        <g clip-path="url(#wc-j)"><g transform="translate(1427 436)">
+          <g class="w-fig w-bob" style="--wdur:5.2s;--wdel:-3s"><circle cx="0" cy="-14.6" r="2.9"/><rect x="-3.1" y="-11.2" width="6.2" height="8.9" rx="2.2"/><rect x="-2.8" y="-2.4" width="2.1" height="3.1" rx="1"/><rect x="0.7" y="-2.4" width="2.1" height="3.1" rx="1"/></g>
+        </g></g>
       </g>
       <path class="gate" d="M566 470v-74a34 34 0 0 1 68 0v74z"/>
 
@@ -1816,10 +1954,24 @@ function buildLightScene(root, onDone) {
     onComplete: finish,
     onReverseComplete: function () { root.classList.remove('quote-in'); }
   });
+  /* left to right, so it reads as power reaching the plant rather than as
+     forty-three independent fades */
+  wins.sort(function (a, b) { return a.getBBox().x - b.getBBox().x; });
+  var core = svg.querySelector('.fcore');
+  var surge = svg.querySelector('.surge');
+
   tl.to(lift, { opacity: 1, duration: 1.8, ease: 'power1.inOut' }, 0);
-  tl.to(wins, { opacity: 1, duration: 0.26, ease: 'power1.out',
-                stagger: { each: 0.016, from: 'random' } }, 0.25);
-  tl.to(glow, { opacity: 1, duration: 1.5, ease: 'power1.inOut' }, 0.5);
+  tl.fromTo(surge, { opacity: 0 },
+            { opacity: 0.42, duration: 0.22, ease: 'power2.out' }, 0.18);
+  tl.to(surge, { opacity: 0, duration: 1.5, ease: 'power2.in' }, 0.4);
+  tl.to(wins, { opacity: 1, duration: 0.24, ease: 'power1.out',
+                stagger: { each: 0.013 } }, 0.25);
+  /* a handful of tubes strike twice before they hold */
+  wins.filter(function (_, i) { return i % 7 === 3; }).forEach(function (w, i) {
+    tl.to(w, { opacity: 0.22, duration: 0.05, repeat: 3, yoyo: true, ease: 'none' },
+          0.55 + i * 0.09);
+  });
+  tl.to([glow, core], { opacity: 1, duration: 1.5, ease: 'power1.inOut' }, 0.5);
   return {
     play: function () { tl.play(); },
     reverse: function () { tl.reverse(); },
@@ -2077,6 +2229,7 @@ function buildLightScene(root, onDone) {
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     svg.setAttribute('preserveAspectRatio', 'none');
     while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var wires = [];
 
     ['', '.agents'].forEach(function (sel, side) {
       var col = mp.querySelector('.mp-side' + sel);
@@ -2092,13 +2245,20 @@ function buildLightScene(root, onDone) {
           ' ' + (cx - bend).toFixed(1) + ' ' + cy.toFixed(1) +
           ' ' + cx.toFixed(1) + ' ' + cy.toFixed(1));
         svg.appendChild(path);
+        wires.push(path);
       }
     });
 
-    [[0.30, 0.40], [0.70, 0.62]].forEach(function (f) {
+    /* the two question marks ride the wires themselves, one per side, so
+       they stay on the line at any width instead of floating beside it */
+    [[wires[0], 0.42], [wires[wires.length - 1], 0.42]].forEach(function (f) {
+      var w = f[0];
+      if (!w || !w.getTotalLength) return;
+      var pt = w.getPointAtLength(w.getTotalLength() * f[1]);
       var q = document.createElementNS(NS, 'text');
       q.setAttribute('class', 'q');
-      q.setAttribute('x', W * f[0]); q.setAttribute('y', H * f[1]);
+      q.setAttribute('x', pt.x.toFixed(1));
+      q.setAttribute('y', (pt.y - 11).toFixed(1));
       q.setAttribute('text-anchor', 'middle');
       q.textContent = '?';
       svg.appendChild(q);
