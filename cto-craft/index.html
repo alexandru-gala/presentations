@@ -393,9 +393,9 @@
 .decision-rail .stop b { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%);
   white-space: nowrap; font-size: 9.5px; font-weight: 800; letter-spacing: 1.2px;
   text-transform: uppercase; color: var(--text-muted); }
-#dpkg { position: absolute; bottom: 36px; left: 6%; width: 46px; margin-left: -23px; }
+#dpkg { position: absolute; bottom: 36px; left: 16.7%; width: 46px; margin-left: -23px; }
 #dpkg .pkg { width: 100%; height: auto; }
-.dec-badge { position: absolute; bottom: 74px; left: 6%; transform: translateX(-50%) translateY(6px);
+.dec-badge { position: absolute; bottom: 74px; left: 16.7%; transform: translateX(-50%) translateY(6px);
   white-space: nowrap; font-family: 'DM Sans'; font-weight: 800; font-size: clamp(10px,1.05vw,13.5px);
   padding: 5px 12px; border-radius: 8px; opacity: 0; pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease; }
@@ -503,6 +503,17 @@
 
 /* ══ fold 05 — demo break ═══════════════════════════════════════════════ */
 #f05 .fold-inner { align-items: center; justify-content: center; text-align: center; gap: clamp(12px,2vh,24px); }
+.wip-badge { display: inline-flex; align-items: center; gap: clamp(10px,1.3vw,18px);
+  font-family: 'DM Sans'; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: clamp(15px,2.1vw,30px); color: #1E293B; background: #fff;
+  padding: clamp(14px,2vw,26px) clamp(24px,3.4vw,48px); border-radius: 999px;
+  box-shadow: 0 8px 0 #b9c3d8, 0 18px 38px rgba(0,0,0,0.28); }
+.wip-dot { width: clamp(11px,1.3vw,17px); aspect-ratio: 1; border-radius: 50%; background: var(--pago-gold);
+  box-shadow: 0 0 0 0 rgba(245,166,35,0.65); animation: wip-pulse 1.9s ease-out infinite; }
+@keyframes wip-pulse { 0% { box-shadow: 0 0 0 0 rgba(245,166,35,0.6); }
+  70% { box-shadow: 0 0 0 clamp(10px,1.4vw,18px) rgba(245,166,35,0); }
+  100% { box-shadow: 0 0 0 0 rgba(245,166,35,0); } }
+.is-parked .wip-dot { animation-play-state: paused; }
 .keycaps { display: flex; align-items: center; gap: clamp(10px,1.6vw,22px); }
 .keycap { font-family: 'DM Sans'; font-weight: 800; color: #1E293B; background: #fff;
   border-radius: 16px; box-shadow: 0 8px 0 #b9c3d8, 0 18px 38px rgba(0,0,0,0.28);
@@ -1083,7 +1094,6 @@
       <div class="ent ent--lesson" data-stage="5">
         <span class="mon">LESSON</span><span class="dot"></span>
         <div class="hl"><span class="a">Building wasn&rsquo;t the problem.</span><span class="x">but</span><span class="b">Garbage in, garbage out was.</span></div>
-        <div class="sub">The inputs were thin &mdash; Opus&nbsp;4.8 era.</div>
       </div>
     </div></div>
     <div class="bottom-line late" data-stage="5"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scope"/></svg> We didn&rsquo;t need better builders. We needed better requirements, templates and hardening &mdash; and agents talking as a team graph, not a sequence: <code>figma-deep-dive &harr; ios-coder &harr; mini-tester</code>.</div>
@@ -1226,9 +1236,9 @@
     </div>
     <div class="decision-rail" id="decRail">
       <div class="rail-line"></div>
-      <div class="stop" style="left:6%"><b>Intake</b></div>
+      <div class="stop" style="left:16.7%"><b>Intake</b></div>
       <div class="stop" style="left:50%"><b>Bouncer</b></div>
-      <div class="stop" style="left:88%"><b>Factory</b></div>
+      <div class="stop" style="left:83.3%"><b>Factory</b></div>
       <div class="dec-badge miss" id="decMiss">Missing DB schema &rarr; back to Intake</div>
       <div class="dec-badge pass" id="decPass">complete &mdash; GO</div>
       <div id="dpkg"><svg class="pkg incomplete" viewBox="0 0 72 64"><use href="#pkg"/></svg></div>
@@ -1251,7 +1261,7 @@
     <div class="stage-wrap" style="justify-content:center;" id="f04Wrap">
       <div class="bands">
         <div class="band" style="--b:1" data-stage="1" data-no-dim><div class="band-h"><b>Define</b><em>agents draft</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-prd"/></svg><span class="step-n">01</span></span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-design"/></svg><span class="step-n">02</span></span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-research"/></svg><span class="step-n">03</span></span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-plan"/></svg><span class="step-n">04</span></span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
-        <div class="band" style="--b:2" data-stage="2" data-no-dim><div class="band-h"><b>Stress-test</b><em>agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-review"/></svg><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human ask" style="--i:2"><span class="gate-flag"><b>&#9873;</b>Check-in &middot; humans answer questions</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-backwards"/></svg><span class="step-n">06</span></span><span class="step-name">Working backwards</span><div class="ask-box"><span class="ask-h"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pencil"/></svg> humans answer</span><ul class="ask-list"><li>who is it for?</li><li>what must be true?</li><li>what do we <b>not</b> build?</li></ul></div></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-impact"/></svg><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
+        <div class="band" style="--b:2" data-stage="2" data-no-dim><div class="band-h"><b>Stress-test</b><em>agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-review"/></svg><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human ask" style="--i:2"><span class="gate-flag"><b>&#9873;</b>Check-in &middot; humans answer questions</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-backwards"/></svg><span class="step-n">06</span></span><span class="step-name">Working backwards</span><span class="step-sub">release &rarr; back to the first line of code</span><div class="ask-box"><span class="ask-h"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pencil"/></svg> humans answer what the agents surfaced</span><ul class="ask-list"><li>deploy order, old app versions</li><li>flags, rollback, migrations</li><li>gates: QA &middot; store &middot; partner</li></ul></div></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-impact"/></svg><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
         <div class="band" style="--b:3" data-stage="3" data-no-dim><div class="band-h"><b>Package</b><em>agents assemble</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-sequence"/></svg><span class="step-n">08</span></span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:2"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-schema"/></svg><span class="step-n">09</span></span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step human" style="--i:3"><span class="gate-flag"><b>&#9873;</b>Ship the package?</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-package"/></svg><span class="step-n">10</span></span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
       </div>
       <div class="tail late" data-stage="3" data-no-dim>
@@ -1288,13 +1298,9 @@
   <div class="fold-inner">
     <h2 class="cover-title reveal">Let me show you.</h2>
     <p class="cover-subtitle reveal reveal-d1" style="margin:0;">A live intake run &middot; where humans checked in.</p>
-    <div class="keycaps" data-stage="1">
-      <div class="keycap">&#8997;</div>
-      <div class="keyplus">+</div>
-      <div class="keycap">&#8677;</div>
-    </div>
+    <div class="wip-badge" data-stage="1"><span class="wip-dot"></span>work in progress</div>
     <div class="demo-list reveal reveal-d2">
-      <span>work in progress, by colleagues</span><span>a few real pages</span>
+      <span>by colleagues</span><span>a few real pages</span>
     </div>
   </div>
 </section>
@@ -1340,10 +1346,10 @@
       </div>
     </div>
     <div class="verdict-strip" data-stage="3">
-      <span class="vtag">the trap</span>
+      <span class="vtag">danger zone</span>
       Determinism you didn&rsquo;t design is determinism you can&rsquo;t debug.
     </div>
-    <div class="bottom-line reveal reveal-d2"><s style="opacity:0.45">Everyone</s> At least someone must understand how information is digested in the workflow.</div>
+    <div class="bottom-line reveal reveal-d2"><s style="opacity:0.45">Everyone</s> <b style="color:var(--pago-gold)">At least someone</b> must understand how information is digested in the workflow.</div>
   </div>
 </section>
 
@@ -1428,7 +1434,7 @@
     <div class="wheel-note" data-stage="2"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wrench"/></svg> <span>Factory time needs <b>debugging</b> and <b>allocated resources</b>.</span>
       <span class="stat-chip" hidden id="statF08">&mdash;</span></div>
     <div class="wheel-note" data-stage="3"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flask"/></svg> <span>Invest in <b>auto post-mortems</b>, <b>pre-mortems</b> before runs, and <b>simulated tests</b> you can run across model versions.</span></div>
-    <div class="bottom-line reveal reveal-d2">Build the factory out of what people already reach for.</div>
+    <div class="bottom-line reveal reveal-d2">Build the factory out of what people already need on a daily basis.</div>
   </div>
 </section>
 
@@ -1521,8 +1527,7 @@
         <span class="lane-st wip">in progress</span>
       </div>
     </div>
-    <div class="lane-same late" data-stage="4">Same intake, same Bouncer, same floor &mdash; only the input changes.</div>
-    <div class="bottom-line reveal reveal-d2">Build the shape once. Feed it different inputs.</div>
+    <div class="bottom-line reveal reveal-d2">Build the shape once. Feed it different inputs. Redesign the human gates.</div>
   </div>
 </section>
 
@@ -2086,11 +2091,28 @@ function buildLightScene(root, onDone) {
   var miss = document.getElementById('decMiss');
   var pass = document.getElementById('decPass');
   var tl = null;
+  var rail = f03.querySelector('.decision-rail');
+  var stops = [].slice.call(f03.querySelectorAll('.decision-rail .stop'));
+  var posts = [].slice.call(f03.querySelectorAll('.post'));
+  var P = [16.7, 50, 83.3];               /* replaced by measurement below */
+
+  function measure() {
+    if (!rail || posts.length !== 3) return;
+    var rb = rail.getBoundingClientRect();
+    if (!rb.width) return;
+    posts.forEach(function (post, i) {
+      var b = post.getBoundingClientRect();
+      P[i] = ((b.left + b.width / 2) - rb.left) / rb.width * 100;
+      if (stops[i]) stops[i].style.left = P[i] + '%';
+    });
+  }
+  measure();
+  if (window.ResizeObserver && rail) new ResizeObserver(measure).observe(rail);
 
   function at(el, pct) { el.style.left = pct + '%'; }
   function reset() {
     if (tl) { tl.kill(); tl = null; }
-    at(holder, 6); pkg.classList.add('incomplete');
+    measure(); at(holder, P[0]); pkg.classList.add('incomplete');
     miss.classList.remove('show'); pass.classList.remove('show');
     holder.style.transform = '';
   }
@@ -2098,27 +2120,28 @@ function buildLightScene(root, onDone) {
 
   function run() {
     if (!window.gsap) {                    /* no CDN → land on the end state */
-      at(holder, 88); at(pass, 88); pkg.classList.remove('incomplete'); pass.classList.add('show');
+      at(holder, P[2]); at(pass, P[2]); pkg.classList.remove('incomplete'); pass.classList.add('show');
       return;
     }
     if (tl) tl.kill();
     tl = window.gsap.timeline();
     var E = 'power2.inOut', D = 0.85;
-    tl.set(holder, { left: '6%' })
-      .set(miss, { left: '50%' })
-      .to(holder, { left: '50%', duration: D, ease: E })
+    measure();
+    tl.set(holder, { left: P[0] + '%' })
+      .set(miss, { left: P[1] + '%' })
+      .to(holder, { left: P[1] + '%', duration: D, ease: E })
       .add(function () { miss.classList.add('show'); })
       .to(holder, { x: -7, duration: 0.07, repeat: 5, yoyo: true, ease: 'none' })
       .to({}, { duration: 1.3 })
       .add(function () { miss.classList.remove('show'); })
-      .to(holder, { left: '6%', duration: D, ease: E })
+      .to(holder, { left: P[0] + '%', duration: D, ease: E })
       .add(function () { pkg.classList.remove('incomplete'); })
       .to(holder, { scale: 1.18, duration: 0.2, yoyo: true, repeat: 1, ease: 'power2.out' })
-      .to(holder, { left: '50%', duration: D, ease: E })
-      .add(function () { pass.style.left = '50%'; pass.classList.add('show'); })
+      .to(holder, { left: P[1] + '%', duration: D, ease: E })
+      .add(function () { pass.style.left = P[1] + '%'; pass.classList.add('show'); })
       .to({}, { duration: 0.8 })
-      .add(function () { pass.style.left = '88%'; })
-      .to(holder, { left: '88%', duration: D, ease: E });
+      .add(function () { pass.style.left = P[2] + '%'; })
+      .to(holder, { left: P[2] + '%', duration: D, ease: E });
   }
 
   f03.addEventListener('ctostage', function (e) { if (e.detail.stage === 2) run(); });
