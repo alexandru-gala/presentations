@@ -9,6 +9,8 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="base.css">
 <style>
+/* the invisible copy scaleFolds() measures: finished state, no motion */
+.fit-probe, .fit-probe * { transition: none !important; animation: none !important; }
 /* ══════════════════════════════════════════════════════════════════════════
    CTO Craft Bucharest — deck-specific styles.
    Built on ep2/base.css: same tokens, same .fold / .fold-inner / .reveal and
@@ -33,7 +35,7 @@
 .ico .sol { fill: currentColor; stroke: none; }
 .ico .dim { opacity: 0.45; }
 .ico.inl { display: inline-block; vertical-align: -0.15em; }
-#f02 .ent .acc span { display: inline-flex; align-items: center; gap: 6px; }
+#f02 .ent .acc > span { display: inline-flex; align-items: center; gap: 6px; }
 #f02 .ent .acc .ico { width: 1.05em; height: 1.05em; }
 .legend .ico { color: var(--pago-gold); }
 .ask-h .ico { width: 1.05em; height: 1.05em; }
@@ -310,24 +312,26 @@
    Every beat is the same component: mono month label in a fixed left column,
    a dot on the rail, one bold line, an optional muted sub-line and at most
    one chip row. Big moments get more weight/colour, never a new shape.     */
-#f02 { --rail-x: clamp(70px, 7vw, 104px); --rail-gap: clamp(18px, 2.1vw, 32px); }
+#f02 { --rail-x: clamp(70px, 7vw, 104px); --rail-gap: clamp(18px, 2.1vw, 32px);
+  /* middle of a title's first line — month, dot and rail all hang off it */
+  --hl-fs: clamp(15px, 1.85vw, 26px); --hl-mid: calc(var(--hl-fs) * 0.59); }
 #f02 .rail { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
 /* the track hugs the entries, so the rail never trails off under the last beat */
 #f02 .rail-track { position: relative; display: flex; flex-direction: column;
   gap: clamp(8px, 1.9vh, 26px); padding-left: calc(var(--rail-x) + var(--rail-gap)); }
-#f02 .rail-track::before { content: ''; position: absolute; left: var(--rail-x); top: 6px; bottom: 6px;
+#f02 .rail-track::before { content: ''; position: absolute; left: var(--rail-x); top: var(--hl-mid); bottom: 6px;
   width: 3px; border-radius: 2px; background: var(--border); }
-#f02 .rail-fill { position: absolute; left: var(--rail-x); top: 6px; width: 3px; height: 0;
+#f02 .rail-fill { position: absolute; left: var(--rail-x); top: var(--hl-mid); width: 3px; height: 0;
   border-radius: 2px; background: linear-gradient(180deg, rgba(43,89,195,0.4), var(--pago-blue));
-  transition: height 0.9s var(--e-soft); }
+  transform-origin: top; transform: scaleY(0); transition: transform 0.9s var(--e-soft); }
 
 #f02 .ent { position: relative; }
-#f02 .ent .mon { position: absolute; top: 3px; left: calc(-1 * (var(--rail-x) + var(--rail-gap)));
+#f02 .ent .mon { position: absolute; top: var(--hl-mid); transform: translateY(-50%); line-height: 1; left: calc(-1 * (var(--rail-x) + var(--rail-gap)));
   width: calc(var(--rail-x) - 12px); text-align: right; white-space: nowrap;
   font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   font-size: clamp(9px, 0.88vw, 11.5px); font-weight: 700; letter-spacing: 1.2px;
   color: var(--text-muted); }
-#f02 .ent .dot { position: absolute; top: 3px; left: calc(-1 * var(--rail-gap) - 5.5px);
+#f02 .ent .dot { position: absolute; top: calc(var(--hl-mid) - 7px); z-index: 1; left: calc(-1 * var(--rail-gap) - 5.5px);
   width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--border);
   transition: border-color 0.5s ease, background 0.5s ease; }
 #f02 .ent.stage-visible .dot { border-color: var(--pago-blue); }
@@ -337,16 +341,16 @@
 .is-parked #f02 .ent.is-now .dot::after { animation-play-state: paused; }
 
 #f02 .ent .hl { font-family: 'DM Sans', sans-serif; font-weight: 800; letter-spacing: -0.3px;
-  font-size: clamp(15px, 1.85vw, 26px); line-height: 1.18; color: var(--text); }
+  font-size: var(--hl-fs); line-height: 1.18; color: var(--text); }
 #f02 .ent .sub { margin-top: 5px; font-size: clamp(11px, 1.12vw, 15px); font-weight: 600;
   line-height: 1.4; color: var(--text-muted); }
 #f02 .ent .sub.lead { color: var(--pago-blue); font-weight: 800; font-size: clamp(12px, 1.3vw, 17.5px); }
 #f02 .ent .acc { display: flex; flex-wrap: wrap; gap: clamp(6px, 0.85vw, 11px);
   margin-top: clamp(6px, 1vh, 12px); }
-#f02 .ent .acc span { font-size: clamp(10px, 1vw, 13.5px); font-weight: 700; color: var(--text-muted);
+#f02 .ent .acc > span { font-size: clamp(10px, 1vw, 13.5px); font-weight: 700; color: #4A5A7A;
   background: var(--card-bg); border-radius: 999px; padding: 5px 13px; white-space: nowrap; }
-#f02 .ent .acc span.warn { background: rgba(224,122,31,0.12); color: #9a5410; }
-#f02 .ent .acc span.gt { background: rgba(245,166,35,0.18); border: 1px solid rgba(245,166,35,0.45);
+#f02 .ent .acc > span.warn { background: rgba(224,122,31,0.12); color: #9a5410; }
+#f02 .ent .acc > span.gt { background: rgba(245,166,35,0.18); border: 1px solid rgba(245,166,35,0.45);
   color: #7a4c00; letter-spacing: 1px; text-transform: uppercase; }
 
 /* the two loud beats — same entry, more weight */
@@ -354,7 +358,7 @@
 #f02 .ent--burst.stage-visible .dot { border-color: var(--pago-gold); background: var(--pago-gold); }
 #f02 .ent--burst.is-now .dot::after { border-color: rgba(245,166,35,0.55); }
 #f02 .ent--burst .hl { color: #a7690a; }
-#f02 .ent--burst .acc span { background: rgba(245,166,35,0.14); color: #7a4c00; }
+#f02 .ent--burst .acc > span { background: rgba(245,166,35,0.14); color: #7a4c00; }
 #f02 .ent--lesson.stage-visible .dot { border-color: var(--warn); }
 #f02 .ent--lesson .hl .a { color: var(--pago-blue); }
 #f02 .ent--lesson .hl .b { color: var(--warn); }
@@ -364,6 +368,16 @@
 /* one idea per press: whatever is no longer the subject falls back to 55% so
    the room always knows which line is live */
 [data-stage].past { opacity: 0.55; }
+#f02 [data-stage].past { opacity: 0.45; }
+/* ...but the rail dots stay solid, so the line never shows through them */
+#f02 .ent.past { opacity: 1; }
+#f02 .ent > :not(.dot) { transition: opacity 0.5s var(--e-out); }
+#f02 .ent.past > :not(.dot) { opacity: 0.45; }
+/* months arrive with their step: a short slide in from the left, fading up from 0 */
+#f02 .ent .mon { opacity: 0; transform: translate(-12px, -50%);
+  transition: opacity 0.45s var(--e-out) 0.08s, transform 0.55s var(--e-out) 0.08s; }
+#f02 .ent.stage-visible .mon { opacity: 1; transform: translate(0, -50%); }
+#f02 .ent.past .mon { opacity: 0.45; }
 /* a block that lands a beat after the one it belongs to */
 [data-stage].late { transition-delay: 0.6s; }
 /* ══ fold 03 — three work posts, one decision ═══════════════════════════ */
@@ -395,13 +409,15 @@
 .decision-rail .stop b { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%);
   white-space: nowrap; font-size: 9.5px; font-weight: 800; letter-spacing: 1.2px;
   text-transform: uppercase; color: var(--text-muted); }
-#dpkg { position: absolute; bottom: 36px; left: 16.7%; width: 46px; margin-left: -23px; }
-#dpkg .pkg { width: 100%; height: auto; }
+/* #dpkg spans the rail; it is moved by xPercent (% of the rail), the package sits on its left edge */
+#dpkg { position: absolute; bottom: 36px; left: 0; right: 0; pointer-events: none; }
+#dpkg .pkg { width: 46px; height: auto; margin-left: -23px; }
 .dec-badge { position: absolute; bottom: 74px; left: 16.7%; transform: translateX(-50%) translateY(6px);
   white-space: nowrap; font-family: 'DM Sans'; font-weight: 800; font-size: clamp(10px,1.05vw,13.5px);
   padding: 5px 12px; border-radius: 8px; opacity: 0; pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease; }
 .dec-badge.show { opacity: 1; transform: translateX(-50%); }
+#dpkg .dec-badge { left: 0; bottom: 38px; }   /* rides with the package */
 .dec-badge.miss { background: #D6455B; color: #fff; box-shadow: 0 6px 16px rgba(214,69,91,0.35); }
 .dec-badge.pass { background: var(--pact-green); color: #fff; box-shadow: 0 6px 16px rgba(22,163,74,0.35); }
 .dec-badge::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -5px;
@@ -411,6 +427,7 @@
 
 /* ══ fold 04 — three phase bands over ten steps ═════════════════════════ */
 #f04 .bottom-line { margin-top: clamp(12px,2.2vh,24px); }
+#f04 .tail.late { transition-delay: 1.9s; }   /* after band 3 and its flag have landed */
 .legend { display: flex; gap: clamp(10px,1.6vw,26px); flex-wrap: wrap; align-items: center; }
 .legend div { display: flex; align-items: center; gap: 8px; font-size: clamp(10.5px,1.05vw,14px);
   font-weight: 600; color: var(--text-muted); }
@@ -428,10 +445,36 @@
 .band-steps .step { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;
   padding: clamp(12px,1.5vh,20px) clamp(8px,0.85vw,12px) clamp(14px,1.8vh,24px);
   border-radius: 10px; background: #fff; border: 1px solid var(--border);
-  box-shadow: 0 3px 9px rgba(30,63,143,0.05); opacity: 0; transform: translateY(14px); }
-.band.stage-visible .step { animation: step-in 0.4s cubic-bezier(0.22,0.61,0.36,1) both;
-  animation-delay: calc(var(--i) * 0.09s); }
+  box-shadow: 0 3px 9px rgba(30,63,143,0.05); opacity: 0; transform: translateY(14px) scale(0.96); }
+/* ── a band builds like a line, not a block ────────────────────────────────
+   card (0s) → header (0.15s) → steps land one at a time, 160ms apart, from
+   0.35s → a human step waits a beat, a gold ring settles on it, then its
+   flag drops. --d is each step's landing time; its parts hang off it.     */
+.band-steps .step { --d: calc(0.35s + (var(--i) - 1) * 0.16s + var(--hp, 0s)); }
+.band-steps .step.human, .band-steps .step.human ~ .step { --hp: 0.22s; }
+.band.stage-visible .step { animation: step-in 0.45s cubic-bezier(0.34,1.56,0.64,1) var(--d) both; }
 @keyframes step-in { to { opacity: 1; transform: none; } }
+/* inside a step: number + icon, then the name, then the subtitle */
+.band-steps .step > :not(.gate-flag) { opacity: 0; }
+.band.stage-visible .step > :not(.gate-flag) { animation: part-in 0.3s cubic-bezier(0.22,0.61,0.36,1) var(--d) both; }
+.band.stage-visible .step > .step-name { animation-delay: calc(var(--d) + 0.06s); }
+.band.stage-visible .step > .step-sub  { animation-delay: calc(var(--d) + 0.12s); }
+.band.stage-visible .step > .ask-box   { animation-delay: calc(var(--d) + 0.18s); }
+@keyframes part-in { to { opacity: 1; } }
+/* the header slides in just after its card */
+.band-h { opacity: 0; transform: translateX(-8px); }
+.band.stage-visible .band-h { animation: part-in-x 0.35s cubic-bezier(0.22,0.61,0.36,1) 0.15s both; }
+@keyframes part-in-x { to { opacity: 1; transform: none; } }
+/* a human decision locks in: a gold ring closes onto the card and fades */
+.step.human::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 3px rgba(245,166,35,0.7); opacity: 0; transform: scale(1.14); }
+.band.stage-visible .step.human::after { animation: ring-in 0.6s cubic-bezier(0.22,0.61,0.36,1) calc(var(--d) + 0.3s) both; }
+@keyframes ring-in { 40% { opacity: 1; } to { opacity: 0; transform: none; } }
+/* the conveyor: a line under the steps whose front reaches each step's right
+   edge the moment that step lands — driven by the fold-04 script below */
+.band-steps { position: relative; }
+.band-line { position: absolute; left: 4px; right: 4px; bottom: -4px; height: 2px; pointer-events: none;
+  border-radius: 2px; background: rgba(43,89,195,0.28); transform: scaleX(0); transform-origin: left; }
 .step-top { display: flex; align-items: center; gap: 7px; }
 /* one monoline glyph per step — same family, same weight, never an emoji */
 .ln { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
@@ -454,7 +497,7 @@
 .step-n { font-size: clamp(10px,0.95vw,12px); font-weight: 800; letter-spacing: 1px; color: var(--machine); }
 .step-name { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(11.5px,1.22vw,16px); line-height: 1.18; }
 .step-sub { font-size: clamp(9.5px,0.95vw,12px); color: var(--text-muted); line-height: 1.25; margin-top: 2px; }
-.gate-flag { --fx: -50%; position: absolute; left: 50%; top: calc(100% + 11px); transform: translateX(var(--fx));
+.gate-flag { --fx: -50%; position: absolute; left: 50%; top: calc(100% + 13px); transform: translateX(var(--fx));
   white-space: nowrap; font-size: clamp(8.5px,0.86vw,11px); font-weight: 800; letter-spacing: 0.3px;
   color: #6b4200; background: var(--pago-gold); padding: 4px 9px; border-radius: 6px;
   box-shadow: 0 5px 14px rgba(245,166,35,0.45); opacity: 0; }
@@ -462,7 +505,7 @@
 .gate-flag::after { content: ''; position: absolute; bottom: 100%; left: 50%; margin-left: -5px;
   border: 5px solid transparent; border-bottom-color: var(--pago-gold); }
 .band.stage-visible .gate-flag { animation: flag-in 0.5s cubic-bezier(0.34,1.5,0.64,1) both;
-  animation-delay: 0.55s; }
+  animation-delay: calc(var(--d) + 0.8s); }   /* after the ring has settled */
 @keyframes flag-in { from { opacity: 0; transform: translateX(var(--fx)) translateY(-10px) scale(0.85); }
   to { opacity: 1; transform: translateX(var(--fx)); } }
 /* the tenth step sits at the band edge, so its flag anchors right instead */
@@ -1093,7 +1136,7 @@
     </div>
     <h2 class="fold-title reveal">Three work posts. <strong class="blue">One package all the way through to a build.</strong></h2>
     <div class="posts">
-      <div class="post" data-stage="1">
+      <div class="post" data-stage="1" data-no-dim>
         <div class="p-n">POST 01</div>
         <div class="p-t">Intake</div>
         <div class="p-d">A small factory in front of the big one.</div>
@@ -1127,7 +1170,7 @@
         </div>
       </div>
 
-      <div class="post post--gate" data-stage="2">
+      <div class="post post--gate" data-stage="2" data-no-dim>
         <div class="p-n">POST 02</div>
         <div class="p-t">The Bouncer</div>
         <div class="p-d">A review gate <b>before we spend tokens building.</b> Incomplete packages go back.</div>
@@ -1152,7 +1195,7 @@
         </div>
       </div>
 
-      <div class="post post--floor" data-stage="3">
+      <div class="post post--floor" data-stage="3" data-no-dim>
         <div class="p-n">POST 03</div>
         <div class="p-t">The Factory floor</div>
         <div class="p-d">Planner &rarr; builders &rarr; review loops &times;3 &rarr; PRs &rarr; validated product &rarr; exit &rarr; human polishing.</div>
@@ -1218,14 +1261,14 @@
         </div>
       </div>
     </div>
-    <div class="decision-rail" id="decRail">
+    <div class="decision-rail" id="decRail" data-stage="1" data-no-dim>
       <div class="rail-line"></div>
       <div class="stop" style="left:16.7%"><b>Intake</b></div>
       <div class="stop" style="left:50%"><b>Bouncer</b></div>
       <div class="stop" style="left:83.3%"><b>Factory</b></div>
-      <div class="dec-badge miss" id="decMiss">Missing DB schema &rarr; back to Intake</div>
-      <div class="dec-badge pass" id="decPass">complete &mdash; GO</div>
-      <div id="dpkg"><svg class="pkg incomplete" viewBox="0 0 72 64"><use href="#pkg"/></svg></div>
+      <div id="dpkg"><svg class="pkg incomplete" viewBox="0 0 72 64"><use href="#pkg"/></svg>
+        <div class="dec-badge miss" id="decMiss">Missing DB schema &rarr; back to Intake</div>
+        <div class="dec-badge pass" id="decPass">complete &mdash; GO</div></div>
     </div>
     <div class="bottom-line reveal reveal-d2">Decide the shape first. Then let agents fill it.</div>
   </div>
@@ -1772,20 +1815,41 @@ if (!window.gsap) document.documentElement.classList.add('no-gsap');
   });
 
   (function() {
+    /* Fit each fold to its FINISHED state, measured on an invisible copy with every
+       reveal and stage shown and nothing mid-transition. Measuring the live fold
+       counted content still parked by translateY (unrevealed titles, pending
+       stages), so the zoom came out ~3% smaller on load and snapped back on the
+       first keypress. One zoom per fold, stable across every step. */
+    function naturalHeight(fold) {
+      var copy = fold.cloneNode(true);
+      copy.classList.add('fit-probe');
+      copy.setAttribute('aria-hidden', 'true');
+      copy.style.cssText += ';position:absolute;left:0;top:0;width:' + fold.clientWidth + 'px;height:' +
+        fold.clientHeight + 'px;visibility:hidden;pointer-events:none;';
+      copy.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+      copy.querySelectorAll('[data-stage]').forEach(function (el) { el.classList.add('stage-visible'); });
+      var inner = copy.querySelector('.fold-inner');
+      inner.style.zoom = 1;
+      document.body.appendChild(copy);
+      var h = inner.scrollHeight;
+      copy.remove();
+      return h;
+    }
     function scaleFolds() {
       document.querySelectorAll('.fold').forEach(function(fold) {
         var inner = fold.querySelector('.fold-inner');
         if (!inner) return;
-        inner.style.zoom = 1;
+
         var cs = getComputedStyle(fold);
         var padTop = parseFloat(cs.paddingTop) || 0;
         var padBot = parseFloat(cs.paddingBottom) || 0;
         var available = fold.clientHeight - padTop - padBot;
-        var natural = inner.scrollHeight;
+        var natural = naturalHeight(fold);
         if (natural > available + 2) { inner.style.zoom = Math.max(available / natural, 0.5); } else { inner.style.zoom = ''; }
       });
     }
     window.__scaleFolds = scaleFolds;
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scaleFolds);
     /* zoom changes scrollHeight, so the progress bar is re-measured after */
     window.addEventListener('load', function () { scaleFolds(); update(); });
     window.addEventListener('resize', scaleFolds);
@@ -1856,7 +1920,7 @@ if (!window.gsap) document.documentElement.classList.add('no-gsap');
       section.dispatchEvent(new CustomEvent('ctostage', { detail: { stage: next, prev: current, total: total } }));
     } catch (err) {}
     paintDots(section);
-    if (window.__scaleFolds) window.__scaleFolds();
+
     return true;
   }
 
@@ -2064,7 +2128,10 @@ function buildLightScene(root, onDone) {
     });
     var cur = ents[stage - 1];
     /* offsetTop, not getBoundingClientRect — hidden entries are transformed */
-    fill.style.height = cur ? Math.max(0, cur.offsetTop + 4) + 'px' : '0px';
+    /* the fill is sized once to the whole rail and scaled, so it animates on the compositor */
+    var span = ents[ents.length - 1].offsetTop;
+    fill.style.height = span + 'px';
+    fill.style.transform = 'scaleY(' + (cur && span ? cur.offsetTop / span : 0) + ')';
   }
   place(0);
   f02.addEventListener('ctostage', function (e) { place(e.detail.stage); });
@@ -2075,8 +2142,15 @@ function buildLightScene(root, onDone) {
 })();
 
 /* ════════ Fold 03 — the Bouncer makes a DECISION, not a delivery ════════
-   incomplete package → stopped at the gate → named gap → back to intake →
-   returns complete → passes. The factory floor is the next stage, after.   */
+   stage 2: incomplete package → stopped at the gate → named gap → back to
+   intake → returns complete → GO at the gate. It stops there: the factory
+   floor does not exist yet.
+   stage 3: the factory column arrives, and the package (GO riding with it)
+   moves on to it. A stage-3 press that lands mid-story winds stage 2 out at
+   3× first, so the package never strands between posts.
+   #dpkg is a full-width layer over the rail: it owns WHERE the package is
+   (xPercent = % of the rail, a transform — no layout per frame); the .pkg
+   inside owns the shake and the pop; both badges ride inside the layer.   */
 (function () {
   var f03 = document.getElementById('f03');
   var holder = document.getElementById('dpkg');
@@ -2084,11 +2158,18 @@ function buildLightScene(root, onDone) {
   var pkg = holder.querySelector('.pkg');
   var miss = document.getElementById('decMiss');
   var pass = document.getElementById('decPass');
-  var tl = null;
+  var gsap = window.gsap;
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var tl = null, spot = 0;                 /* spot = the post the package rests at */
   var rail = f03.querySelector('.decision-rail');
   var stops = [].slice.call(f03.querySelectorAll('.decision-rail .stop'));
   var posts = [].slice.call(f03.querySelectorAll('.post'));
   var P = [16.7, 50, 83.3];               /* replaced by measurement below */
+  function place(pct) {
+    if (gsap) gsap.set(holder, { xPercent: pct });
+    else holder.style.transform = 'translateX(' + pct + '%)';
+  }
+  var E = 'power2.inOut', D = 0.85;
 
   function measure() {
     if (!rail || posts.length !== 3) return;
@@ -2099,47 +2180,149 @@ function buildLightScene(root, onDone) {
       P[i] = ((b.left + b.width / 2) - rb.left) / rb.width * 100;
       if (stops[i]) stops[i].style.left = P[i] + '%';
     });
+    if (!tl || !tl.isActive()) place(P[spot]);
   }
   measure();
   if (window.ResizeObserver && rail) new ResizeObserver(measure).observe(rail);
 
-  function at(el, pct) { el.style.left = pct + '%'; }
+  /* The cards' focus follows the package: the card it rests at is full, the
+     others sit at DIM, and every hand-over tweens on the package's own D + E
+     so the light travels with the box. This script owns the posts' opacity
+     (they are data-no-dim); owning one strips its CSS opacity transition, or
+     the transition would chase every GSAP frame.                          */
+  var DIM = 0.55;
+  function own(p) { p.style.transition = 'transform 0.62s var(--e-back)'; }
+  function setOp(p, o) { own(p); p.style.opacity = o; }
+  function hand(tl, from, to, at) {        /* focus moves post[from] → post[to] */
+    tl.add(function () { own(posts[from]); own(posts[to]); }, at)
+      .to(posts[from], { opacity: DIM, duration: D, ease: E }, at)
+      .to(posts[to], { opacity: 1, duration: D, ease: E }, at);
+  }
+
+  function kill() { if (tl) { tl.kill(); tl = null; } }
   function reset() {
-    if (tl) { tl.kill(); tl = null; }
-    measure(); at(holder, P[0]); pkg.classList.add('incomplete');
+    kill(); spot = 0;
+    measure(); place(P[0]); pkg.classList.add('incomplete');
     miss.classList.remove('show'); pass.classList.remove('show');
-    holder.style.transform = '';
+    if (gsap) gsap.set(pkg, { clearProps: 'transform' });
+    posts.forEach(function (p) { p.style.opacity = ''; p.style.transition = ''; });
   }
   reset();
 
-  function run() {
-    if (!window.gsap) {                    /* no CDN → land on the end state */
-      at(holder, P[2]); at(pass, P[2]); pkg.classList.remove('incomplete'); pass.classList.add('show');
-      return;
-    }
-    if (tl) tl.kill();
-    tl = window.gsap.timeline();
-    var E = 'power2.inOut', D = 0.85;
-    measure();
-    tl.set(holder, { left: P[0] + '%' })
-      .set(miss, { left: P[1] + '%' })
-      .to(holder, { left: P[1] + '%', duration: D, ease: E })
-      .add(function () { miss.classList.add('show'); })
-      .to(holder, { x: -7, duration: 0.07, repeat: 5, yoyo: true, ease: 'none' })
-      .to({}, { duration: 1.3 })
-      .add(function () { miss.classList.remove('show'); })
-      .to(holder, { left: P[0] + '%', duration: D, ease: E })
-      .add(function () { pkg.classList.remove('incomplete'); })
-      .to(holder, { scale: 1.18, duration: 0.2, yoyo: true, repeat: 1, ease: 'power2.out' })
-      .to(holder, { left: P[1] + '%', duration: D, ease: E })
-      .add(function () { pass.style.left = P[1] + '%'; pass.classList.add('show'); })
-      .to({}, { duration: 0.8 })
-      .add(function () { pass.style.left = P[2] + '%'; })
-      .to(holder, { left: P[2] + '%', duration: D, ease: E });
+  function gateEnd() {                     /* stage 2's terminal beat */
+    kill(); spot = 1; place(P[1]);
+    pkg.classList.remove('incomplete'); miss.classList.remove('show'); pass.classList.add('show');
+    setOp(posts[0], DIM); setOp(posts[1], 1);
   }
 
-  f03.addEventListener('ctostage', function (e) { if (e.detail.stage === 2) run(); });
+  function toGate() {
+    if (!gsap || still) { gateEnd(); return; }
+    kill(); measure();
+    own(posts[0]);
+    tl = gsap.timeline({ onComplete: function () { spot = 1; } });
+    tl.set(holder, { xPercent: P[0] })
+      /* leg 1: Intake → Bouncer. The Bouncer card is still revealing itself,
+         so only the Intake card hands its light over here */
+      .to(holder, { xPercent: P[1], duration: D, ease: E }, 'leg1')
+      .to(posts[0], { opacity: DIM, duration: D, ease: E }, 'leg1')
+      .add(function () { miss.classList.add('show'); })
+      .to(pkg, { x: -7, duration: 0.07, repeat: 5, yoyo: true, ease: 'none' })
+      .to({}, { duration: 1.3 })
+      .add(function () { miss.classList.remove('show'); })
+      /* leg 2: sent back — Intake lights up again, the Bouncer dims */
+      .to(holder, { xPercent: P[0], duration: D, ease: E }, 'leg2');
+    hand(tl, 1, 0, 'leg2');
+    tl.add(function () { pkg.classList.remove('incomplete'); })
+      .to(pkg, { scale: 1.18, duration: 0.2, yoyo: true, repeat: 1, ease: 'power2.out' })
+      /* leg 3: back to the gate, complete */
+      .to(holder, { xPercent: P[1], duration: D, ease: E }, 'leg3');
+    hand(tl, 0, 1, 'leg3');
+    tl.add(function () { pass.classList.add('show'); });
+  }
+
+  function toFactory() {
+    function go() {
+      if (!gsap || still) { kill(); spot = 2; place(P[2]); setOp(posts[1], DIM); posts[2].style.opacity = ''; return; }
+      kill(); measure();
+      own(posts[1]); own(posts[2]);
+      /* the factory card arrives dimmed — the package isn't there yet — then
+         takes the light from the Bouncer as the package travels over */
+      tl = gsap.timeline({ onComplete: function () { spot = 2; } });
+      tl.to(holder, { xPercent: P[2], duration: D, ease: E }, 0.3)
+        .to(posts[1], { opacity: DIM, duration: D, ease: E }, 0.3)
+        .to(posts[2], { opacity: 1, duration: D, ease: E }, 0.3);
+    }
+    /* take the factory card at once, before its CSS reveal can light it up
+       fully: it arrives dimmed, whether or not stage 2 is still winding out */
+    own(posts[2]);
+    if (gsap && !still) gsap.fromTo(posts[2], { opacity: 0 }, { opacity: DIM, duration: 0.3, ease: 'power2.out' });
+    if (tl && tl.isActive()) {             /* mid-story: wind stage 2 out, then go */
+      tl.eventCallback('onComplete', function () { gateEnd(); go(); });
+      tl.timeScale(3);
+    } else {
+      if (spot < 1) gateEnd();
+      go();
+    }
+  }
+
+  f03.addEventListener('ctostage', function (e) {
+    if (e.detail.stage === 2) toGate();
+    if (e.detail.stage === 3) toFactory();
+  });
   f03.addEventListener('ctostagereset', reset);
+})();
+
+/* ════════ Fold 04 — the conveyor line keeps pace with the steps ═════════
+   Each step's landing time is read off its own running CSS animation, and
+   its right edge off the layout (offset*, so the landing transform doesn't
+   skew it). The line gets one keyframe per step: it reaches that step's
+   right edge the moment the step ARRIVES — whatever the widths, stagger or
+   human-step pause. "Arrives" = where the landing curve, cubic-bezier(0.34,
+   1.56,0.64,1), first reaches its end value: 36.9% of the duration. After
+   that the card only overshoots and settles, and already reads as placed.                                            */
+(function () {
+  var f04 = document.getElementById('f04');
+  if (!f04 || !Element.prototype.animate) return;
+  var ARRIVE = 0.369;
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bands = [].slice.call(f04.querySelectorAll('.band'));
+  bands.forEach(function (band) {
+    var bs = band.querySelector('.band-steps');
+    var line = document.createElement('i');
+    line.className = 'band-line';
+    bs.appendChild(line);
+    band._line = line;
+  });
+
+  function draw(band) {
+    var line = band._line, steps = [].slice.call(band.querySelectorAll('.band-steps .step'));
+    if (!line || !steps.length) return;
+    if (line._anim) line._anim.cancel();
+    if (still) { line.style.transform = 'none'; return; }
+    var w = line.offsetWidth, x0 = line.offsetLeft;
+    var marks = steps.map(function (st) {
+      var a = st.getAnimations ? st.getAnimations()[0] : null, t = a && a.effect.getTiming();
+      var start = t ? +t.delay : 0, end = t ? +t.delay + ARRIVE * +t.duration : 0;
+      var edge = Math.min(1, Math.max(0, (st.offsetLeft + st.offsetWidth - x0) / w));
+      return { start: start, end: end, x: edge };
+    });
+    var t0 = marks[0].start, total = marks[marks.length - 1].end - t0;
+    if (!(total > 0)) { line.style.transform = 'none'; return; }
+    var frames = [{ transform: 'scaleX(0)', offset: 0 }];
+    marks.forEach(function (m) {
+      frames.push({ transform: 'scaleX(' + m.x + ')', offset: (m.end - t0) / total });
+    });
+    frames[frames.length - 1].transform = 'none';   /* close any sub-pixel gap at the end */
+    line._anim = line.animate(frames, { duration: total, delay: t0, fill: 'both', easing: 'linear' });
+  }
+
+  f04.addEventListener('ctostage', function (e) {
+    var band = bands[e.detail.stage - 1];
+    if (band) draw(band);
+  });
+  f04.addEventListener('ctostagereset', function () {
+    bands.forEach(function (b) { if (b._line && b._line._anim) { b._line._anim.cancel(); b._line._anim = null; } b._line.style.transform = ''; });
+  });
 })();
 
 /* ════════ Fold 06 — ONE diagram, morphed clean → tangled ════════
