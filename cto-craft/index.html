@@ -425,126 +425,163 @@
 .dec-badge.miss::after { border-top-color: #D6455B; }
 .dec-badge.pass::after { border-top-color: var(--pact-green); }
 
-/* ══ fold 04 — three phase bands over ten steps ═════════════════════════ */
-#f04 .bottom-line { margin-top: clamp(12px,2.2vh,24px); }
-#f04 .tail.late { transition-delay: 1.9s; }   /* after band 3 and its flag have landed */
-.legend { display: flex; gap: clamp(10px,1.6vw,26px); flex-wrap: wrap; align-items: center; }
-.legend div { display: flex; align-items: center; gap: 8px; font-size: clamp(10.5px,1.05vw,14px);
-  font-weight: 600; color: var(--text-muted); }
-.legend b { color: var(--text); }
-.legend .chipGold { display: inline-block; width: 22px; height: 11px; border-radius: 4px; background: var(--pago-gold); }
-.bands { display: flex; gap: clamp(8px,1.2vw,18px); margin-bottom: clamp(26px,4.4vh,46px); align-items: stretch; }
-.band { flex: var(--f, 1); display: flex; flex-direction: column; gap: clamp(8px,1.3vh,14px); border-radius: 14px;
-  padding: clamp(13px,1.8vw,24px) clamp(11px,1.4vw,18px); background: rgba(43,89,195,0.045);
-  border: 1px solid rgba(43,89,195,0.14); }
-.band:nth-child(1) { flex: 3.7; } .band:nth-child(2) { flex: 4.7; } .band:nth-child(3) { flex: 2.9; }
-.band-h b { display: block; font-family: 'DM Sans'; font-weight: 800; font-size: clamp(17px,2.15vw,30px);
-  line-height: 1.05; color: var(--pago-blue); letter-spacing: -0.3px; }
-.band-h em { font-style: normal; font-size: clamp(11px,1.15vw,15px); font-weight: 700; color: var(--pago-blue); opacity: 0.8; }
-.band-steps { list-style: none; display: flex; gap: 6px; }
-.band-steps .step { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;
-  padding: clamp(12px,1.5vh,20px) clamp(8px,0.85vw,12px) clamp(14px,1.8vh,24px);
-  border-radius: 10px; background: #fff; border: 1px solid var(--border);
-  box-shadow: 0 3px 9px rgba(30,63,143,0.05); opacity: 0; transform: translateY(14px) scale(0.96); }
-/* ── a band builds like a line, not a block ────────────────────────────────
-   card (0s) → header (0.15s) → steps land one at a time, 160ms apart, from
-   0.35s → a human step waits a beat, a gold ring settles on it, then its
-   flag drops. --d is each step's landing time; its parts hang off it.     */
-.band-steps .step { --d: calc(0.35s + (var(--i) - 1) * 0.16s + var(--hp, 0s)); }
-.band-steps .step.human, .band-steps .step.human ~ .step { --hp: 0.22s; }
-.band.stage-visible .step { animation: step-in 0.45s cubic-bezier(0.34,1.56,0.64,1) var(--d) both; }
-@keyframes step-in { to { opacity: 1; transform: none; } }
-/* inside a step: number + icon, then the name, then the subtitle */
-.band-steps .step > :not(.gate-flag) { opacity: 0; }
-.band.stage-visible .step > :not(.gate-flag) { animation: part-in 0.3s cubic-bezier(0.22,0.61,0.36,1) var(--d) both; }
-.band.stage-visible .step > .step-name { animation-delay: calc(var(--d) + 0.06s); }
-.band.stage-visible .step > .step-sub  { animation-delay: calc(var(--d) + 0.12s); }
-.band.stage-visible .step > .ask-box   { animation-delay: calc(var(--d) + 0.18s); }
-@keyframes part-in { to { opacity: 1; } }
-/* the header slides in just after its card */
-.band-h { opacity: 0; transform: translateX(-8px); }
-.band.stage-visible .band-h { animation: part-in-x 0.35s cubic-bezier(0.22,0.61,0.36,1) 0.15s both; }
-@keyframes part-in-x { to { opacity: 1; transform: none; } }
-/* a human decision locks in: a gold ring closes onto the card and fades */
-.step.human::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
-  box-shadow: 0 0 0 3px rgba(245,166,35,0.7); opacity: 0; transform: scale(1.14); }
-.band.stage-visible .step.human::after { animation: ring-in 0.6s cubic-bezier(0.22,0.61,0.36,1) calc(var(--d) + 0.3s) both; }
-@keyframes ring-in { 40% { opacity: 1; } to { opacity: 0; transform: none; } }
-/* the conveyor: a line under the steps whose front reaches each step's right
-   edge the moment that step lands — driven by the fold-04 script below */
-.band-steps { position: relative; }
-.band-line { position: absolute; left: 4px; right: 4px; bottom: -4px; height: 2px; pointer-events: none;
-  border-radius: 2px; background: rgba(43,89,195,0.28); transform: scaleX(0); transform-origin: left; }
-.step-top { display: flex; align-items: center; gap: 7px; }
-/* one monoline glyph per step — same family, same weight, never an emoji */
+/* ══ fold 04 — the intake as ONE line ═══════════════════════════════════
+   Ten stations on a single track, grouped by whitespace, not boxes: Define ·
+   Stress-test · Package, then (after a dashed hop) the Bouncer and the
+   Factory. Each stage is a pen that draws the next stretch of track; every
+   station pops as the pen reaches it, its words settle a beat later.
+   Timing per station: --t = S + j·T (+ a pause from a human station on).
+   Its track segment draws in the T before --t, so line and node meet.     */
+/* one monoline glyph per step — same family, same weight, never an emoji.
+   Global: the intake stations and the factory lanes (fold 10) both use it. */
 .ln { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.step .ag { flex: none; width: clamp(17px,1.65vw,22px); height: auto; color: var(--pago-blue); }
-/* the only two places a human decides */
-.step.human { border-color: var(--pago-gold); background: rgba(245,166,35,0.10);
-  box-shadow: 0 0 0 2px rgba(245,166,35,0.22), 0 4px 12px rgba(245,166,35,0.18); }
-.step.human .step-n { color: #b9760a; }
-.step.human .ag { color: #b9760a; }
-/* step 06 is the check-in: humans answer questions, so it shows them */
-.band-steps .step.ask { flex: 2.35; background: rgba(245,166,35,0.16);
-  box-shadow: 0 0 0 2px rgba(245,166,35,0.4), 0 6px 18px rgba(245,166,35,0.26); }
-.ask-box { margin-top: clamp(6px,0.9vh,10px); border-top: 1px dashed rgba(184,120,10,0.42); padding-top: clamp(5px,0.8vh,9px); }
-.ask-h { display: block; font-size: clamp(9px,0.9vw,11.5px); font-weight: 800; letter-spacing: 0.7px;
-  text-transform: uppercase; color: #8a5a06; margin-bottom: 4px; }
-.ask-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
-.ask-list li { font-size: clamp(9.5px,0.98vw,12.5px); font-weight: 600; color: #6b4200; line-height: 1.3; }
-.ask-list li::before { content: '\00B7'; font-weight: 800; margin-right: 5px; }
-.ask-list b { font-weight: 800; text-transform: uppercase; }
-.step-n { font-size: clamp(10px,0.95vw,12px); font-weight: 800; letter-spacing: 1px; color: var(--machine); }
-.step-name { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(11.5px,1.22vw,16px); line-height: 1.18; }
-.step-sub { font-size: clamp(9.5px,0.95vw,12px); color: var(--text-muted); line-height: 1.25; margin-top: 2px; }
-.gate-flag { --fx: -50%; position: absolute; left: 50%; top: calc(100% + 13px); transform: translateX(var(--fx));
-  white-space: nowrap; font-size: clamp(8.5px,0.86vw,11px); font-weight: 800; letter-spacing: 0.3px;
-  color: #6b4200; background: var(--pago-gold); padding: 4px 9px; border-radius: 6px;
-  box-shadow: 0 5px 14px rgba(245,166,35,0.45); opacity: 0; }
-.gate-flag b { font-size: 1.15em; margin-right: 4px; }
-.gate-flag::after { content: ''; position: absolute; bottom: 100%; left: 50%; margin-left: -5px;
-  border: 5px solid transparent; border-bottom-color: var(--pago-gold); }
-.band.stage-visible .gate-flag { animation: flag-in 0.5s cubic-bezier(0.34,1.5,0.64,1) both;
-  animation-delay: calc(var(--d) + 0.8s); }   /* after the ring has settled */
-@keyframes flag-in { from { opacity: 0; transform: translateX(var(--fx)) translateY(-10px) scale(0.85); }
-  to { opacity: 1; transform: translateX(var(--fx)); } }
-/* the tenth step sits at the band edge, so its flag anchors right instead */
-.band:last-child .step:last-child .gate-flag { --fx: 0; left: auto; right: -4px; }
-.band:last-child .step:last-child .gate-flag::after { left: auto; right: 30px; margin-left: 0; }
-.tail { display: flex; align-items: center; justify-content: center; gap: clamp(10px,1.5vw,24px); margin-top: clamp(12px,2vh,20px); }
-.tail .arw { color: var(--machine); font-size: clamp(16px,1.8vw,26px); }
-.tail .tbox { display: flex; align-items: center; gap: 11px; padding: clamp(10px,1.3vh,16px) clamp(14px,1.9vw,28px);
-  border-radius: 12px; font-family: 'DM Sans'; font-weight: 700; font-size: clamp(13px,1.45vw,20px); }
-.tail .tbox svg { width: clamp(22px,2.4vw,32px); height: auto; flex: none; }
-.tail .tbox.b { background: #2c2440; color: #fff; --bnc-tie: #2c2440; }
-.tail .tbox.f { background: var(--pago-blue); color: #fff; }
-.tail .tbox span { font-size: 1.25em; }
-.mapstrip { display: flex; align-items: center; gap: clamp(11px,1.6vw,24px);
-  padding: clamp(11px,1.5vh,18px) clamp(14px,1.8vw,26px); border-radius: 10px;
-  margin-top: clamp(12px,2vh,20px); color: #5a4526;
-  background: linear-gradient(135deg, #F8F0DD 0%, #F2E4C6 55%, #EDDBB4 100%);
-  border: 1px solid #D8BE8B; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5); }
-.mapstrip .compass { font-size: clamp(19px,2.1vw,29px); line-height: 1; flex: none; }
-.mapstrip .map-txt { flex: 1; min-width: 0; }
-.mapstrip b { display: block; font-family: 'DM Sans'; font-weight: 800;
-  font-size: clamp(12px,1.25vw,17px); color: #4a3719; }
-.mapstrip .list { font-size: clamp(11.5px,1.2vw,16px); font-weight: 600; color: #6b5433; }
-.mapstrip em { display: block; font-style: normal; font-size: clamp(10.5px,1.05vw,13.5px);
-  font-weight: 700; color: #94743c; margin-top: 3px; }
-.mapstrip .map-trail { flex: none; width: clamp(78px,9vw,126px); height: auto; }
-.foundation { display: flex; align-items: center; gap: clamp(8px,1.2vw,16px); flex-wrap: wrap;
-  padding: clamp(11px,1.5vh,17px) clamp(13px,1.6vw,22px); border-radius: 10px; margin-top: clamp(12px,2vh,20px);
-  background: var(--machine-soft); border-bottom: 3px solid var(--machine); }
-.foundation .ml { font-size: clamp(10.5px,1.05vw,13.5px); font-weight: 800; letter-spacing: 1.4px;
-  text-transform: uppercase; color: #5b6b85; }
-.foundation .mi { font-size: clamp(12.5px,1.3vw,17.5px); font-weight: 600; color: var(--text); }
-.foundation .sep { color: var(--machine); }
-.acct { display: flex; align-items: center; gap: clamp(8px,1.2vw,18px); flex-wrap: wrap;
-  padding: clamp(11px,1.5vh,17px) clamp(13px,1.6vw,22px); border-radius: 10px; margin-top: clamp(10px,1.7vh,17px);
-  background: #1E293B; color: #fff; }
-.acct .al { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(13px,1.35vw,18px); }
-.acct .ac { font-size: clamp(11px,1.15vw,15px); font-weight: 600; color: #cfd8ea;
-  border: 1px solid rgba(255,255,255,0.22); border-radius: 20px; padding: 4px 13px; }
+#f04 .fold-inner > * { flex-shrink: 0; }   /* overflow must show, so the autofit can zoom */
+#f04 .itk-legend { display: flex; align-items: center; gap: 8px; margin-top: -2px;
+  font-size: clamp(10.5px,1.05vw,14px); font-weight: 600; color: var(--text-muted); }
+#f04 .itk-legend b { color: var(--text); }
+#f04 .itk-legend .ico { color: var(--pago-gold); }
+#f04 .itk { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center;
+  gap: clamp(22px,4.2vh,44px); }
+#f04 .itk-row { --G: clamp(18px,2.4vw,38px); --node: clamp(30px,2.7vw,38px); --endw: clamp(40px,4vw,64px);
+  --lblh: clamp(40px,5.4vh,52px); --padb: clamp(96px,14vh,128px); --S: 0.2s; --T: 0.2s;
+  --lpx: clamp(6px,0.6vw,10px); --lpt: clamp(14px,2.1vh,20px); --lpb: clamp(12px,1.9vh,18px);
+  position: relative; display: flex; gap: var(--G); align-items: stretch;
+  padding-bottom: var(--padb); }            /* room for the check-in note */
+#f04 .itk-grp { flex: var(--n); min-width: 0; display: flex; flex-direction: column; }   /* lanes share one height */
+#f04 .itk-lbl { height: var(--lblh); }
+#f04 .itk-lbl b { display: block; font-family: 'DM Sans'; font-weight: 800; letter-spacing: -0.2px;
+  font-size: clamp(15px,1.55vw,21px); line-height: 1.1; color: var(--pago-blue); }
+#f04 .itk-lbl span { font-size: clamp(10.5px,0.95vw,13px); font-weight: 700; color: var(--text-muted); }
+/* each group is a faint lane: a soft tint that says where it starts and ends */
+#f04 .itk-sts { flex: 1; list-style: none; display: flex; position: relative;
+  padding: var(--lpt) var(--lpx) var(--lpb); }
+#f04 .itk-sts::before { content: ''; position: absolute; inset: 0; border-radius: 18px;
+  background: rgba(43,89,195,0.045); border: 1px solid rgba(43,89,195,0.10);
+  clip-path: inset(0 100% 0 0 round 18px); }
+/* no z-index here: a stacking context per station would let each station's
+   segment paint over the previous station's node */
+#f04 .itk-st { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column;
+  align-items: center; text-align: center; padding: 0 3px; }
+
+/* the track: each station owns the stretch from the previous node to its own */
+#f04 .itk-st::before { content: ''; position: absolute; z-index: 0; right: 50%; width: 100%;
+  top: calc(var(--node) / 2 - 1px); height: 2px; border-radius: 2px;
+  background: rgba(43,89,195,0.32); transform: scaleX(0); transform-origin: left; }
+#f04 .itk-grp:not(:first-child) .itk-st:first-child::before { width: calc(100% + var(--G)); }
+#f04 .itk-grp:first-child .itk-st:first-child::before { display: none; }
+/* after 10 the track runs on, dashed, to an arrow: the intake hands over */
+#f04 .itk-st.last::after { content: ''; position: absolute; z-index: 0; left: 50%;
+  width: calc(50% + var(--lpx) + var(--G) + var(--endw) - 9px); top: calc(var(--node) / 2 - 1px); height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(43,89,195,0.45) 0 6px, transparent 6px 12px);
+  transform: scaleX(0); transform-origin: left; }
+#f04 .itk-end { flex: 0 0 var(--endw); display: flex; align-self: flex-start; }
+#f04 .itk-end-line { width: 0; height: 0; margin: calc(var(--lblh) + var(--lpt) + var(--node) / 2 - 5px) 0 0 auto;
+  border-left: 9px solid rgba(43,89,195,0.55); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+/* where it goes next — two small chips under the arrow, off the track */
+#f04 .itk-then { position: absolute; right: 0; top: calc(100% - var(--padb) + 18px); display: flex; align-items: center; gap: clamp(9px,0.9vw,13px); }
+#f04 .itk-then-lbl, #f04 .itk-then-arw { font-size: clamp(12px,1.1vw,15px); font-weight: 700; color: var(--text-muted); }
+#f04 .itk-then-arw { font-size: clamp(15px,1.4vw,19px); }
+#f04 .itk-chip { display: inline-flex; align-items: center; gap: clamp(7px,0.7vw,10px); white-space: nowrap;
+  padding: clamp(7px,1.05vh,10px) clamp(14px,1.35vw,20px) clamp(7px,1.05vh,10px) clamp(9px,0.9vw,13px);
+  border-radius: 999px; font-family: 'DM Sans'; font-weight: 700;
+  font-size: clamp(13px,1.25vw,17px); color: #fff; box-shadow: 0 6px 16px rgba(30,40,80,0.14); }
+#f04 .itk-chip svg { width: 1.55em; height: auto; flex: none; }
+#f04 .itk-chip.bnc { background: #2c2440; --bnc-tie: #2c2440; }
+#f04 .itk-chip.bnc svg { color: #E6E1F5; }
+#f04 .itk-chip.fac { background: var(--pago-blue); }
+
+#f04 .itk-node { position: relative; z-index: 1; flex: none; width: var(--node); height: var(--node);
+  display: grid; place-items: center; border-radius: 50%; background: #fff;
+  border: 2px solid rgba(43,89,195,0.35); color: var(--pago-blue); }
+#f04 .itk-node .ag { width: 52%; height: auto; }
+#f04 .itk-n { margin-top: 9px; font-size: clamp(9.5px,0.85vw,11px); font-weight: 800; letter-spacing: 1px;
+  color: var(--machine); }
+#f04 .itk-name { margin-top: 2px; font-family: 'DM Sans'; font-weight: 700; line-height: 1.18;
+  font-size: clamp(11.5px,1.08vw,14.5px); color: var(--text); }
+#f04 .itk-sub { margin-top: 3px; font-size: clamp(9.5px,0.86vw,11.5px); line-height: 1.3; color: var(--text-muted); }
+#f04 .itk-q { margin-top: 4px; font-size: clamp(9.5px,0.86vw,11.5px); font-weight: 800; line-height: 1.25;
+  color: #8a5a06; }
+
+/* the two places a human decides */
+#f04 .itk-st.human .itk-node { background: #FFF4E0; border-color: var(--pago-gold); color: #b9760a;
+  box-shadow: 0 0 0 4px rgba(245,166,35,0.16); }
+#f04 .itk-st.human .itk-n { color: #b9760a; }
+#f04 .itk-node::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; pointer-events: none;
+  box-shadow: 0 0 0 3px rgba(245,166,35,0.75); opacity: 0; transform: scale(1.7); }
+
+/* the check-in note hangs under station 06 */
+#f04 .itk-ask { position: absolute; top: calc(100% + var(--lpb) + 14px); left: 50%; z-index: 2;
+  width: clamp(230px,22vw,310px); margin-left: calc(clamp(230px,22vw,310px) / -2);
+  text-align: left; padding: 10px 14px 11px; border-radius: 12px;
+  background: #FFF8EC; border: 1px solid rgba(245,166,35,0.45);
+  box-shadow: 0 8px 22px rgba(184,120,10,0.10); }
+#f04 .itk-ask::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: calc(var(--lpb) + 14px);
+  background: rgba(245,166,35,0.6); }
+#f04 .itk-ask-h { display: flex; align-items: center; gap: 6px; margin-bottom: 5px;
+  font-size: clamp(9px,0.8vw,10.5px); font-weight: 800; letter-spacing: 0.7px; text-transform: uppercase; color: #8a5a06; }
+#f04 .itk-ask-h .ico { width: 1.1em; height: 1.1em; }
+#f04 .itk-ask ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+#f04 .itk-ask li { font-size: clamp(10.5px,0.95vw,12.5px); font-weight: 600; line-height: 1.3; color: #6b4200; }
+#f04 .itk-ask li::before { content: '\00B7'; font-weight: 800; margin-right: 6px; }
+
+/* the two takeaways, side by side */
+#f04 .itk-cards { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px,1.4vw,20px); }
+#f04 .itk-card { display: flex; align-items: center; gap: clamp(12px,1.3vw,18px); border-radius: 14px;
+  padding: clamp(12px,1.8vh,18px) clamp(14px,1.6vw,22px); }
+#f04 .itk-card > .ico { flex: none; width: clamp(20px,1.9vw,26px); height: auto; }
+#f04 .itk-card b { display: block; font-family: 'DM Sans'; font-weight: 800; line-height: 1.2;
+  font-size: clamp(13.5px,1.3vw,17.5px); color: var(--text); }
+#f04 .itk-card span, #f04 .itk-card em { display: block; margin-top: 3px; font-style: normal;
+  font-size: clamp(10.5px,1vw,13.5px); font-weight: 600; line-height: 1.35; }
+#f04 .itk-map { background: #FBF6EE; border: 1px solid rgba(184,137,74,0.28); }
+#f04 .itk-map > .ico { color: #B8894A; }
+#f04 .itk-map span { color: #6b5433; }
+#f04 .itk-map em { color: #9a7d55; }
+#f04 .itk-map .map-trail { flex: none; width: clamp(64px,6.5vw,92px); height: auto; margin-left: auto; }
+#f04 .itk-hand { background: rgba(43,89,195,0.055); border: 1px solid rgba(43,89,195,0.16); }
+#f04 .itk-hand > .ico { color: var(--pago-blue); }
+#f04 .itk-hand span { color: var(--text-muted); }
+
+#f04 .bottom-line { margin-top: 0; }
+
+/* ── motion ─────────────────────────────────────────────────────────────
+   A group is a stage but not a block: it is present at once, and its parts
+   carry the reveal.                                                        */
+#f04 .itk-grp[data-stage], #f04 .itk-end[data-stage] { transform: none; transition: opacity 0s; }
+/* only the group being drawn shows its details; a past group keeps its
+   names and gold labels and lets the rest go (fade only — no reflow) */
+#f04 .itk-grp.past { opacity: 1; }
+#f04 .itk-grp.past .itk-sub, #f04 .itk-grp.past .itk-ask { animation: itk-fold 0.45s var(--e-out) both; }
+#f04 .itk-st { --t: calc(var(--S) + var(--j) * var(--T) + var(--hp, 0s)); }
+#f04 .itk-st.human, #f04 .itk-st.human ~ .itk-st { --hp: 0.18s; }
+#f04 .itk-lbl, #f04 .itk-n, #f04 .itk-name, #f04 .itk-sub, #f04 .itk-q, #f04 .itk-ask { opacity: 0; }
+#f04 .itk-node { opacity: 0; transform: scale(0.6); }
+
+#f04 .stage-visible .itk-lbl { animation: itk-in-x 0.35s var(--e-out) both; }
+/* the lane is laid first, left to right, then the pen draws inside it */
+#f04 .stage-visible .itk-sts::before { animation: itk-lane 0.55s var(--e-out) both; }
+#f04 .stage-visible .itk-st::before { animation: itk-draw var(--T) linear calc(var(--t) - var(--T)) both; }
+#f04 .stage-visible .itk-node { animation: itk-pop 0.45s cubic-bezier(0.22,1,0.36,1) var(--t) both; }
+#f04 .stage-visible .itk-n    { animation: itk-in-y 0.3s var(--e-out) calc(var(--t) + 0.06s) both; }
+#f04 .stage-visible .itk-name { animation: itk-in-y 0.3s var(--e-out) calc(var(--t) + 0.1s) both; }
+#f04 .stage-visible .itk-sub  { animation: itk-in-y 0.3s var(--e-out) calc(var(--t) + 0.14s) both; }
+#f04 .stage-visible .itk-q    { animation: itk-in-y 0.3s var(--e-out) calc(var(--t) + 0.34s) both; }
+#f04 .stage-visible .human .itk-node::after { animation: itk-ring 0.6s var(--e-out) calc(var(--t) + 0.18s) both; }
+#f04 .stage-visible .itk-st.last::after { animation: itk-draw 0.25s linear calc(var(--t) + 0.22s) both; }
+#f04 .itk-end-line, #f04 .itk-then > * { opacity: 0; }
+#f04 .stage-visible .itk-end-line { animation: itk-pop 0.3s var(--e-out) 1.45s both; }
+#f04 .stage-visible .itk-then > * { animation: itk-in-x 0.35s var(--e-out) calc(1.45s + var(--k, 0) * 0.08s) both; }
+#f04 .itk-then > :nth-child(2) { --k: 1; } #f04 .itk-then > :nth-child(3) { --k: 2; } #f04 .itk-then > :nth-child(4) { --k: 3; }
+#f04 .stage-visible .itk-ask  { animation: itk-drop 0.45s var(--e-out) calc(var(--t) + 0.75s) both; }
+
+@keyframes itk-draw { to { transform: none; } }
+@keyframes itk-pop  { to { opacity: 1; transform: none; } }
+@keyframes itk-in-y { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes itk-in-x { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@keyframes itk-drop { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes itk-lane { to { clip-path: inset(0 0 0 0 round 18px); } }
+@keyframes itk-fold { from { opacity: 1; } to { opacity: 0; } }
+@keyframes itk-ring { 35% { opacity: 1; } to { opacity: 0; transform: none; } }
 
 /* ══ fold 05 — demo break ═══════════════════════════════════════════════ */
 #f05 .fold-inner { align-items: center; justify-content: center; text-align: center; gap: clamp(12px,2vh,24px); }
@@ -574,52 +611,88 @@
 .demo-list span::before { content: '·'; margin-right: clamp(10px,1.6vw,26px); color: rgba(255,255,255,0.3); }
 .demo-list span:first-child::before { content: none; margin: 0; }
 
-/* ══ fold 06 — one diagram, morphed ═════════════════════════════════════ */
-.morph-wrap { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
-  border-radius: 18px; background: var(--surface); border: 1px solid var(--border); padding: clamp(8px,1.2vw,18px); }
-.morph-wrap svg { width: 100%; height: 100%; max-height: 100%; }
+/* ══ fold 06 — one diagram, morphed ═════════════════════════════════════
+   A design surface (faint dot grid), not a grey box. Stage 1 pens the three
+   rails in and pops each human checkpoint as the pen passes it; stage 2
+   twists them into a smooth tangle — the checkpoints ride along and fade
+   out of sight, two more rails draw themselves in, everything flushes
+   orange — and only then asks the question. Driven by the fold-06 script. */
+.morph-wrap { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
+  padding: clamp(8px,1.2vw,18px); }
+.morph-wrap::before { content: ''; position: absolute; inset: 0; border-radius: 18px; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(43,89,195,0.16) 1.1px, transparent 1.6px);
+  background-size: 22px 22px; background-position: center;
+  -webkit-mask-image: radial-gradient(ellipse 72% 78% at 50% 50%, #000 55%, transparent 100%);
+          mask-image: radial-gradient(ellipse 72% 78% at 50% 50%, #000 55%, transparent 100%); }
+.morph-wrap svg { position: relative; width: 100%; height: 100%; max-height: 100%; overflow: visible; }
+/* pen: dash 100 + gap 102, parked at 101 — no zero-length dash (a round-cap dot)
+   is left at either end of an undrawn rail */
 .mline { fill: none; stroke: var(--pago-blue); stroke-width: 3.4; stroke-linecap: round;
-  transition: stroke 0.8s ease, opacity 0.7s ease; }
-.mline.extra { opacity: 0; stroke-width: 2.6; }
-.morphed .mline.extra { opacity: 0.92; transition-delay: 0.35s; }
-.morphed .mline { stroke: var(--warn); }
-.ctrl-pt { fill: #fff; stroke: var(--pago-gold); stroke-width: 3.4; transition: opacity 0.5s ease; }
-.morphed .ctrl-pt { opacity: 0; }
-.ctrl-lbl { font: 700 13px 'DM Sans', sans-serif; fill: var(--text-muted); transition: opacity 0.5s ease; }
-.morphed .ctrl-lbl { opacity: 0; }
-.mark-lost { opacity: 0; transition: opacity 0.6s ease 0.7s; }
-.morphed .mark-lost { opacity: 1; }
-.mark-lost text { font: 800 16px 'DM Sans', sans-serif; fill: var(--warn);
-  stroke: var(--surface); stroke-width: 8; paint-order: stroke; stroke-linejoin: round; }
+  stroke-dasharray: 100 102; stroke-dashoffset: 101; transition: stroke 0.35s ease; }
+.mline.extra { stroke-width: 2.6; }
+.mline.hot { stroke: var(--warn); }
+.ctrl-pt { fill: #fff; stroke: var(--pago-gold); stroke-width: 3.4; opacity: 0; }
+.ctrl-lbl { font: 700 13px 'DM Sans', sans-serif; fill: #9a6a12; opacity: 0; }
+.lost-q { font: 800 16px 'DM Sans', sans-serif; fill: var(--warn); opacity: 0;
+  stroke: #fff; stroke-width: 8; paint-order: stroke; stroke-linejoin: round;
+  transform: translateY(6px); transition: opacity 0.5s var(--e-out), transform 0.5s var(--e-out); }
+#morphSvg.lost .lost-q { opacity: 1; transform: none; }
+
 .mcaps { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px,1.6vw,26px); }
-.mcap { border-radius: 14px; padding: clamp(10px,1.4vw,18px); border: 1px solid var(--border); background: #fff;
-  transition: border-color 0.4s ease, background 0.4s ease, opacity 0.4s ease; }
-.mcap .mh { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(15px,1.75vw,24px); line-height: 1.12; }
-.mcap .ms { font-size: clamp(11.5px,1.2vw,16px); color: var(--text-muted); line-height: 1.4; margin-top: 3px; }
-.mcap.good { border-color: rgba(43,89,195,0.35); background: rgba(43,89,195,0.05); }
+.mcap { border-radius: 14px; padding: clamp(10px,1.4vw,18px) clamp(14px,1.6vw,22px); border: 1px solid var(--border); background: #fff;
+  transition: border-color 0.4s ease, background 0.4s ease, opacity 0.5s ease; }
+.mcap .mh { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(15px,1.6vw,22px); line-height: 1.12; }
+.mcap .ms { font-size: clamp(11.5px,1.15vw,15px); color: var(--text-muted); line-height: 1.4; margin-top: 4px; }
+.mcap.good { border-color: rgba(43,89,195,0.22); background: rgba(43,89,195,0.045); }
 .mcap.good .mh { color: var(--pago-blue); }
 .mcap.bad .mh { color: var(--warn); }
-.mcap.bad.stage-visible { border-color: rgba(224,122,31,0.4); background: rgba(224,122,31,0.07); }
-.morphed .mcap.good { opacity: 0.5; }
-.verdict-strip { display: flex; align-items: center; gap: clamp(10px,1.4vw,20px); flex-wrap: wrap;
-  padding: clamp(9px,1.2vw,15px) clamp(12px,1.6vw,22px); border-radius: 12px; background: #1E293B; color: #fff;
-  font-family: 'DM Sans'; font-weight: 700; font-size: clamp(12px,1.3vw,18px); }
-.verdict-strip .vtag { background: var(--warn); color: #fff; border-radius: 6px; padding: 2px 10px; font-size: 0.82em; }
+.mcap.bad.stage-visible { border-color: rgba(224,122,31,0.32); background: rgba(224,122,31,0.06); }
+.morphed .mcap.good { opacity: 0.55; }
+/* the verdict: a light warning card, not a dark bar */
+.verdict-strip { display: flex; align-items: center; gap: clamp(10px,1.2vw,16px); flex-wrap: wrap;
+  padding: clamp(10px,1.4vh,14px) clamp(14px,1.6vw,22px); border-radius: 14px;
+  background: #FFF6EE; border: 1px solid rgba(224,122,31,0.3); color: var(--text);
+  font-family: 'DM Sans'; font-weight: 700; font-size: clamp(13px,1.3vw,18px); }
+.verdict-strip .vtag { background: var(--warn); color: #fff; border-radius: 999px; padding: 3px 11px;
+  font-size: 0.74em; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase; }
 
-/* ══ fold 07 — the defect, then the consensus ═══════════════════════════ */
-.f07 { flex: 1; min-height: 0; display: grid; grid-template-columns: 0.92fr 1.08fr; gap: clamp(12px,1.8vw,30px); align-items: stretch; }
+/* ══ fold 07 — the defect, then the consensus ═══════════════════════════
+   stage 1: the package opens into an orbit of its artifacts — a ring, then
+            each artifact flies out along its own connector (line + pill share
+            one duration and ease), clockwise; they then float, very slowly.
+   stage 2: the Bouncer's catch. The other artifacts dim, OpenAPI lights up,
+            an evidence line runs from it to the card, and the mismatch
+            highlights: the claim in red, the spec's truth in blue.
+   stage 3: eight stamps slam down one by one; only then the consensus line,
+            then the proof line. Positions are computed per column size by the
+            fold-07 script, so nothing clips at any viewport.               */
+.f07 { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: 0.92fr 1.08fr;
+  gap: clamp(12px,1.8vw,30px); align-items: stretch; }
+.f07-link { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 1; }
+.f07-link path { fill: none; stroke: var(--pago-blue); stroke-width: 2; stroke-linecap: round; opacity: 0.55;
+  stroke-dasharray: 100 102; stroke-dashoffset: 101; }
+
 .pkg-fan { position: relative; min-height: 0; display: flex; align-items: center; justify-content: center; }
+#f07 .pkg-fan[data-stage] { transform: none; transition: opacity 0.25s ease; }   /* the parts carry the reveal */
+.fan-web { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.fan-ring { fill: none; stroke: rgba(43,89,195,0.22); stroke-width: 1.5; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0; }
+.fan-lines line { stroke: rgba(43,89,195,0.22); stroke-width: 1.5; stroke-linecap: round;
+  stroke-dasharray: 100 102; stroke-dashoffset: 101; }
+/* the box, standing on its own soft shadow */
+.pkg-fan::after { content: ''; position: absolute; left: 50%; top: 50%; z-index: 1; pointer-events: none;
+  width: clamp(120px,13vw,190px); height: clamp(16px,1.6vw,24px);
+  margin: calc(clamp(116px,13vw,190px) * 0.4) 0 0 calc(clamp(120px,13vw,190px) / -2);
+  background: radial-gradient(ellipse at center, rgba(30,63,143,0.22), rgba(30,63,143,0) 70%); }
 .pkg-fan .pkg { position: relative; z-index: 2; width: clamp(116px,13vw,190px); height: auto;
-  filter: drop-shadow(0 12px 26px rgba(30,63,143,0.25)); }
+  filter: drop-shadow(0 10px 18px rgba(30,63,143,0.18)); }
 .pkg-fan .arti { position: absolute; left: 50%; top: 50%; z-index: 3;
   font-size: clamp(10px,1.08vw,14.5px); font-weight: 700; white-space: nowrap; color: var(--text);
   background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px;
-  box-shadow: 0 6px 18px rgba(30,63,143,0.12);
-  transform: translate(-50%,-50%) scale(0.5); opacity: 0;
-  transition: transform 0.7s cubic-bezier(0.34,1.35,0.64,1), opacity 0.5s ease; }
-.pkg-fan.stage-visible .arti { opacity: 1;
-  transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1);
-  transition-delay: var(--ad); }
+  box-shadow: 0 6px 18px rgba(30,63,143,0.10); opacity: 0;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, color 0.4s ease; }
+.pkg-fan .arti.hit { border-color: rgba(43,89,195,0.55); color: var(--pago-blue);
+  box-shadow: 0 0 0 4px rgba(43,89,195,0.12), 0 8px 22px rgba(43,89,195,0.18); }
+
 .verdict-col { display: flex; flex-direction: column; gap: clamp(8px,1.3vh,15px); min-height: 0; justify-content: center; }
 .defect { border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: #fff;
   box-shadow: 0 14px 34px rgba(30,63,143,0.10); }
@@ -628,26 +701,37 @@
   font-family: 'DM Sans'; font-weight: 800; font-size: clamp(11.5px,1.25vw,17px); display: flex; align-items: center; gap: 10px; }
 .defect .dh svg { width: clamp(19px,2.1vw,29px); height: auto; flex: none; }
 .defect q { display: block; quotes: none; font-family: 'Inter', ui-monospace, monospace;
-  font-size: clamp(13px,1.45vw,21px); line-height: 1.45; color: var(--text);
-  border-left: 4px solid #D6455B; padding: clamp(8px,1vw,13px) clamp(13px,1.6vw,22px); }
-.defect q + q { border-top: 1px solid var(--border); }
-.defect q b { color: #D6455B; font-weight: 800; }
-.stamps { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(6px,0.9vw,11px); }
+  font-size: clamp(13px,1.45vw,21px); line-height: 1.5; color: var(--text);
+  padding: clamp(10px,1.2vw,15px) clamp(14px,1.6vw,22px); }
+/* the mismatch, marked like a reviewer would: a highlighter swept across */
+.defect q b { font-weight: 800; padding: 0 2px; border-radius: 3px; background-repeat: no-repeat;
+  background-size: 0% 100%; transition: background-size 0.55s var(--e-out); }
+.defect q b.claim { color: #D6455B; background-image: linear-gradient(transparent 58%, rgba(214,69,91,0.2) 58%); }
+.defect q b.spec  { color: var(--pago-blue); background-image: linear-gradient(transparent 58%, rgba(43,89,195,0.2) 58%); }
+.defect q b.on { background-size: 100% 100%; }
+
+/* stamps: room around the grid so a rotated corner never leaves the column */
+.stamps { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(6px,0.9vw,11px);
+  padding: 5px 7px; }
 .stamps .st { display: flex; align-items: center; justify-content: center; border-radius: 8px;
   font-family: 'DM Sans'; font-weight: 800; letter-spacing: 1.4px; font-size: clamp(11px,1.15vw,16px);
-  padding: clamp(10px,1.4vw,18px) 4px; border: 3px solid #D6455B; color: #D6455B;
+  padding: clamp(9px,1.2vw,16px) 4px; border: 3px solid #D6455B; color: #D6455B;
   background: rgba(214,69,91,0.07); opacity: 0; transform: scale(1.7) rotate(0deg); }
 .stamps .st.go { border-color: var(--pact-green); color: var(--pact-green); background: rgba(22,163,74,0.08); }
-.stamps.stage-visible .st { animation: stamp-drop 0.4s cubic-bezier(0.3,1.25,0.6,1) both;
-  animation-delay: calc(var(--s) * 0.26s); }
+/* a stamp is a literal slam: it lands past its size and settles back */
+.stamps.stage-visible .st { animation: stamp-drop 0.38s cubic-bezier(0.3,1.25,0.6,1) both;
+  animation-delay: calc(var(--s) * 0.16s); }
 @keyframes stamp-drop { 0% { opacity: 0; transform: scale(1.7) rotate(0deg); }
   60% { opacity: 1; transform: scale(0.94) rotate(var(--r)); }
   100% { opacity: 1; transform: scale(1) rotate(var(--r)); } }
-.consensus { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(15px,1.8vw,26px); line-height: 1.15;
+.consensus { margin-top: 4px; font-family: 'DM Sans'; font-weight: 800; font-size: clamp(15px,1.8vw,26px); line-height: 1.15;
   color: #D6455B; }
 .consensus em { display: block; font-style: normal; font-weight: 600; font-size: 0.6em;
   color: var(--text-muted); margin-top: 4px; }
 .proof { font-size: clamp(11.5px,1.2vw,16px); font-weight: 700; color: var(--pago-blue); }
+/* the verdict only after the evidence: last stamp lands at ~1.5s */
+#f07 .consensus[data-stage].stage-visible { transition-delay: 1.55s; }
+#f07 .proof[data-stage].stage-visible { transition-delay: 1.9s; }
 
 /* ══ fold 08 — flywheel ═════════════════════════════════════════════════ */
 .wheel-wrap { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
@@ -853,6 +937,7 @@
   <symbol id="g-lane-crash" viewBox="0 0 24 24"><g class="ln"><rect x="6" y="2.6" width="12" height="18.8" rx="2.6"/><path d="M12.9 6.4l-3.2 5.3h4.4l-2.9 5.5"/></g></symbol>
 
   <!-- ── the deck-wide line-art set that replaced the emoji ── -->
+  <symbol id="i-signpost" viewBox="0 0 24 24"><path d="M12 2.8v18.4"/><path d="M5.2 5.4h11.6l2.6 2.6-2.6 2.6H5.2z"/><path d="M18.8 12.8H7.2l-2.6 2.6 2.6 2.6h11.6z" class="dim"/><path d="M8.6 21.2h6.8"/></symbol>
   <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M12 2.6c3.2 2.1 5 5.6 5 9.4l-1.7 4.1H8.7L7 12C7 8.2 8.8 4.7 12 2.6Z"/><circle cx="12" cy="10" r="2.1"/><path d="M8.7 16.1 6.2 18.6M15.3 16.1l2.5 2.5M12 17.6v3.8"/></symbol>
   <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4.6" class="dim"/><circle cx="12" cy="12" r="1.4" class="sol"/><path d="M12 12 18.1 5.9"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.4 7h15.2"/><path d="M9.4 7V5.3A1.3 1.3 0 0 1 10.7 4h2.6a1.3 1.3 0 0 1 1.3 1.3V7"/><path d="M6.5 7l1 12.2A1.9 1.9 0 0 0 9.4 21h5.2a1.9 1.9 0 0 0 1.9-1.8L17.5 7"/><path d="M10 11v6M14 11v6" class="dim"/></symbol>
@@ -1282,36 +1367,70 @@
       <svg viewBox="0 0 82 38" class="pago-logo-sm"><use href="#pago-logo"/></svg>
     </div>
     <h2 class="fold-title reveal">Ten agentic steps. <strong class="blue">Two human decisions.</strong></h2>
-    <div class="legend reveal reveal-d1">
-      <div><span><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dot"/></svg><b>= a human decides.</b> Everything else: agents.</span></div>
-    </div>
-    <div class="stage-wrap" style="justify-content:center;" id="f04Wrap">
-      <div class="bands">
-        <div class="band" style="--b:1" data-stage="1" data-no-dim><div class="band-h"><b>Define</b><em>agents draft</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-prd"/></svg><span class="step-n">01</span></span><span class="step-name">PRD</span><span class="step-sub">the brief, written down</span></li><li class="step" style="--i:2"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-design"/></svg><span class="step-n">02</span></span><span class="step-name">Design handover</span><span class="step-sub">screen inventory</span></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-research"/></svg><span class="step-n">03</span></span><span class="step-name">Research fan-out</span><span class="step-sub">one per platform</span></li><li class="step" style="--i:4"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-plan"/></svg><span class="step-n">04</span></span><span class="step-name">Technical plan</span><span class="step-sub">one plan, all surfaces</span></li></ul></div>
-        <div class="band" style="--b:2" data-stage="2" data-no-dim><div class="band-h"><b>Stress-test</b><em>agents challenge</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-review"/></svg><span class="step-n">05</span></span><span class="step-name">Exit-plan review</span><span class="step-sub">outside voices</span></li><li class="step human ask" style="--i:2"><span class="gate-flag"><b>&#9873;</b>Check-in &middot; humans answer questions</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-backwards"/></svg><span class="step-n">06</span></span><span class="step-name">Working backwards</span><span class="step-sub">release &rarr; back to the first line of code</span><div class="ask-box"><span class="ask-h"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pencil"/></svg> humans answer what the agents surfaced</span><ul class="ask-list"><li>deploy order, old app versions</li><li>flags, rollback, migrations</li><li>gates: QA &middot; store &middot; partner</li></ul></div></li><li class="step" style="--i:3"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-impact"/></svg><span class="step-n">07</span></span><span class="step-name">Systems impact</span><span class="step-sub">what it touches</span></li></ul></div>
-        <div class="band" style="--b:3" data-stage="3" data-no-dim><div class="band-h"><b>Package</b><em>agents assemble</em></div><ul class="band-steps"><li class="step" style="--i:1"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-sequence"/></svg><span class="step-n">08</span></span><span class="step-name">Sequence diagrams</span><span class="step-sub">how it flows</span></li><li class="step" style="--i:2"><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-schema"/></svg><span class="step-n">09</span></span><span class="step-name">DB schema</span><span class="step-sub">what it stores</span></li><li class="step human" style="--i:3"><span class="gate-flag"><b>&#9873;</b>Ship the package?</span><span class="step-top"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-package"/></svg><span class="step-n">10</span></span><span class="step-name">Package</span><span class="step-sub">manifest + score</span></li></ul></div>
-      </div>
-      <div class="tail late" data-stage="3" data-no-dim>
-        <span class="arw">&#10230;</span>
-        <div class="tbox b"><svg viewBox="0 0 64 64"><use href="#bouncer"/></svg>The Bouncer</div>
-        <span class="arw">&#10230;</span>
-        <div class="tbox f"><svg viewBox="0 0 64 64" style="color:#fff"><use href="#factory-ico"/></svg>The Factory floor</div>
-      </div>
-      <div class="mapstrip" data-stage="4">
-        <span class="compass"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-compass"/></svg></span>
-        <div class="map-txt">
-          <b>The package is the map the agents hunt with.</b>
-          <span class="list">Figma &middot; codebases &middot; configs &middot; what users are already trying to improve</span>
-          <em>A better map = agents work better.</em>
+    <div class="itk-legend reveal reveal-d1"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-dot"/></svg><span><b>= a human decides.</b> Everything else: agents.</span></div>
+    <div class="itk">
+      <div class="itk-row">
+        <div class="itk-grp" style="--n:4" data-stage="1">
+          <div class="itk-lbl"><b>Define</b><span>agents draft</span></div>
+          <ol class="itk-sts">
+            <li class="itk-st" style="--j:0"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-prd"/></svg></span><span class="itk-n">01</span><span class="itk-name">PRD</span><span class="itk-sub">the brief, written down</span></li>
+            <li class="itk-st" style="--j:1"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-design"/></svg></span><span class="itk-n">02</span><span class="itk-name">Design handover</span><span class="itk-sub">screen inventory</span></li>
+            <li class="itk-st" style="--j:2"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-research"/></svg></span><span class="itk-n">03</span><span class="itk-name">Research fan&#8209;out</span><span class="itk-sub">one per platform</span></li>
+            <li class="itk-st" style="--j:3"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-plan"/></svg></span><span class="itk-n">04</span><span class="itk-name">Technical plan</span><span class="itk-sub">one plan, all surfaces</span></li>
+          </ol>
         </div>
-        <svg class="map-trail" viewBox="0 0 126 44" aria-hidden="true">
-          <path d="M6 36 q20 -26 42 -8 t40 -16" fill="none" stroke="#B8894A" stroke-width="2.6"
-                stroke-dasharray="3 7" stroke-linecap="round"/>
-          <svg x="90" y="2" width="34" height="30" viewBox="0 0 72 64"><use href="#pkg"/></svg>
-        </svg>
+        <div class="itk-grp" style="--n:3" data-stage="2">
+          <div class="itk-lbl"><b>Stress-test</b><span>agents challenge</span></div>
+          <ol class="itk-sts">
+            <li class="itk-st" style="--j:1"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-review"/></svg></span><span class="itk-n">05</span><span class="itk-name">Exit&#8209;plan review</span><span class="itk-sub">outside voices</span></li>
+            <li class="itk-st human" style="--j:2"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-backwards"/></svg></span><span class="itk-n">06</span><span class="itk-name">Working backwards</span><span class="itk-q">&#9873; Check-in</span><span class="itk-sub">release &rarr; back to the first line of code</span>
+              <div class="itk-ask">
+                <span class="itk-ask-h"><svg class="ico inl" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pencil"/></svg>humans answer what the agents surfaced</span>
+                <ul><li>deploy order, old app versions</li><li>flags, rollback, migrations</li><li>gates: QA &middot; store &middot; partner</li></ul>
+              </div>
+            </li>
+            <li class="itk-st" style="--j:3"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-impact"/></svg></span><span class="itk-n">07</span><span class="itk-name">Systems impact</span><span class="itk-sub">what it touches</span></li>
+          </ol>
+        </div>
+        <div class="itk-grp" style="--n:3" data-stage="3">
+          <div class="itk-lbl"><b>Package</b><span>agents assemble</span></div>
+          <ol class="itk-sts">
+            <li class="itk-st" style="--j:1"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-sequence"/></svg></span><span class="itk-n">08</span><span class="itk-name">Sequence diagrams</span><span class="itk-sub">how it flows</span></li>
+            <li class="itk-st" style="--j:2"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-schema"/></svg></span><span class="itk-n">09</span><span class="itk-name">DB schema</span><span class="itk-sub">what it stores</span></li>
+            <li class="itk-st human last" style="--j:3"><span class="itk-node"><svg class="ag" viewBox="0 0 24 24" aria-hidden="true"><use href="#g-package"/></svg></span><span class="itk-n">10</span><span class="itk-name">Package</span><span class="itk-q">&#9873; Ship the package?</span><span class="itk-sub">manifest + score</span></li>
+          </ol>
+        </div>
+        <div class="itk-end" data-stage="3" data-no-dim>
+          <span class="itk-end-line"></span>
+          <div class="itk-then">
+            <span class="itk-then-lbl">then</span>
+            <span class="itk-chip bnc"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#bouncer"/></svg>The Bouncer</span>
+            <span class="itk-then-arw">&rarr;</span>
+            <span class="itk-chip fac"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#factory-ico"/></svg>The Factory floor</span>
+          </div>
+        </div>
       </div>
-      <div class="acct" data-stage="5">
-        <span class="al"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-handshake"/></svg>The workflow holds your hand &mdash; the next step is always obvious</span>
+      <div class="itk-cards">
+        <div class="itk-card itk-map" data-stage="4" data-no-dim>
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-compass"/></svg>
+          <div>
+            <b>The package is the map the agents hunt with.</b>
+            <span>Figma &middot; codebases &middot; configs &middot; what users are already trying to improve</span>
+            <em>A better map = agents work better.</em>
+          </div>
+          <svg class="map-trail" viewBox="0 0 126 44" aria-hidden="true">
+            <path d="M6 36 q20 -26 42 -8 t40 -16" fill="none" stroke="#B8894A" stroke-width="2.6"
+                  stroke-dasharray="3 7" stroke-linecap="round"/>
+            <svg x="90" y="2" width="34" height="30" viewBox="0 0 72 64"><use href="#pkg"/></svg>
+          </svg>
+        </div>
+        <div class="itk-card itk-hand" data-stage="5" data-no-dim>
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-signpost"/></svg>
+          <div>
+            <b>The workflow holds your hand</b>
+            <span>the next step is always obvious</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="bottom-line reveal reveal-d2">You always know where you are in control &mdash; and where you are not.</div>
@@ -1342,24 +1461,23 @@
     <h2 class="fold-title reveal">Design the process <strong class="blue">yourself.</strong></h2>
     <div class="morph-wrap">
       <svg viewBox="0 0 640 260" id="morphSvg" preserveAspectRatio="xMidYMid meet">
-        <path class="mline" id="m1" d="M30 70 C170 70 250 70 330 70 C420 70 520 70 610 70"/>
-        <path class="mline" id="m2" d="M30 130 C170 130 250 130 330 130 C420 130 520 130 610 130"/>
-        <path class="mline" id="m3" d="M30 190 C170 190 250 190 330 190 C420 190 520 190 610 190"/>
+        <!-- every rail: M + two C, pathLength=100 so a dash can "pen" it in (100, not 1: GSAP rounds px values) -->
+        <path class="mline" id="m1" pathLength="100" d="M30 70 C130 70 230 70 300 70 C380 70 520 70 610 70"/>
+        <path class="mline" id="m2" pathLength="100" d="M30 130 C130 130 230 130 350 130 C430 130 520 130 610 130"/>
+        <path class="mline" id="m3" pathLength="100" d="M30 190 C130 190 230 190 320 190 C400 190 520 190 610 190"/>
+        <path class="mline extra hot" id="m4" pathLength="100" d="M30 100 C130 100 230 100 370 100 C450 100 520 100 610 100"/>
+        <path class="mline extra hot" id="m5" pathLength="100" d="M30 160 C130 160 230 160 340 160 C420 160 520 160 610 160"/>
         <g class="ctrl-pt-g">
-          <circle class="ctrl-pt" cx="180" cy="70" r="10"/>
-          <circle class="ctrl-pt" cx="400" cy="130" r="10"/>
-          <circle class="ctrl-pt" cx="520" cy="190" r="10"/>
+          <circle class="ctrl-pt" id="d1" cx="180" cy="70" r="0"/>
+          <circle class="ctrl-pt" id="d2" cx="400" cy="130" r="0"/>
+          <circle class="ctrl-pt" id="d3" cx="520" cy="190" r="0"/>
         </g>
         <g class="ctrl-lbl-g">
-          <text class="ctrl-lbl" x="180" y="46" text-anchor="middle">human</text>
-          <text class="ctrl-lbl" x="400" y="106" text-anchor="middle">human</text>
-          <text class="ctrl-lbl" x="520" y="166" text-anchor="middle">human</text>
+          <text class="ctrl-lbl" id="l1" x="180" y="46" text-anchor="middle">human</text>
+          <text class="ctrl-lbl" id="l2" x="400" y="106" text-anchor="middle">human</text>
+          <text class="ctrl-lbl" id="l3" x="520" y="166" text-anchor="middle">human</text>
         </g>
-        <path class="mline extra" id="m4" d="M30 100 C170 100 250 100 330 100 C420 100 520 100 610 100"/>
-        <path class="mline extra" id="m5" d="M30 160 C170 160 250 160 330 160 C420 160 520 160 610 160"/>
-        <g class="mark-lost">
-          <text x="320" y="250" text-anchor="middle">where does a human decide now?</text>
-        </g>
+        <text class="lost-q" x="320" y="254" text-anchor="middle">where does a human decide now?</text>
       </svg>
     </div>
     <div class="mcaps">
@@ -1374,7 +1492,7 @@
     </div>
     <div class="verdict-strip" data-stage="3">
       <span class="vtag">danger zone</span>
-      Determinism you didn&rsquo;t design is determinism you can&rsquo;t debug.
+      <span>Determinism you didn&rsquo;t design is determinism you can&rsquo;t debug.</span>
     </div>
     <div class="bottom-line reveal reveal-d2"><s style="opacity:0.45">Everyone</s> <b style="color:var(--pago-gold)">At least someone</b> must understand how information is digested in the workflow.</div>
   </div>
@@ -1389,21 +1507,25 @@
     </div>
     <h2 class="fold-title reveal">Confidence comes from <strong class="blue">artifacts.</strong></h2>
     <div class="f07">
+      <!-- the evidence trail: from the artifact that knows the truth to the defect it exposed -->
+      <svg class="f07-link" aria-hidden="true"><path pathLength="100"/></svg>
       <div class="pkg-fan" data-stage="1">
+        <svg class="fan-web" aria-hidden="true"><ellipse class="fan-ring"/><g class="fan-lines"></g></svg>
         <svg class="pkg" viewBox="0 0 72 64"><use href="#pkg"/></svg>
-        <div class="arti" style="--tx:-166px;--ty:-186px;--ad:0.05s">PRD</div>
-        <div class="arti" style="--tx:36px;--ty:-232px;--ad:0.12s">Screen inventory</div>
-        <div class="arti" style="--tx:200px;--ty:-138px;--ad:0.19s">Technical plan</div>
-        <div class="arti" style="--tx:-208px;--ty:-52px;--ad:0.26s">Sequence diagrams</div>
-        <div class="arti" style="--tx:218px;--ty:-18px;--ad:0.33s">OpenAPI</div>
-        <div class="arti" style="--tx:-186px;--ty:84px;--ad:0.40s">DB schema</div>
-        <div class="arti" style="--tx:16px;--ty:190px;--ad:0.47s">Systems impact</div>
-        <div class="arti" style="--tx:202px;--ty:130px;--ad:0.54s">Confidence scores</div>
+        <!-- clockwise from the top; OpenAPI sits on the right, facing the Bouncer -->
+        <div class="arti">PRD</div>
+        <div class="arti">Screen inventory</div>
+        <div class="arti" data-key="spec">OpenAPI</div>
+        <div class="arti">Technical plan</div>
+        <div class="arti">Systems impact</div>
+        <div class="arti">DB schema</div>
+        <div class="arti">Sequence diagrams</div>
+        <div class="arti">Confidence scores</div>
       </div>
       <div class="verdict-col">
         <div class="defect" data-stage="2">
           <div class="dh"><svg viewBox="0 0 64 64"><use href="#bouncer"/></svg>What the Bouncer caught</div>
-          <q>PR body claims <b>8 new + 2 modified</b> endpoints. The specs contain <b>7 + 1</b>.</q>
+          <q>PR body claims <b class="claim">8 new + 2 modified</b> endpoints. The specs contain <b class="spec">7 + 1</b>.</q>
         </div>
         <div class="stamps" data-stage="3">
           <div class="st" style="--s:0;--r:-4deg">NO-GO</div>
@@ -2272,120 +2394,288 @@ function buildLightScene(root, onDone) {
   f03.addEventListener('ctostagereset', reset);
 })();
 
-/* ════════ Fold 04 — the conveyor line keeps pace with the steps ═════════
-   Each step's landing time is read off its own running CSS animation, and
-   its right edge off the layout (offset*, so the landing transform doesn't
-   skew it). The line gets one keyframe per step: it reaches that step's
-   right edge the moment the step ARRIVES — whatever the widths, stagger or
-   human-step pause. "Arrives" = where the landing curve, cubic-bezier(0.34,
-   1.56,0.64,1), first reaches its end value: 36.9% of the duration. After
-   that the card only overshoots and settles, and already reads as placed.                                            */
-(function () {
-  var f04 = document.getElementById('f04');
-  if (!f04 || !Element.prototype.animate) return;
-  var ARRIVE = 0.369;
-  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var bands = [].slice.call(f04.querySelectorAll('.band'));
-  bands.forEach(function (band) {
-    var bs = band.querySelector('.band-steps');
-    var line = document.createElement('i');
-    line.className = 'band-line';
-    bs.appendChild(line);
-    band._line = line;
-  });
-
-  function draw(band) {
-    var line = band._line, steps = [].slice.call(band.querySelectorAll('.band-steps .step'));
-    if (!line || !steps.length) return;
-    if (line._anim) line._anim.cancel();
-    if (still) { line.style.transform = 'none'; return; }
-    var w = line.offsetWidth, x0 = line.offsetLeft;
-    var marks = steps.map(function (st) {
-      var a = st.getAnimations ? st.getAnimations()[0] : null, t = a && a.effect.getTiming();
-      var start = t ? +t.delay : 0, end = t ? +t.delay + ARRIVE * +t.duration : 0;
-      var edge = Math.min(1, Math.max(0, (st.offsetLeft + st.offsetWidth - x0) / w));
-      return { start: start, end: end, x: edge };
-    });
-    var t0 = marks[0].start, total = marks[marks.length - 1].end - t0;
-    if (!(total > 0)) { line.style.transform = 'none'; return; }
-    var frames = [{ transform: 'scaleX(0)', offset: 0 }];
-    marks.forEach(function (m) {
-      frames.push({ transform: 'scaleX(' + m.x + ')', offset: (m.end - t0) / total });
-    });
-    frames[frames.length - 1].transform = 'none';   /* close any sub-pixel gap at the end */
-    line._anim = line.animate(frames, { duration: total, delay: t0, fill: 'both', easing: 'linear' });
-  }
-
-  f04.addEventListener('ctostage', function (e) {
-    var band = bands[e.detail.stage - 1];
-    if (band) draw(band);
-  });
-  f04.addEventListener('ctostagereset', function () {
-    bands.forEach(function (b) { if (b._line && b._line._anim) { b._line._anim.cancel(); b._line._anim = null; } b._line.style.transform = ''; });
-  });
-})();
-
-/* ════════ Fold 06 — ONE diagram, morphed clean → tangled ════════
-   Every path is authored with the same command structure (M + two C), so the
-   morph is a plain per-number lerp. GSAP drives the easing when it is there;
-   a rAF loop does the same job when it is not.                             */
+/* ════════ Fold 06 — ONE diagram: designed rails → a tangle nobody designed ════
+   Stage 1 pens the three rails in (constant-speed pen, staggered) and pops
+   each human checkpoint the moment the pen passes it.
+   Stage 2 twists the rails one after another into a tangle, pens in two
+   more rails, lets the checkpoints ride their rails and fade out of sight,
+   flushes the rails orange, and only then asks the question.
+   Every rail is M + two C. In the tangle the two curves meet SMOOTHLY — the
+   handles either side of the join are collinear — and each rail joins at a
+   different x, so there is no seam of spikes. The morph is a per-number lerp
+   of the same command structure; checkpoints are re-placed on the lerped
+   curve at a fixed curve parameter, so they stay on their rail.           */
 (function () {
   var f06 = document.getElementById('f06');
   var svg = document.getElementById('morphSvg');
   if (!f06 || !svg) return;
-  var CLEAN = {
-    m1: [30,70, 170,70, 250,70, 330,70, 420,70, 520,70, 610,70],
-    m2: [30,130, 170,130, 250,130, 330,130, 420,130, 520,130, 610,130],
-    m3: [30,190, 170,190, 250,190, 330,190, 420,190, 520,190, 610,190]
-  };
-  var TANGLED = {
-    m1: [30,32, 130,232, 232,8, 330,140, 448,238, 496,10, 610,120],
-    m2: [30,198, 122,14, 268,228, 330,48, 484,10, 528,226, 610,40],
-    m3: [30,104, 196,236, 226,14, 330,200, 392,24, 574,228, 610,176],
-    m4: [30,150, 168,12, 290,214, 330,18, 420,210, 552,10, 610,84],
-    m5: [30,62, 210,208, 254,30, 330,228, 466,60, 508,206, 610,142]
-  };
-  CLEAN.m4 = [30,100, 170,100, 250,100, 330,100, 420,100, 520,100, 610,100];
-  CLEAN.m5 = [30,160, 170,160, 250,160, 330,160, 420,160, 520,160, 610,160];
-  var els = {};
-  ['m1','m2','m3','m4','m5'].forEach(function (k) { els[k] = svg.querySelector('#' + k); });
-  var proxy = { t: 0 }, raf = null;
+  var gsap = window.gsap;
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function d(a) {
-    return 'M' + a[0] + ' ' + a[1] + ' C' + a[2] + ' ' + a[3] + ' ' + a[4] + ' ' + a[5] +
-           ' ' + a[6] + ' ' + a[7] + ' C' + a[8] + ' ' + a[9] + ' ' + a[10] + ' ' + a[11] +
-           ' ' + a[12] + ' ' + a[13];
+  var J = { m1: 300, m2: 350, m3: 320, m4: 370, m5: 340 };   /* where each rail's two curves join */
+  var Y = { m1: 70, m2: 130, m3: 190, m4: 100, m5: 160 };
+  function clean(k) { var y = Y[k], j = J[k]; return [30,y, 130,y, 230,y, j,y, j + 80,y, 520,y, 610,y]; }
+  var TANGLED = {   /* c3 = join + k·(join − c2): smooth through every join */
+    m1: [30,40,  130,230, 230,20,  300,120, 370,220, 500,10,  610,120],
+    m2: [30,196, 120,20,  250,230, 350,70,  390,6,   540,228, 610,40],
+    m3: [30,110, 190,236, 240,40,  320,190, 344,235, 560,20,  610,180],
+    m4: [30,150, 160,14,  270,200, 370,40,  390,8,   560,220, 610,86],
+    m5: [30,64,  200,210, 280,120, 340,200, 370,240, 500,30,  610,146]
+  };
+  var KEYS = ['m1','m2','m3','m4','m5'], RAILS = ['m1','m2','m3'];
+  var el = {}, T = {};
+  KEYS.forEach(function (k) { el[k] = svg.querySelector('#' + k); T[k] = (k === 'm4' || k === 'm5') ? 1 : 0; });
+  var dots = [
+    { c: svg.querySelector('#d1'), l: svg.querySelector('#l1'), k: 'm1', x: 180 },
+    { c: svg.querySelector('#d2'), l: svg.querySelector('#l2'), k: 'm2', x: 400 },
+    { c: svg.querySelector('#d3'), l: svg.querySelector('#l3'), k: 'm3', x: 520 }
+  ];
+
+  function lerp(k) {
+    var a = clean(k), b = TANGLED[k], t = T[k], out = [];
+    for (var i = 0; i < a.length; i++) out.push(a[i] + (b[i] - a[i]) * t);
+    return out;
   }
-  function apply(t) {
-    Object.keys(els).forEach(function (k) {
-      if (!els[k]) return;
-      var a = CLEAN[k], b = TANGLED[k], out = [];
-      for (var i = 0; i < a.length; i++) out.push(Math.round((a[i] + (b[i] - a[i]) * t) * 10) / 10);
-      els[k].setAttribute('d', d(out));
+  function bez(a, seg, u) {
+    var o = seg * 6, v = 1 - u;
+    var w0 = v * v * v, w1 = 3 * v * v * u, w2 = 3 * v * u * u, w3 = u * u * u;
+    return [w0 * a[o] + w1 * a[o + 2] + w2 * a[o + 4] + w3 * a[o + 6],
+            w0 * a[o + 1] + w1 * a[o + 3] + w2 * a[o + 5] + w3 * a[o + 7]];
+  }
+  /* each checkpoint's curve parameter, solved once on its clean rail */
+  dots.forEach(function (d) {
+    var a = clean(d.k); d.seg = d.x < J[d.k] ? 0 : 1;
+    var lo = 0, hi = 1;
+    for (var i = 0; i < 40; i++) { var m = (lo + hi) / 2; if (bez(a, d.seg, m)[0] < d.x) lo = m; else hi = m; }
+    d.u = (lo + hi) / 2;
+  });
+  function r1(n) { return Math.round(n * 10) / 10; }
+  function apply() {
+    KEYS.forEach(function (k) {
+      var a = lerp(k);
+      el[k].setAttribute('d', 'M' + r1(a[0]) + ' ' + r1(a[1]) + ' C' + a.slice(2, 8).map(r1).join(' ') +
+        ' C' + a.slice(8, 14).map(r1).join(' '));
+    });
+    dots.forEach(function (d) {
+      var p = bez(lerp(d.k), d.seg, d.u);
+      d.c.setAttribute('cx', r1(p[0])); d.c.setAttribute('cy', r1(p[1]));
     });
   }
-  apply(0);
 
-  function tween(to) {
-    if (window.gsap) {
-      window.gsap.to(proxy, { t: to, duration: 1.5, ease: 'power2.inOut',
-        onUpdate: function () { apply(proxy.t); } });
-      return;
-    }
-    if (raf) cancelAnimationFrame(raf);
-    var from = proxy.t, t0 = performance.now();
-    (function step(now) {
-      var k = Math.min(1, (now - t0) / 1500);
-      proxy.t = from + (to - from) * (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
-      apply(proxy.t);
-      if (k < 1) raf = requestAnimationFrame(step);
-    })(t0);
+
+  var tl = null;
+  function kill() { if (tl) { tl.kill(); tl = null; } }
+  function drawn(e, on) { e.style.strokeDashoffset = on ? '0' : ''; }
+  function reset() {
+    kill();
+    RAILS.forEach(function (k) { T[k] = 0; el[k].classList.remove('hot'); });
+    KEYS.forEach(function (k) { drawn(el[k], false); });
+    dots.forEach(function (d) { d.c.setAttribute('r', 0); d.c.style.opacity = ''; d.l.style.opacity = ''; });
+    f06.classList.remove('morphed'); svg.classList.remove('lost');
+    apply();
+  }
+  function designedEnd() {                 /* stage 1's terminal state */
+    RAILS.forEach(function (k) { drawn(el[k], true); });
+    dots.forEach(function (d) { d.c.setAttribute('r', 10); d.c.style.opacity = '1'; d.l.style.opacity = '1'; });
+  }
+  function tangledEnd() {                  /* stage 2's terminal state */
+    RAILS.forEach(function (k) { T[k] = 1; el[k].classList.add('hot'); });
+    KEYS.forEach(function (k) { drawn(el[k], true); });
+    dots.forEach(function (d) { d.c.setAttribute('r', 6); d.c.style.opacity = '0.28'; d.l.style.opacity = '0'; });
+    f06.classList.add('morphed'); svg.classList.add('lost');
+    apply();
+  }
+  reset();
+
+  function design() {
+    if (!gsap || still) { designedEnd(); return; }
+    kill();
+    var PEN = 0.9;                          /* constant-speed pen: a checkpoint pops when it's reached */
+    tl = gsap.timeline();
+    RAILS.forEach(function (k, i) {
+      var at = 0.1 + i * 0.14;
+      tl.fromTo(el[k], { strokeDashoffset: 101 }, { strokeDashoffset: 0, duration: PEN, ease: 'none' }, at);
+      var d = dots[i], reach = at + PEN * (d.x - 30) / 580;
+      tl.fromTo(d.c, { attr: { r: 0 }, opacity: 0 }, { attr: { r: 10 }, opacity: 1, duration: 0.4, ease: 'expo.out' }, reach)
+        .fromTo(d.l, { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }, reach + 0.1);
+    });
+  }
+
+  function tangle() {
+    if (tl && tl.isActive()) tl.progress(1);   /* stage 1 still drawing: land it first */
+    kill();
+    designedEnd();
+    if (!gsap || still) { tangledEnd(); return; }
+    f06.classList.add('morphed');
+    tl = gsap.timeline({ onUpdate: apply });
+    tl.to(dots.map(function (d) { return d.l; }), { opacity: 0, duration: 0.25, ease: 'power2.in' }, 0);
+    RAILS.forEach(function (k, i) {         /* the rails give way one after another */
+      var v = {}; v[k] = 1; v.duration = 1.4; v.ease = 'power2.inOut';
+      tl.to(T, v, 0.15 + i * 0.12);
+      tl.add(function () { el[k].classList.add('hot'); }, 1.2 + i * 0.09);
+    });
+    ['m4', 'm5'].forEach(function (k, i) {  /* and more rails appear than anyone drew */
+      tl.fromTo(el[k], { strokeDashoffset: 101 }, { strokeDashoffset: 0, duration: 0.9, ease: 'power1.inOut' }, 0.45 + i * 0.2);
+    });
+    tl.to(dots.map(function (d) { return d.c; }), { attr: { r: 6 }, opacity: 0.28, duration: 0.8, ease: 'power2.inOut' }, 0.7)
+      .add(function () { svg.classList.add('lost'); }, 1.85);
   }
 
   f06.addEventListener('ctostage', function (e) {
-    if (e.detail.stage === 2) { f06.classList.add('morphed'); tween(1); }
+    if (e.detail.stage === 1) design();
+    if (e.detail.stage === 2) tangle();
   });
-  f06.addEventListener('ctostagereset', function () { f06.classList.remove('morphed'); tween(0); });
+  f06.addEventListener('ctostagereset', reset);
+})();
+
+/* ════════ Fold 07 — artifacts orbit the package; one of them exposes the defect ════
+   Geometry is measured, never hard-coded: the ring and the eight pill
+   positions come from the column's own size and each pill's own width, so
+   nothing clips at any viewport. Placement vs animation: a pill's left/top
+   (set here) is WHERE it sits; GSAP's x/y/scale is only the flight and the
+   float. Each connector line and its pill share one duration and one ease,
+   so the pill rides the tip of its line.                                   */
+(function () {
+  var f07 = document.getElementById('f07');
+  if (!f07) return;
+  var grid = f07.querySelector('.f07'), fan = f07.querySelector('.pkg-fan'), box = fan.querySelector('.pkg');
+  var ring = fan.querySelector('.fan-ring'), linesG = fan.querySelector('.fan-lines');
+  var pills = [].slice.call(fan.querySelectorAll('.arti'));
+  var spec = fan.querySelector('.arti[data-key="spec"]');
+  var link = f07.querySelector('.f07-link path');
+  var defect = f07.querySelector('.defect');
+  var claim = f07.querySelector('.defect b.claim'), truth = f07.querySelector('.defect b.spec');
+  var gsap = window.gsap;
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NS = 'http://www.w3.org/2000/svg';
+  var lines = pills.map(function () {
+    var l = document.createElementNS(NS, 'line'); l.setAttribute('pathLength', '100'); linesG.appendChild(l); return l;
+  });
+  var P = [], C = [0, 0], R = [0, 0], tl = null, floats = [], stage = 0;
+
+  if (gsap) gsap.set(pills, { xPercent: -50, yPercent: -50 });
+  else pills.forEach(function (p) { p.style.transform = 'translate(-50%,-50%)'; });
+
+  function layout() {
+    var w = fan.clientWidth, h = fan.clientHeight;
+    if (!w || !h) return;
+    var M = 8, cx = w / 2, cy = h / 2, ph = pills[0].offsetHeight;
+    /* the widest of the two pills on the horizontal axis sets the ring's width */
+    var side = Math.max(pills[2].offsetWidth, pills[6].offsetWidth);
+    var rx = Math.max(90, cx - side / 2 - M), ry = Math.max(80, cy - ph / 2 - M);
+    C = [cx, cy]; R = [rx, ry];
+    ring.setAttribute('cx', cx); ring.setAttribute('cy', cy); ring.setAttribute('rx', rx); ring.setAttribute('ry', ry);
+    pills.forEach(function (p, i) {
+      var a = -Math.PI / 2 + i * Math.PI / 4, hw = p.offsetWidth / 2;
+      var x = Math.min(w - hw - M, Math.max(hw + M, cx + rx * Math.cos(a)));
+      var y = Math.min(h - ph / 2 - M, Math.max(ph / 2 + M, cy + ry * Math.sin(a)));
+      P[i] = [x, y]; p.style.left = x + 'px'; p.style.top = y + 'px';
+      var l = lines[i]; l.setAttribute('x1', cx); l.setAttribute('y1', cy); l.setAttribute('x2', x); l.setAttribute('y2', y);
+    });
+    placeLink();
+  }
+  /* layout position inside .f07, transform-free: walk the offsetParent chain.
+     (Which ancestor is an element's offsetParent varies — here the staged,
+     transformed card becomes one — so never assume it is .f07.) */
+  function offIn(el) {
+    var x = 0, y = 0;
+    for (var n = el; n && n !== grid; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; }
+    return [x, y];
+  }
+  /* the evidence line: from OpenAPI's right edge to the card, at the "7 + 1" line */
+  function placeLink() {
+    var i = pills.indexOf(spec); if (!P[i]) return;
+    var fo = offIn(fan), co = offIn(defect), to = offIn(truth);
+    var sx = fo[0] + P[i][0] + spec.offsetWidth / 2 + 3, sy = fo[1] + P[i][1];
+    var ex = co[0] - 6, ey = to[1] + truth.offsetHeight / 2;
+    var dx = Math.max(24, ex - sx);
+    link.setAttribute('d', 'M' + sx + ' ' + sy + ' C' + (sx + dx * 0.55) + ' ' + sy + ' ' + (ex - dx * 0.55) + ' ' + ey + ' ' + ex + ' ' + ey);
+  }
+  layout();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  if (window.ResizeObserver) new ResizeObserver(layout).observe(grid);
+
+  /* slow float, out of phase, only while the fold is on screen */
+  function startFloat() {
+    stopFloat();
+    if (!gsap || still) return;
+    floats = pills.map(function (p, i) {
+      return gsap.to(p, { y: i % 2 ? 3.5 : -3.5, duration: 3.4 + (i * 0.37) % 1.4, ease: 'sine.inOut',
+        yoyo: true, repeat: -1, delay: i * 0.23 });
+    });
+  }
+  function stopFloat() { floats.forEach(function (t) { t.kill(); }); floats = []; }
+  if (window.IntersectionObserver) new IntersectionObserver(function (es) {
+    es.forEach(function (e) { floats.forEach(function (t) { e.isIntersecting ? t.resume() : t.pause(); }); });
+  }, { threshold: 0.02 }).observe(f07);
+
+  function kill() { if (tl) { tl.kill(); tl = null; } }
+  function openEnd() {
+    layout();
+    lines.forEach(function (l) { l.style.strokeDashoffset = '0'; l.style.opacity = ''; });
+    ring.style.opacity = '1';
+    if (gsap) gsap.set(pills, { x: 0, y: 0, scale: 1, opacity: 1 });
+    else pills.forEach(function (p) { p.style.opacity = '1'; });
+  }
+  function catchEnd() {
+    pills.forEach(function (p, i) { if (p !== spec) { p.style.opacity = '0.35'; lines[i].style.opacity = '0.35'; } });
+    spec.classList.add('hit'); claim.classList.add('on'); truth.classList.add('on');
+    placeLink(); link.style.strokeDashoffset = '0';
+  }
+  function reset() {
+    kill(); stopFloat(); stage = 0;
+    /* explicit values, not clearProps: clearing any transform part would also
+       wipe the xPercent/yPercent centring */
+    if (gsap) gsap.set(pills, { x: 0, y: 0, scale: 1, opacity: 0 });
+    else pills.forEach(function (p) { p.style.opacity = ''; });
+    lines.forEach(function (l) { l.style.strokeDashoffset = ''; l.style.opacity = ''; });
+    ring.style.opacity = ''; link.style.strokeDashoffset = '';
+    spec.classList.remove('hit'); claim.classList.remove('on'); truth.classList.remove('on');
+    if (gsap) gsap.set(box, { clearProps: 'transform' });
+  }
+  reset();
+
+  function open() {
+    kill(); layout();
+    if (!gsap || still) { openEnd(); return; }
+    var D = 0.55, E = 'power3.out';
+    tl = gsap.timeline({ onComplete: startFloat });
+    /* the box gives a little as it releases its contents */
+    tl.fromTo(box, { scale: 0.88 }, { scale: 1, duration: 0.55, ease: 'expo.out' }, 0)
+      /* the ring grows by its own radii — no transform, so no SVG origin to get wrong */
+      .fromTo(ring, { opacity: 0, attr: { rx: R[0] * 0.72, ry: R[1] * 0.72 } },
+              { opacity: 1, attr: { rx: R[0], ry: R[1] }, duration: 0.7, ease: 'power3.out' }, 0.08);
+    pills.forEach(function (p, i) {
+      var at = 0.28 + i * 0.06;
+      tl.fromTo(lines[i], { strokeDashoffset: 101 }, { strokeDashoffset: 0, duration: D, ease: E }, at)
+        .fromTo(p, { x: C[0] - P[i][0], y: C[1] - P[i][1], scale: 0.6, opacity: 0 },
+                   { x: 0, y: 0, scale: 1, opacity: 1, duration: D, ease: E }, at);
+    });
+  }
+
+  function catchIt() {
+    if (tl && tl.isActive()) tl.progress(1);       /* stage 1 still flying: land it first */
+    kill();
+    if (!gsap || still) { openEnd(); catchEnd(); return; }
+    placeLink();
+    var others = pills.filter(function (p) { return p !== spec; });
+    var otherLines = lines.filter(function (l, i) { return pills[i] !== spec; });
+    tl = gsap.timeline();
+    tl.to(others, { opacity: 0.35, duration: 0.45, ease: 'power2.out' }, 0.1)
+      .to(otherLines, { opacity: 0.35, duration: 0.45, ease: 'power2.out' }, 0.1)
+      .add(function () { spec.classList.add('hit'); }, 0.15)
+      .add(function () { claim.classList.add('on'); }, 0.65)
+      .fromTo(link, { strokeDashoffset: 101 }, { strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' }, 0.95)
+      .add(function () { truth.classList.add('on'); }, 1.55);
+  }
+
+  f07.addEventListener('ctostage', function (e) {
+    stage = e.detail.stage;
+    if (stage === 1) open();
+    if (stage === 2) catchIt();
+    if (stage === 3 && tl && tl.isActive()) tl.progress(1);   /* the verdict never overtakes the catch */
+  });
+  f07.addEventListener('ctostagereset', reset);
 })();
 
 /* ════════ Fold 08 — the flywheel spins up on stage 1 ════════ */
