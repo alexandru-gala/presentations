@@ -838,13 +838,46 @@
 .lane-same { padding-top: clamp(3px,0.9vh,9px); text-align: center; font-family: 'DM Sans'; font-weight: 700;
   font-size: clamp(12.5px,1.4vw,19px); color: var(--pago-blue); }
 
-/* ══ fold 11 — close ════════════════════════════════════════════════════ */
+/* ══ fold 11 — close ════════════════════════════════════════════════════
+   The deck opened on a dark city and one switch. It closes on the same two,
+   in reverse: the words are WRITTEN by the light (the fold-01 mask wipe,
+   left to right), and the switch returns already up — nobody turns it off. */
 #f11 .fold-inner { text-align: center; align-items: center; gap: clamp(14px,2.6vh,30px); }
 #f11 .close-big { margin-top: auto; }
-#f11 .close-lights { margin-bottom: auto; }
+#f11 .close-row { --cs: clamp(34px,3.4vw,52px); --cg: clamp(12px,1.5vw,22px);
+  margin-bottom: auto; display: flex; align-items: center; justify-content: center; gap: var(--cg);
+  /* the switch hangs off the left; the line itself stays on the slide's axis */
+  padding-right: calc(var(--cs) + var(--cg)); }
+.close-switch { width: var(--cs); }
+/* the same treatment the Yegge quote gets on fold 01, as its own class */
+.lit-text { background-image: linear-gradient(95deg, #FFF3DC 0%, #FFD89B 42%, #FFFFFF 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-mask-image: linear-gradient(90deg, #000 44%, rgba(0,0,0,0) 61%);
+          mask-image: linear-gradient(90deg, #000 44%, rgba(0,0,0,0) 61%);
+  -webkit-mask-size: 250% 100%; mask-size: 250% 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: 100% 0; mask-position: 100% 0;
+  transition: -webkit-mask-position 1.15s var(--e-out), mask-position 1.15s var(--e-out); }
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .lit-text { color: transparent; -webkit-text-fill-color: transparent; } }
+.lit-text.stage-visible, .stage-visible > .lit-text {
+  -webkit-mask-position: 0 0; mask-position: 0 0; }
+/* the closing switch: small, plate warm, lever already up */
+.close-switch { flex: none; width: clamp(34px,3.4vw,52px); opacity: 0; transform: translateY(10px) scale(0.8);
+  transition: opacity 0.5s var(--e-out) 0.15s, transform 0.6s var(--e-back) 0.15s; }
+#f11 .stage-visible .close-switch { opacity: 1; transform: none; }
+.close-switch svg { width: 100%; height: auto; display: block;
+  filter: drop-shadow(0 10px 26px rgba(255,180,80,0.34)); }
+.close-switch .sw-lever { transform: translateY(-24px); }   /* up, and staying up */
+.close-switch .sw-led { fill: #ffd36b; filter: drop-shadow(0 0 7px #ffbe5c);
+  animation: led-hold 2.6s ease-in-out infinite; }
+@keyframes led-hold { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
+.is-parked .close-switch .sw-led { animation-play-state: paused; }
 .close-big { font-family: 'DM Sans'; font-weight: 800; font-size: clamp(28px,4.4vw,62px); line-height: 1.06;
   color: #fff; letter-spacing: -1px; }
 .close-big u { text-decoration: none; color: var(--pago-gold); }
+.close-big.lit-text u { background-image: linear-gradient(95deg, #FFE0A6 0%, var(--pago-gold) 45%, #FFD07A 100%);
+  -webkit-background-clip: text; background-clip: text; }
 .close-lights { font-family: 'DM Sans'; font-weight: 700; font-size: clamp(16px,1.9vw,26px); color: #ffd9a0;
   text-shadow: 0 0 22px rgba(255,180,80,0.5); }
 .speaker { display: flex; align-items: center; justify-content: space-between; gap: clamp(10px,1.4vw,20px);
@@ -1845,8 +1878,20 @@
       <svg viewBox="0 0 82 38"><use href="#pago-logo"/></svg>
       <span><b>Alexandru Gala Popescu</b> &middot; Pago &middot; Bra&#537;ov + Bucharest</span>
     </div>
-    <div class="close-big" data-stage="1">Start using a factory.<br><u>Or build one yourself.</u></div>
-    <div class="close-lights" data-stage="2">And leave the lights on.</div>
+    <div class="close-big lit-text" data-stage="1">Start using a factory.<br><u>Or build one yourself.</u></div>
+    <div class="close-row" data-stage="2">
+      <span class="close-switch" aria-hidden="true">
+        <svg viewBox="0 0 130 210">
+          <rect class="sw-plate" x="8" y="8" width="114" height="194" rx="14"/>
+          <circle class="sw-screw" cx="65" cy="24" r="4"/>
+          <circle class="sw-screw" cx="65" cy="186" r="4"/>
+          <rect class="sw-slot" x="44" y="42" width="42" height="126" rx="10"/>
+          <rect class="sw-lever" x="38" y="82" width="54" height="46" rx="9"/>
+          <circle class="sw-led" cx="105" cy="105" r="6"/>
+        </svg>
+      </span>
+      <span class="close-lights">And leave the lights on.</span>
+    </div>
   </div>
 </section>
 
@@ -2207,7 +2252,20 @@ function buildLightScene(root, onDone) {
   if (!scene) return;
   var played = false;
   function light() { if (played) return; played = true; f11.classList.add('lights-on'); scene.play(); }
-  f11.addEventListener('ctostage', light);
+  /* the closing beat: the works swell once — the city is not winding down */
+  function swell() {
+    var svg = f11.querySelector('.factory-scene');
+    var surge = svg && svg.querySelector('.surge'), core = svg && svg.querySelector('.fcore');
+    if (!surge || !window.gsap) return;
+    window.gsap.fromTo(surge, { opacity: 0 },
+      { opacity: 0.4, duration: 0.5, ease: 'power2.out', yoyo: true, repeat: 1 });
+    if (core) window.gsap.fromTo(core, { opacity: 1 },
+      { opacity: 1.35, duration: 0.6, ease: 'power2.out', yoyo: true, repeat: 1 });
+  }
+  f11.addEventListener('ctostage', function (e) {
+    light();
+    if (e.detail && e.detail.stage === 2) swell();
+  });
   if (window.IntersectionObserver) {
     new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) light(); });
